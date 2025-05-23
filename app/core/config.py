@@ -18,6 +18,8 @@ class Settings(BaseSettings):
     BACKEND_CORS_ORIGINS: list = [
         "http://localhost:5173",
         "http://localhost:5174",
+
+        "https://neemble-eat-frontend-485828523035.africa-south1.run.app"
     ]
 
     # MongoDB Config
