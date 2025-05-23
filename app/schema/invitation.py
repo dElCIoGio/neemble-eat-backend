@@ -1,0 +1,44 @@
+from beanie import Document
+from bson import ObjectId
+from pydantic import Field, BaseModel, EmailStr
+from pymongo import IndexModel
+
+from app.schema.collection_id.document_id import DocumentId
+from app.utils.make_optional_model import make_optional_model
+
+
+class InvitationCreate(BaseModel):
+    email: EmailStr
+    restaurant_id: str = Field(..., alias="restaurantId")
+    manager_id: str = Field(..., alias="managerId"),
+    role: str = Field(..., alias="role")
+
+class InvitationBase(InvitationCreate):
+    pass
+
+
+InvitationUpdate = make_optional_model(InvitationBase)
+
+
+class Invitation(InvitationBase, DocumentId):
+
+    model_config = {
+        "populate_by_name": True,
+        "arbitrary_types_allowed": True
+    }
+
+class InvitationDocument(Document, Invitation):
+    email: EmailStr = Field(..., alias="email")
+    restaurantId: str = Field(..., alias="restaurantId")
+
+    def to_response(self):
+        return Invitation(**self.model_dump(by_alias=True))
+
+    class Settings:
+        name = "invitations"
+        bson_encoders = {ObjectId: str}
+        indexes = [
+            IndexModel(
+                [("restaurantId", 1)],
+                name="idx_restaurant_id")
+        ]
