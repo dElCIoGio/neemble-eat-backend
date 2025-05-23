@@ -5,3 +5,8 @@ venv
 .idea
 .vscode
 firebase-key.json
+
+TODO
+
+log
+./logs
