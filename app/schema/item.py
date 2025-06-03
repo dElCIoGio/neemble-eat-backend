@@ -29,26 +29,25 @@ class CustomizationRule(BaseModel):
     name: str
     description: Optional[str] = ""
     is_required: bool = Field(alias="isRequired", default=False)
-    limit_type: LimitType
+    limit_type: LimitType = Field(alias="limitType", default=LimitType.UP_TO)
     limit: int
     options: List[CustomizationOption] = Field(default_factory=list)
 
 
-class ItemBase(BaseModel):
+class ItemCreate(BaseModel):
     name: str
     price: float
-    image_url: str = Field(..., alias="imageUrl")
     restaurant_id: str = Field(..., alias="restaurantId")
     category_id: str = Field(..., alias="categoryId")
-
-    # Optional
     description: Optional[str] = ""
-    is_available: bool = Field(default=True, alias="isAvailable")
     customizations: List[CustomizationRule] = Field(default_factory=list, alias="customizations")
 
 
-class ItemCreate(ItemBase):
-    pass
+class ItemBase(ItemCreate):
+    image_url: str = Field(..., alias="imageUrl")
+
+    # Optional
+    is_available: bool = Field(default=True, alias="isAvailable")
 
 
 ItemUpdate = make_optional_model(ItemBase)
@@ -67,7 +66,7 @@ class ItemDocument(Document, Item):
         return Item(**self.model_dump(by_alias=True))
 
     class Settings:
-        name = "restaurants"
+        name = "items"
         bson_encoders = {ObjectId: str}
 
 

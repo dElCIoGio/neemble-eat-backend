@@ -22,6 +22,7 @@ class MongoDBClient:
             await self.ping()
 
             await init_beanie(database=self.db, document_models=self.document_models)
+
             print("✅ MongoDB connection established and Beanie initialized.")
         except Exception as e:
             print(f"❌ Error initializing MongoDB: {e}")

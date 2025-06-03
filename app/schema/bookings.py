@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from beanie import Document
 from bson import ObjectId
 from pydantic import BaseModel, Field
 
@@ -35,7 +36,7 @@ class Booking(BookingBase, DocumentId):
         "arbitrary_types_allowed": True
     }
 
-class BookingDocument(Booking):
+class BookingDocument(Document, Booking):
 
     def to_response(self):
         return Booking(**self.model_dump(by_alias=True))

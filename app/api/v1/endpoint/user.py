@@ -1,15 +1,102 @@
 from fastapi import APIRouter, Depends, HTTPException
+from bson import ObjectId
 
+from app.models.restaurant import RestaurantModel
+from app.models.role import RoleModel
 from app.models.user import UserModel
-from app.schema import user as user_schema
 from app.utils.auth import get_current_user
+from app.schema.restaurant import RestaurantDocument
+from app.utils.user import is_member
 
 router = APIRouter()
 user_model = UserModel()
+role_model = RoleModel()
+restaurant_model = RestaurantModel()
 
 
-@router.get("/exists", response_model=bool)
-async def user_exist(user_data: dict = Depends(get_current_user)):
-    uid = user_data.get("uid")
+@router.get("/exists")
+async def user_exist(uid: str = Depends(get_current_user)):
     user = await user_model.get_user_by_firebase_uid(uid)
     return True if user else False
+
+
+@router.get("/user/{user_id}")
+async def get_user(user_id: str):
+    user = await user_model.get(user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+    return user.to_response()
+
+
+@router.get("/restaurant")
+async def get_current_restaurant(
+        uid: str = Depends(get_current_user)
+):
+    user = await user_model.get_user_by_firebase_uid(uid)
+    if not user:
+        raise HTTPException(
+            detail="User not found",
+            status_code=404
+        )
+    if user.current_restaurant_id is None:
+        return None
+    restaurant = await restaurant_model.get(user.current_restaurant_id)
+    return restaurant.to_response()
+
+
+@router.put("/restaurant/{restaurant_id}")
+async def change_current_restaurant(
+    restaurant_id: str,
+    uid: str = Depends(get_current_user)
+):
+    user = await user_model.get_user_by_firebase_uid(uid)
+    print(user)
+    if not user:
+        raise HTTPException(
+            detail="User not found",
+            status_code=404
+        )
+    if is_member(str(user.id), restaurant_id):
+        await user_model.update(
+            str(user.id),
+            {
+                "currentRestaurantId": restaurant_id
+            }
+        )
+    return True
+
+
+@router.get("/restaurants")
+async def get_restaurants(uid: str = Depends(get_current_user)):
+    try:
+        user = await user_model.get_user_by_firebase_uid(uid)
+
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # Get all restaurants where the user has an active membership
+        active_restaurants = []
+        for membership in user.memberships:
+            if membership.is_active:
+
+                # Get restaurant details from the restaurant model
+                role = await role_model.get(membership.role_id)
+                if role:
+                    restaurant = await restaurant_model.get(role.restaurant_id)
+                    if restaurant:
+                        active_restaurants.append({
+                            "_id": str(restaurant.id),
+                            "name": restaurant.name
+                        })
+
+        return active_restaurants
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=500,
+                             detail=str(e))
+
+    
+

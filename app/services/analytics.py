@@ -1,10 +1,11 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Dict, List
 from beanie.operators import And, GTE, LTE, Eq, Or
+from starlette.exceptions import HTTPException
 
 from app.models.invoice import InvoiceModel
 from app.schema.analytics import ItemOrderQuantity, SalesSummary, InvoiceCount, OrderCount, CancelledCount, \
-    AverageSessionDuration, ActiveSessionCount
+    AverageSessionDuration, ActiveSessionCount, TotalOrdersCount
 from app.schema.invoice import InvoiceDocument
 from app.schema.order import OrderDocument
 from app.schema.table_session import TableSessionDocument
@@ -17,6 +18,8 @@ async def get_sales_summary(
     to_date: datetime
 ) -> SalesSummary:
 
+    print("trying to get...")
+
     # 1. Find all PAID invoices in the date range
     invoices = await InvoiceDocument.find(
         And(
@@ -27,7 +30,10 @@ async def get_sales_summary(
         )
     ).to_list()
 
-    if not invoices:
+    print("DONE")
+    print(invoices)
+
+    if invoices is None or invoices is []:
         return SalesSummary(
             total_sales=0.0,
             invoice_count=0,
@@ -43,14 +49,17 @@ async def get_sales_summary(
     distinct_tables = len(set(inv.session_id for inv in invoices))
     revenue_per_table = total_sales / distinct_tables if distinct_tables > 0 else 0.0
 
-
-    return SalesSummary(
+    summary = SalesSummary(
         total_sales=round(total_sales, 2),
         invoice_count=invoice_count,
         average_invoice=round(average_invoice, 2),
         distinct_tables=distinct_tables,
         revenue_per_table=round(revenue_per_table, 2)
     )
+
+    print(summary)
+
+    return summary
 
 
 async def count_invoices(
@@ -78,15 +87,25 @@ async def count_orders(
     to_date: datetime
 ) -> OrderCount:
 
-    count = await OrderDocument.find(
-        And(
-            Eq(OrderDocument.restaurant_id, restaurant_id),
-            GTE(OrderDocument.order_time, from_date),
-            LTE(OrderDocument.order_time, to_date)
-        )
-    ).count()
+    try:
 
-    return OrderCount(order_count=count)
+        count = await OrderDocument.find(
+            And(
+                Eq(OrderDocument.restaurant_id, restaurant_id),
+                GTE(OrderDocument.order_time, from_date),
+                LTE(OrderDocument.order_time, to_date)
+            )
+        ).count()
+
+        return OrderCount(order_count=count)
+
+    except Exception as e:
+        raise HTTPException(
+            detail=str(e),
+            status_code=400
+        )
+
+
 
 
 async def get_top_items(
@@ -191,3 +210,34 @@ async def active_sessions_count(
     ).count()
 
     return ActiveSessionCount(active_sessions=count)
+
+
+async def last_seven_days_order_count(
+        restaurant_id: str
+):
+    days = []
+
+    try:
+        for i in range(7):
+            day = datetime.now() - timedelta(days=i + 1)
+            day_midnight = day.replace(hour=0, minute=0, second=0, microsecond=0)
+            weekday = day_midnight.strftime("%A")
+
+            count = await OrderDocument.find(
+                And(
+                    Eq(OrderDocument.restaurant_id, restaurant_id),
+                    GTE(OrderDocument.order_time, day_midnight),
+                )
+            ).count()
+
+            data = TotalOrdersCount(
+                day=weekday,
+                sales=count,
+                date=str(day_midnight.isoformat())
+            )
+
+            days.append(data)
+
+        return days
+    except Exception as error:
+        print(error)

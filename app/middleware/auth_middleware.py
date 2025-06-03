@@ -11,16 +11,21 @@ from app.utils.auth import (
     get_refresh_token_from_request,
     set_auth_cookies
 )
-from app.core.dependencies import get_logger
+from app.core.dependencies import get_logger, get_settings
 from firebase_admin import auth
 
 logger = get_logger()
-
+settings = get_settings()
 
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(
             self, request: Request, call_next: Callable[[Request], Awaitable[Response]]
     ) -> Response:
+
+
+        if request.method == "OPTIONS":
+            return await call_next(request)
+
         # Skip auth for public endpoints
         if self._is_public_endpoint(request.url.path):
             return await call_next(request)
@@ -72,7 +77,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             if refresh_token:
                 try:
                     # Verify refresh token (Note: Firebase doesn't officially support backend refresh via ID token)
-                    decoded_token = auth.verify_id_token(refresh_token)
+                    decoded_token = auth.verify_id_token(refresh_token, clock_skew_seconds=settings.CLOCK_SKEW_SECONDS)
 
                     # Issue new custom token (this should be sent back to client to re-authenticate)
                     new_custom_token = auth.create_custom_token(decoded_token["uid"])

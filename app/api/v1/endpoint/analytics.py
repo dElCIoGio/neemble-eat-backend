@@ -9,7 +9,7 @@ from app.services.analytics import (
     get_top_items,
     count_cancelled_orders,
     average_session_duration,
-    active_sessions_count
+    active_sessions_count, last_seven_days_order_count
 )
 
 router = APIRouter()
@@ -17,9 +17,9 @@ router = APIRouter()
 
 @router.get("/sales-summary")
 async def sales_summary(
-    restaurant_id: str = Query(...),
-    from_date: Optional[datetime] = Query(None),
-    to_date: Optional[datetime] = Query(None),
+    restaurant_id: str = Query(..., alias="restaurantId"),
+    from_date: Optional[datetime] = Query(None, alias="fromDate"),
+    to_date: Optional[datetime] = Query(None, alias="toDate"),
 ):
     if not from_date or not to_date:
         today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
@@ -30,9 +30,9 @@ async def sales_summary(
 
 @router.get("/invoices")
 async def invoices_summary(
-    restaurant_id: str = Query(...),
-    from_date: Optional[datetime] = Query(None),
-    to_date: Optional[datetime] = Query(None),
+    restaurant_id: str = Query(..., alias="restaurantId"),
+    from_date: Optional[datetime] = Query(None, alias="fromDate"),
+    to_date: Optional[datetime] = Query(None, alias="toDate"),
     status: str = Query("paid")
 ):
     if not from_date or not to_date:
@@ -44,24 +44,29 @@ async def invoices_summary(
 
 @router.get("/orders")
 async def orders_summary(
-    restaurant_id: str = Query(...),
-    from_date: Optional[datetime] = Query(None),
-    to_date: Optional[datetime] = Query(None)
+    restaurant_id: str = Query(..., alias="restaurantId"),
+    from_date: Optional[datetime] = Query(None, alias="fromDate"),
+    to_date: Optional[datetime] = Query(None, alias="toDate"),
 ):
+    print("RESTAURANT ID:", restaurant_id)
+    print("FROM DATE:", from_date)
+    print("TO DATE:", to_date)
     if not from_date or not to_date:
         today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
         from_date = today
         to_date = today + timedelta(days=1)
+
+    print("TESTING ORDERS ENDPOINT")
 
     return await count_orders(restaurant_id, from_date, to_date)
 
 # Add menu filtering
 @router.get("/top-items")
 async def top_items_summary(
-    restaurant_id: str = Query(...),
-    from_date: Optional[datetime] = Query(None),
-    to_date: Optional[datetime] = Query(None),
-    top_n: int = Query(5, ge=1, le=20)
+    restaurant_id: str = Query(..., alias="restaurantId"),
+    from_date: Optional[datetime] = Query(None, alias="fromDate"),
+    to_date: Optional[datetime] = Query(None, alias="toDate"),
+    top_n: int = Query(5, ge=1, le=20, alias="topN")
 ):
     if not from_date or not to_date:
         today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
@@ -72,9 +77,9 @@ async def top_items_summary(
 
 @router.get("/cancelled-orders")
 async def cancelled_orders_summary(
-    restaurant_id: str = Query(...),
-    from_date: Optional[datetime] = Query(None),
-    to_date: Optional[datetime] = Query(None)
+    restaurant_id: str = Query(..., alias="restaurantId"),
+    from_date: Optional[datetime] = Query(None, alias="fromDate"),
+    to_date: Optional[datetime] = Query(None, alias="toDate"),
 ):
     if not from_date or not to_date:
         today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
@@ -85,7 +90,7 @@ async def cancelled_orders_summary(
 
 @router.get("/session-duration")
 async def session_duration_summary(
-    restaurant_id: str = Query(...)
+    restaurant_id: str = Query(..., alias="restaurantId"),
 ):
     today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
     from_date = today
@@ -95,6 +100,13 @@ async def session_duration_summary(
 
 @router.get("/active-sessions")
 async def active_sessions_summary(
-    restaurant_id: str = Query(...)
+    restaurant_id: str = Query(..., alias="restaurantId"),
 ):
     return await active_sessions_count(restaurant_id)
+
+
+@router.get("/recent-orders")
+async def get_last_seven_days_order_count(
+    restaurant_id: str = Query(..., alias="restaurantId")
+):
+    return await last_seven_days_order_count(restaurant_id)

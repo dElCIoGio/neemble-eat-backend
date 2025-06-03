@@ -1,8 +1,8 @@
 from typing import List, Optional
 
-from beanie import Indexed, Document
+from beanie import Document
 from bson import ObjectId
-from pydantic import Field, BaseModel, EmailStr
+from pydantic import Field, BaseModel, EmailStr, ConfigDict
 from pymongo import IndexModel
 
 from app.schema.collection_id.document_id import DocumentId
@@ -18,11 +18,12 @@ class UserRestaurantMembership(BaseModel):
     is_active: bool = Field(alias="isActive", default=True)
 
 class UserBase(BaseModel):
-    firebase_uuid: str = Field(..., alias="firebaseUUID")
+
     first_name: str = Field(..., alias="firstName")
     last_name: str = Field(..., alias="lastName")
     email: EmailStr
     phone_number: str = Field(..., alias="phoneNumber")
+    firebase_uuid: str = Field(..., alias="firebaseUUID")
 
     # Optional Fields
     current_restaurant_id: Optional[str] = Field(alias="currentRestaurantId", default=None)
@@ -31,8 +32,12 @@ class UserBase(BaseModel):
     is_verified: Optional[bool] = Field(alias="isVerified", default=False)
     is_active: Optional[bool] = Field(alias="isActive", default=False)
     is_onboarding_completed: Optional[bool] = Field(alias="isOnboardingCompleted", default=False)
-    memberships: List[UserRestaurantMembership] = Field(default_factory=list)
+    memberships: Optional[List[UserRestaurantMembership]] = Field(default_factory=list)
     preferences: Optional[UserPreferences] = Field(default_factory=UserPreferences)
+
+    model_config = ConfigDict(
+        populate_by_name=True
+    )
 
 
 class UserCreate(BaseModel):
@@ -41,19 +46,25 @@ class UserCreate(BaseModel):
     email: EmailStr
     phone_number: str = Field(..., alias="phoneNumber")
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+        extra="forbid"
+    )
 
 UserUpdate = make_optional_model(UserBase)
 
 class User(UserBase, DocumentId):
 
-    model_config = {
-        "populate_by_name": True,
-        "arbitrary_types_allowed": True
-    }
+    model_config = ConfigDict(
+        populate_by_name=True,
+        arbitrary_types_allowed=True
+    )
 
-class UserDocument(Document, User):
-    email: Indexed(EmailStr, unique=True, name="idx_email")  # Ensure email is unique
-    firebase_uid: Indexed(str, unique=True, name="idx_firebase_uid")
+class UserDocument(Document, UserBase, DocumentId):
+
+    model_config = ConfigDict(
+        populate_by_name=True
+    )
 
     def to_response(self):
         return User(**self.model_dump(by_alias=True))
@@ -68,8 +79,8 @@ class UserDocument(Document, User):
                 name="idx_email"
             ),
             IndexModel(
-                "firebase_uid",
+                "firebase_uuid",
                 unique=True,
-                name="idx_firebase_uid"
+                name="idx_firebase_uuid"
             )
         ]

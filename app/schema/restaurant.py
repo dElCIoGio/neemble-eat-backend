@@ -2,20 +2,11 @@ from typing import Optional, List
 
 from beanie import Document
 from bson import ObjectId
-from pydantic import Field, BaseModel
+from pydantic import Field, BaseModel, ConfigDict
 from pymongo import IndexModel, ASCENDING
 
 from app.schema.collection_id.document_id import DocumentId
 from app.utils.make_optional_model import make_optional_model
-
-
-class RestaurantCreate(BaseModel):
-    name: str
-    address: str
-    description: str
-    phone_number: str = Field(..., alias="phoneNumber")
-    banner_url: Optional[str] = Field(default=None, alias="bannerUrl")
-
 
 class OpeningHours(BaseModel):
     monday: Optional[str] = Field(default="09:00-22:00")
@@ -26,15 +17,24 @@ class OpeningHours(BaseModel):
     saturday: Optional[str] = Field(default="10:00-23:00")
     sunday: Optional[str] = Field(default="10:00-20:00")
 
-
 class RestaurantSettings(BaseModel):
-    accepts_online_orders: bool = Field(default=True, description="Allow customers to order online via QR")
-    auto_accept_orders: bool = Field(default=False, description="Automatically accept incoming orders without manual confirmation")
     opening_hours: Optional[OpeningHours] = Field(alias="openingHours", description="Restaurant opening hours by day")
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+
+class RestaurantCreate(BaseModel):
+    name: str
+    address: str
+    description: str
+    phone_number: str = Field(..., alias="phoneNumber")
+    banner_url: str = Field(..., alias="bannerUrl")
+    logo_url: Optional[str] = Field(default=None, alias="logoUrl")
+
+    settings: Optional[RestaurantSettings] = Field(default_factory=RestaurantSettings)
 
 class RestaurantBase(RestaurantCreate):
-
     # Optional fields
     is_active: bool = Field(alias="isActive", default=False, description="Whether the restaurant is active or deactivated")
     menu_ids: List[str] = Field(default_factory=list, alias="menuIds")     # Menus
@@ -42,7 +42,7 @@ class RestaurantBase(RestaurantCreate):
     session_ids: List[str] = Field(default_factory=list, alias="sessionIds") # Sessions
     order_ids: List[str] = Field(default_factory=list, alias="orderIds")    # Orders
 
-    settings: Optional[RestaurantSettings] = Field(default_factory=RestaurantSettings)
+
 
 
 RestaurantUpdate = make_optional_model(RestaurantBase)

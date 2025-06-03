@@ -4,7 +4,20 @@ from functools import lru_cache
 
 from app.core.config import Settings
 from app.db.mongo import MongoDBClient
-from app.schema import user
+from app.schema import (
+    restaurant,
+    user,
+    menu,
+    category,
+    order,
+    role,
+    table_session,
+    table,
+    invitation,
+    bookings,
+    item,
+    invoice,
+)
 
 
 @lru_cache()
@@ -15,6 +28,12 @@ def get_settings():
 def get_service_account_credentials():
     settings = get_settings()
     credentials = json.loads(settings.FIREBASE_SERVICE_ACCOUNT_KEY)
+    credentials["private_key"] = credentials["private_key"].replace("\\n", "\n")
+    return credentials
+
+def get_gcp_service_account_credentials() -> dict:
+    settings = get_settings()
+    credentials: dict = json.loads(settings.GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY)
     credentials["private_key"] = credentials["private_key"].replace("\\n", "\n")
     return credentials
 
@@ -48,5 +67,18 @@ def get_mongo():
     return MongoDBClient(
         mongo_uri=settings.MONGO_DB_URI,
         database_name=settings.MONGO_DB_DATABASE_NAME,
-        document_models=[user.UserDocument]
+        document_models=[
+            user.UserDocument,
+            restaurant.RestaurantDocument,
+            menu.MenuDocument,
+            item.ItemDocument,
+            category.CategoryDocument,
+            role.RoleDocument,
+            order.OrderDocument,
+            table_session.TableSessionDocument,
+            table.TableDocument,
+            invoice.InvoiceDocument,
+            bookings.BookingDocument,
+            invitation.InvitationDocument
+        ]
     )

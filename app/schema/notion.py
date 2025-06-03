@@ -23,12 +23,10 @@ class BlogPostMeta(BaseModel):
             return datetime.fromisoformat(v)
         return None
 
-
 class NotionText(BaseModel):
     content: str
     link: Optional[str] = None
     annotations: Optional[dict] = {}
-
 
 class NotionBlock(BaseModel):
     id: str

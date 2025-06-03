@@ -4,7 +4,6 @@ from typing import List, Optional
 from app.schema.collection_id.document_id import DocumentId
 from beanie import Document
 from pymongo import IndexModel, ASCENDING
-
 from app.utils.make_optional_model import make_optional_model
 
 
@@ -12,12 +11,17 @@ from app.utils.make_optional_model import make_optional_model
 # Base Schema
 # =====================
 
-class CategoryBase(BaseModel):
+
+class CategoryCreate(BaseModel):
     name: str
     restaurant_id: str = Field(..., alias="restaurantId")
-    item_ids: List[str] = Field(default_factory=list, alias="itemIds")
-
     description: Optional[str] = ""
+    item_ids: List[str] = Field(default_factory=list, alias="itemIds")
+    menu_id: str = Field(..., alias="menuId")
+
+
+class CategoryBase(CategoryCreate):
+
     image_url: Optional[str] = Field(default=None, alias="imageUrl")
 
     position: int = 0
@@ -25,14 +29,6 @@ class CategoryBase(BaseModel):
 
     tags: Optional[List[str]] = Field(default_factory=list)
     slug: Optional[str] = None
-
-
-# =====================
-# Create / Update
-# =====================
-
-class CategoryCreate(CategoryBase):
-    pass
 
 
 CategoryUpdate = make_optional_model(CategoryBase)

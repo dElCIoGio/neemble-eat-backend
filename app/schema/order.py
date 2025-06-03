@@ -32,6 +32,7 @@ class OrderBase(BaseModel):
     unit_price: float = Field(default=0.0, alias="unitPrice")
     total: float = Field(default=0.0)
     ordered_item_name: Optional[str] = Field(default=None, alias="orderedItemName")
+    restaurant_id: str = Field(..., alias="restaurantId")
 
     prep_status: OrderPrepStatus = Field(default=OrderPrepStatus.QUEUED, alias="prepStatus")
 

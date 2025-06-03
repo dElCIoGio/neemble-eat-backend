@@ -17,24 +17,18 @@ class MenuPreferences(BaseModel):
     show_prices: bool = Field(default=True, description="Show item prices in this menu")
     show_item_images: bool = Field(default=True, description="Show item images in this menu")
 
-class MenuBase(BaseModel):
+class MenuCreate(BaseModel):
     restaurant_id: str = Field(..., alias="restaurantId")
     name: str
     description: Optional[str] = ""
 
+
+class MenuBase(MenuCreate):
     category_ids: List[str] = Field(default_factory=list, alias="categoryIds")
 
     is_active: bool = Field(default=True, alias="isActive")
     position: int = 0  # Menu ordering preference (e.g., Lunch = 1, Dinner = 2)
     preferences: Optional[MenuPreferences] = Field(default_factory=MenuPreferences)
-
-
-# =====================
-# Create / Update
-# =====================
-
-class MenuCreate(MenuBase):
-    pass
 
 
 MenuUpdate = make_optional_model(MenuBase)

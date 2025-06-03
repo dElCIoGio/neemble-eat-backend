@@ -1,15 +1,17 @@
-from beanie import Document
+from beanie import Document, PydanticObjectId
 from bson import ObjectId
 from typing import Any, Dict, List, Optional, Type, TypeVar, Generic, Union
 from datetime import datetime
 
+
+from app.core.dependencies import get_mongo
 from app.schema.collection_id.object_id import PyObjectId
 
 T = TypeVar("T", bound=Document)
 
-def to_object_id(_id: str) -> PyObjectId:
+def to_object_id(_id: str) -> PydanticObjectId:
     try:
-        _id = PyObjectId(
+        _id = PydanticObjectId(
             ObjectId(_id)
         )
         return _id
@@ -20,11 +22,11 @@ def to_object_id(_id: str) -> PyObjectId:
 
 class MongoCrud(Generic[T]):
 
-    model: Type[Document]
+    def __init__(self, model: Type[T]):
+        if not issubclass(model, Document):
+            raise ValueError("model must be a Beanie Document")
+        self.model = model
 
-    def __init__(self):
-        if not hasattr(self, "model") or not issubclass(self.model, Document):
-            raise ValueError("A Beanie Document model must be set in the child class.")
 
     async def create(self, data: Dict[str, Any]) -> T:
         data["created_at"] = datetime.now()
@@ -43,7 +45,15 @@ class MongoCrud(Generic[T]):
         ).to_list()
 
     async def get(self, _id: str) -> Optional[T]:
-        return await self.model.get(_id)
+        try:
+            raw = await self.model.get_motor_collection().find_one({"_id": ObjectId(_id)})
+            if not raw:
+                return None
+            document = self.model.model_validate(raw)
+            return document
+        except Exception as e:
+            print(f"❌ Failed to retrieve document by id {_id}: {e}")
+            return None
 
     async def get_by_fields(
             self, filters: Dict[str, Any], skip: int = 0, limit: int = 10
@@ -51,16 +61,25 @@ class MongoCrud(Generic[T]):
         return await self.model.find(filters).skip(skip).limit(limit).to_list()
 
     async def update(self, _id: str, data: Dict[str, Any]) -> Optional[T]:
-        document = await self.model.get(_id)
-        if not document:
+        collection = self.model.get_motor_collection()
+
+        # Optional: ensure updated_at is applied
+        if "updated_at" in self.model.model_fields:
+            data["updatedAt"] = datetime.now()
+
+        result = await collection.update_one(
+            {"_id": ObjectId(_id)},
+            {"$set": data}
+        )
+
+        if result.matched_count == 0:
             return None
 
-        for key, value in data.items():
-            setattr(document, key, value)
+        # Return the updated document
+        updated_doc = await self.get(_id)
+        print("UPDATED DOCUMENT:", updated_doc)
+        return updated_doc
 
-        document.updated_at = datetime.now()
-        await document.save()
-        return document
 
     async def delete(self, _id: str) -> bool:
         document = await self.model.get(_id)

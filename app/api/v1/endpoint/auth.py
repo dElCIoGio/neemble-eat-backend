@@ -2,6 +2,8 @@
 from fastapi import APIRouter, Depends, Request, Response, HTTPException, Body
 from starlette.status import HTTP_401_UNAUTHORIZED
 
+from app.core.dependencies import get_settings
+from app.services.user import create_user
 from app.utils.auth import (
     set_auth_cookies,
     clear_auth_cookies,
@@ -16,6 +18,7 @@ from firebase_admin import auth
 
 router = APIRouter()
 user_model = UserModel()
+settings = get_settings()
 
 
 @router.post("/login")
@@ -30,35 +33,36 @@ async def login(
     """
     try:
         # Verify the ID token
-        decoded_token = auth.verify_id_token(id_token)
+        decoded_token = auth.verify_id_token(id_token, clock_skew_seconds=settings.CLOCK_SKEW_SECONDS)
+        firebase_uid = decoded_token.get("uid")
 
         # Set authentication cookies
         set_auth_cookies(response, id_token)
 
         # Get or create user in our database
-        firebase_uid = decoded_token.get("uid")
+
         user = await user_model.get_user_by_firebase_uid(firebase_uid)
 
-        if not user:
-            # User doesn't exist in our database yet, create them
-            email = decoded_token.get("email", "")
-
-            # Create basic user record
-            new_user_data = UserCreate(
-                email=email,
-                firebase_uid=firebase_uid,
-                first_name=decoded_token.get("name", "").split()[0] if decoded_token.get("name") else "",
-                last_name=" ".join(decoded_token.get("name", "").split()[1:]) if decoded_token.get("name") and len(
-                    decoded_token.get("name", "").split()) > 1 else "",
-                phone=decoded_token.get("phone_number", "")
-            )
-
-            user = await user_model.create_user(new_user_data)
+        # if not user:
+        #     # User doesn't exist in our database yet, create them
+        #     email = decoded_token.get("email", "")
+        #
+        #     # Create basic user record
+        #     new_user_data = UserCreate(
+        #         email=email,
+        #         firebase_uid=firebase_uid,
+        #         first_name=decoded_token.get("name", "").split()[0] if decoded_token.get("name") else "",
+        #         last_name=" ".join(decoded_token.get("name", "").split()[1:]) if decoded_token.get("name") and len(
+        #             decoded_token.get("name", "").split()) > 1 else "",
+        #         phone=decoded_token.get("phone_number", "")
+        #     )
+        #
+        #     user = await user_model.create_user(new_user_data)
 
         # Return user data
         return {
             "message": "Login successful",
-            "data": user.to_response()
+            "data": True
         }
 
     except Exception as e:
@@ -71,12 +75,11 @@ async def login(
 @router.post("/logout")
 async def logout(
         response: Response,
-        user_data: dict = Depends(get_current_user)
+        uid: str = Depends(get_current_user)
 ):
     """Logout endpoint that clears session cookies and revokes Firebase sessions."""
     try:
         # Revoke Firebase sessions
-        uid = user_data.get("uid")
         if uid:
             revoke_user_sessions(uid)
 
@@ -101,10 +104,9 @@ async def logout(
 @router.get("/me", response_model=User)
 async def get_current_user_info(
         request: Request,
-        user_data: dict = Depends(get_current_user)
+        firebase_uid: str = Depends(get_current_user)
 ):
     """Get current authenticated user information."""
-    firebase_uid = user_data.get("uid")
 
     if not firebase_uid:
         raise HTTPException(
@@ -167,11 +169,10 @@ async def refresh_token(
         )
 
 
-@router.post("/register", response_model=User)
+@router.post("/register", response_model=User   )
 async def register_user(
         response: Response,
-        id_token: str = Body(..., embed=True, alias="idToken"),
-        user_data: UserCreate = Body(..., alias="userData")
+        payload: dict = Body(...)
 ):
     """
     Register a new user with additional profile information.
@@ -179,9 +180,13 @@ async def register_user(
     The frontend should create the user with Firebase Authentication first,
     then send the ID token along with additional user data to this endpoint.
     """
+
+    id_token: str = payload.get("idToken")
+    user_data: dict = payload.get("userData")
+
     try:
         # Verify the ID token
-        decoded_token = auth.verify_id_token(id_token)
+        decoded_token = auth.verify_id_token(id_token, clock_skew_seconds=settings.CLOCK_SKEW_SECONDS)
         firebase_uid = decoded_token.get("uid")
 
         # Check if user already exists
@@ -193,8 +198,7 @@ async def register_user(
             )
 
         # Create user in our database
-        user_data.firebase_uid = firebase_uid
-        user = await user_model.create_user(user_data)
+        user = await create_user(user_data, firebase_uid)
 
         # Set authentication cookies
         set_auth_cookies(response, id_token)
@@ -202,6 +206,7 @@ async def register_user(
         return user.to_response()
 
     except Exception as e:
+        print(e)
         raise HTTPException(
             status_code=400,
             detail=f"Registration failed: {str(e)}"

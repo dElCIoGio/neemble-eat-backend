@@ -1,3 +1,5 @@
+from fastapi import HTTPException
+
 from app.models.restaurant import RestaurantModel
 from app.schema import restaurant as restaurant_schema
 
@@ -5,7 +7,11 @@ from app.schema import restaurant as restaurant_schema
 restaurant_model = RestaurantModel()
 
 async def create_restaurant(data: restaurant_schema.RestaurantCreate):
-    return await restaurant_model.create(data.model_dump(by_alias=False))
+    try:
+        return await restaurant_model.create(data.model_dump(by_alias=False))
+    except Exception as error:
+        print(error)
+        raise HTTPException(detail=str(error), status_code=500)
 
 async def update_restaurant(restaurant_id: str, data: restaurant_schema.RestaurantUpdate):
     return await restaurant_model.update(restaurant_id, data)

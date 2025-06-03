@@ -32,8 +32,7 @@ def verify_session_cookie(session_cookie: str) -> Dict[str, Any]:
     try:
         # Verify the session cookie using Firebase Admin SDK
         decoded_claims = auth.verify_session_cookie(
-            session_cookie,
-            check_revoked=True
+            session_cookie, clock_skew_seconds=settings.CLOCK_SKEW_SECONDS
         )
         return decoded_claims
     except auth.InvalidSessionCookieError:
@@ -50,7 +49,8 @@ def set_auth_cookies(response: Response, id_token: str) -> None:
     session_cookie = create_session_cookie(id_token)
 
     # Set secure HTTP-only cookies
-    is_production = settings.ENVIRONMENT == "production"
+    is_production = settings.ENVIRONMENT == "production" # This is returning False
+
     response.set_cookie(
         key=AUTH_COOKIE_NAME,
         value=session_cookie,
@@ -66,7 +66,7 @@ def set_auth_cookies(response: Response, id_token: str) -> None:
         value=id_token,  # Store the original ID token for refresh
         max_age=REFRESH_COOKIE_MAX_AGE,
         httponly=True,
-        secure=settings.ENVIRONMENT != "development",
+        secure=is_production,
         samesite="none" if is_production else "lax"
     )
 
@@ -92,13 +92,9 @@ def clear_auth_cookies(response: Response) -> None:
 
 def get_token_from_request(request: Request) -> Optional[str]:
     """Extract the authentication token from request headers or cookies."""
-    # First try to get from Authorization header
-    auth_header = request.headers.get("Authorization")
-    if auth_header and auth_header.startswith("Bearer "):
-        return auth_header.replace("Bearer ", "")
+    token = request.cookies.get(AUTH_COOKIE_NAME)
 
-    # Then try to get from cookies
-    return request.cookies.get(AUTH_COOKIE_NAME)
+    return token
 
 
 def get_refresh_token_from_request(request: Request) -> Optional[str]:
@@ -122,15 +118,15 @@ async def get_current_user(request: Request):
             status_code=HTTP_401_UNAUTHORIZED,
             detail="Missing authentication token"
         )
-
     try:
-        # Verify the session cookie or token
+        # Verify the session cookie
         decoded_claims = verify_session_cookie(token)
-        return decoded_claims
-    except Exception as e:
+        uid = decoded_claims['sub']  # Firebase stores the UID in the 'sub' claim
+        return uid
+    except ValueError as e:
         raise HTTPException(
             status_code=HTTP_401_UNAUTHORIZED,
-            detail=f"Invalid or expired token: {str(e)}"
+            detail=str(e)
         )
 
 def admin_required(user = Depends(get_current_user)):
