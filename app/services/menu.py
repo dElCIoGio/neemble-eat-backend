@@ -1,11 +1,14 @@
 from app.models.menu import MenuModel
 from app.schema import menu as menu_schema
+from app.utils.slug import generate_unique_slug
 
 
 menu_model = MenuModel()
 
 async def create_menu(data: menu_schema.MenuCreate):
-    return await menu_model.create(data.model_dump(by_alias=False))
+    payload = data.model_dump(by_alias=False)
+    payload["slug"] = await generate_unique_slug(payload["name"], menu_schema.MenuDocument)
+    return await menu_model.create(payload)
 
 async def update_menu(menu_id: str, data: menu_schema.MenuUpdate):
     return await menu_model.update(menu_id, data)
@@ -21,6 +24,9 @@ async def deactivate_menu(menu_id: str):
 
 async def get_menu(menu_id: str):
     return await menu_model.get(menu_id)
+
+async def get_menu_by_slug(slug: str):
+    return await menu_model.get_by_slug(slug)
 
 async def list_menus(restaurant_id: str):
     filters = {"restaurantId": restaurant_id, "isActive": True}

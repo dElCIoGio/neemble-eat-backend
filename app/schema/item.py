@@ -2,6 +2,7 @@ from beanie import Document
 from bson import ObjectId
 from pydantic import BaseModel, Field
 from typing import List, Optional
+from pymongo import IndexModel, ASCENDING
 from enum import Enum
 from app.schema.collection_id.document_id import DocumentId
 from app.utils.make_optional_model import make_optional_model
@@ -48,6 +49,7 @@ class ItemBase(ItemCreate):
 
     # Optional
     is_available: bool = Field(default=True, alias="isAvailable")
+    slug: Optional[str] = None
 
 
 ItemUpdate = make_optional_model(ItemBase)
@@ -68,5 +70,8 @@ class ItemDocument(Document, Item):
     class Settings:
         name = "items"
         bson_encoders = {ObjectId: str}
+        indexes = [
+            IndexModel([("slug", ASCENDING)], unique=True, name="idx_slug")
+        ]
 
 

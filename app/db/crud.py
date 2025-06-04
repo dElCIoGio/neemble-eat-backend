@@ -55,6 +55,16 @@ class MongoCrud(Generic[T]):
             print(f"❌ Failed to retrieve document by id {_id}: {e}")
             return None
 
+    async def get_by_slug(self, slug: str, slug_field: str = "slug") -> Optional[T]:
+        try:
+            raw = await self.model.get_motor_collection().find_one({slug_field: slug})
+            if not raw:
+                return None
+            return self.model.model_validate(raw)
+        except Exception as e:
+            print(f"❌ Failed to retrieve document by slug {slug}: {e}")
+            return None
+
     async def get_by_fields(
             self, filters: Dict[str, Any], skip: int = 0, limit: int = 10
     ) -> List[T]:

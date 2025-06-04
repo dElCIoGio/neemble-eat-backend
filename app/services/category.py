@@ -1,10 +1,13 @@
 from app.models.category import CategoryModel
 from app.schema import category as category_schema
+from app.utils.slug import generate_unique_slug
 
 category_model = CategoryModel()
 
 async def create_category(data: category_schema.CategoryCreate):
-    return await category_model.create(data.model_dump(by_alias=False))
+    payload = data.model_dump(by_alias=False)
+    payload["slug"] = await generate_unique_slug(payload["name"], category_schema.CategoryDocument)
+    return await category_model.create(payload)
 
 async def update_category(category_id: str, data: category_schema.CategoryUpdate):
     return await category_model.update(category_id, data)
@@ -37,3 +40,6 @@ async def remove_item_from_category(category_id: str, item_id: str):
         await category_model.update(category_id, {"itemIds": category.item_ids})
 
     return category
+
+async def get_category_by_slug(slug: str):
+    return await category_model.get_by_slug(slug)
