@@ -38,6 +38,7 @@ class RestaurantBase(RestaurantCreate):
     # Optional fields
     is_active: bool = Field(alias="isActive", default=False, description="Whether the restaurant is active or deactivated")
     menu_ids: List[str] = Field(default_factory=list, alias="menuIds")     # Menus
+    current_menu_id: Optional[str] = Field(default=None, alias="currentMenuId")
     table_ids: List[str] = Field(default_factory=list, alias="tableIds")    # Tables
     session_ids: List[str] = Field(default_factory=list, alias="sessionIds") # Sessions
     order_ids: List[str] = Field(default_factory=list, alias="orderIds")    # Orders

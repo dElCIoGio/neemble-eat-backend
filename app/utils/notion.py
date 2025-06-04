@@ -55,7 +55,7 @@ def render_text(text: List[NotionText], base_url: str, escape: bool = True) -> s
         if ann.get("code"):
             classes.append("bg-gray-100 px-1 rounded text-sm font-mono")
 
-        class_attr = f' class="{' '.join(classes)}"' if classes else ""
+        class_attr = f" class=\"{' '.join(classes)}\"" if classes else ""
         wrapped_content = f"<span{class_attr}>{content}</span>"
 
         if not link:

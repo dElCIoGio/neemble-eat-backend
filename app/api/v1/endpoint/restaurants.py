@@ -13,7 +13,10 @@ from app.services.restaurant import (
     get_restaurant,
     update_restaurant,
     delete_restaurant,
-    get_restaurants, get_active_restaurants, restaurant_model,
+    get_restaurants,
+    get_active_restaurants,
+    restaurant_model,
+    change_current_menu,
 )
 from app.schema import restaurant as restaurant_schema
 from app.services.roles import create_default_roles_for_restaurant
@@ -246,6 +249,11 @@ async def get_single_restaurant(restaurant_id: str):
 @router.put("/{restaurant_id}")
 async def update_existing_restaurant(restaurant_id: str, data: restaurant_schema.RestaurantUpdate):
     return await update_restaurant(restaurant_id, data)
+
+
+@router.put("/{restaurant_id}/current-menu/{menu_id}")
+async def change_current_menu_endpoint(restaurant_id: str, menu_id: str):
+    return await change_current_menu(restaurant_id, menu_id)
 
 
 @router.delete("/{restaurant_id}", dependencies=[Depends(admin_required)])
