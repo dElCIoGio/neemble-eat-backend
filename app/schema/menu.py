@@ -14,8 +14,8 @@ from app.utils.make_optional_model import make_optional_model
 
 class MenuPreferences(BaseModel):
     highlight_featured_items: bool = Field(default=False, description="Highlight featured items at the top")
-    show_prices: bool = Field(default=True, description="Show item prices in this menu")
-    show_item_images: bool = Field(default=True, description="Show item images in this menu")
+    show_prices: bool = Field(default=True, description="Show item prices in this menu", alias="showPrices")
+    show_item_images: bool = Field(default=True, description="Show item images in this menu", alias="showItemImages")
 
 class MenuCreate(BaseModel):
     restaurant_id: str = Field(..., alias="restaurantId")

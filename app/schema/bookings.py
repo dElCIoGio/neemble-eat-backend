@@ -20,6 +20,7 @@ class BookingBase(BaseModel):
     email: str = Field(..., alias="email")
     occasion: str = Field(..., alias="occasion")
     notes: str = Field(..., alias="notes")
+    status: str = Field(default="upcoming")
 
 
 class BookingCreate(BookingBase):
