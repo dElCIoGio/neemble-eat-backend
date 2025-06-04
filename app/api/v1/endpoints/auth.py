@@ -27,9 +27,9 @@ async def login(
         id_token: str = Body(..., embed=True, alias="idToken")
 ):
     """
-    Login endpoint that verifies Firebase ID token and sets session cookies.
+    Login endpoints that verifies Firebase ID token and sets session cookies.
 
-    The frontend should authenticate with Firebase and send the ID token to this endpoint.
+    The frontend should authenticate with Firebase and send the ID token to this endpoints.
     """
     try:
         # Verify the ID token
@@ -77,7 +77,7 @@ async def logout(
         response: Response,
         uid: str = Depends(get_current_user)
 ):
-    """Logout endpoint that clears session cookies and revokes Firebase sessions."""
+    """Logout endpoints that clears session cookies and revokes Firebase sessions."""
     try:
         # Revoke Firebase sessions
         if uid:
@@ -178,7 +178,7 @@ async def register_user(
     Register a new user with additional profile information.
 
     The frontend should create the user with Firebase Authentication first,
-    then send the ID token along with additional user data to this endpoint.
+    then send the ID token along with additional user data to this endpoints.
     """
 
     id_token: str = payload.get("idToken")

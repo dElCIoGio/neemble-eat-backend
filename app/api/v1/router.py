@@ -1,12 +1,12 @@
 from fastapi import APIRouter
 
-from app.api.v1.endpoint.auth import router as auth_router
-from app.api.v1.endpoint.analytics import router as analytics_router
-from app.api.v1.endpoint.user import router as user_router
-from app.api.v1.endpoint.restaurants import router as analysis_router
-from app.api.v1.endpoint.invitation import router as invitation_router
-from app.api.v1.endpoint.blog import router as blog_router
-from app.api.v1.endpoint.bookings import router as booking_router
+from app.api.v1.endpoints.auth import router as auth_router
+from app.api.v1.endpoints.analytics import router as analytics_router
+from app.api.v1.endpoints.user import router as user_router
+from app.api.v1.endpoints.restaurants import router as analysis_router
+from app.api.v1.endpoints.invitation import router as invitation_router
+from app.api.v1.endpoints.blog import router as blog_router
+from app.api.v1.endpoints.bookings import router as booking_router
 from app.api.v1.endpoints.insights import router as insights_router
 
 

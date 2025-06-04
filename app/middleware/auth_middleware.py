@@ -106,7 +106,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             )
 
     def _is_public_endpoint(self, path: str) -> bool:
-        """Check if the endpoint is public (doesn't require authentication)."""
+        """Check if the endpoints is public (doesn't require authentication)."""
         public_paths = [
             "/api/health",
             "/health",
