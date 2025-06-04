@@ -59,5 +59,6 @@ class CategoryDocument(Document, Category):
         indexes = [
             IndexModel([("restaurantId", ASCENDING)], name="idx_restaurant_id"),
             IndexModel([("isActive", ASCENDING)], name="idx_is_active"),
-            IndexModel([("position", ASCENDING)], name="idx_position")
+            IndexModel([("position", ASCENDING)], name="idx_position"),
+            IndexModel([("slug", ASCENDING)], unique=True, name="idx_slug")
         ]

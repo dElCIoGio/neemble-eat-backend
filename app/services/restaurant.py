@@ -2,13 +2,16 @@ from fastapi import HTTPException
 
 from app.models.restaurant import RestaurantModel
 from app.schema import restaurant as restaurant_schema
+from app.utils.slug import generate_unique_slug
 
 
 restaurant_model = RestaurantModel()
 
 async def create_restaurant(data: restaurant_schema.RestaurantCreate):
     try:
-        return await restaurant_model.create(data.model_dump(by_alias=False))
+        payload = data.model_dump(by_alias=False)
+        payload["slug"] = await generate_unique_slug(payload["name"], restaurant_schema.RestaurantDocument)
+        return await restaurant_model.create(payload)
     except Exception as error:
         print(error)
         raise HTTPException(detail=str(error), status_code=500)
@@ -35,5 +38,8 @@ async def deactivate_restaurant(restaurant_id: str):
 
 async def get_restaurant(restaurant_id: str):
     return await restaurant_model.get(restaurant_id)
+
+async def get_restaurant_by_slug(slug: str):
+    return await restaurant_model.get_by_slug(slug)
 
 

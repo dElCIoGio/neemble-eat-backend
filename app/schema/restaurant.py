@@ -41,6 +41,7 @@ class RestaurantBase(RestaurantCreate):
     table_ids: List[str] = Field(default_factory=list, alias="tableIds")    # Tables
     session_ids: List[str] = Field(default_factory=list, alias="sessionIds") # Sessions
     order_ids: List[str] = Field(default_factory=list, alias="orderIds")    # Orders
+    slug: Optional[str] = None
 
 
 
@@ -67,5 +68,6 @@ class RestaurantDocument(Document, Restaurant):
             IndexModel([("name", ASCENDING)], name="idx_name"),
             IndexModel([("isActive", ASCENDING)], name="idx_is_active"),
             # Optional if you want to guarantee unique phone numbers:
-            IndexModel([("phoneNumber", ASCENDING)], unique=True, name="idx_phone_number")
+            IndexModel([("phoneNumber", ASCENDING)], unique=True, name="idx_phone_number"),
+            IndexModel([("slug", ASCENDING)], unique=True, name="idx_slug")
         ]

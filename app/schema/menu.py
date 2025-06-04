@@ -29,6 +29,7 @@ class MenuBase(MenuCreate):
     is_active: bool = Field(default=True, alias="isActive")
     position: int = 0  # Menu ordering preference (e.g., Lunch = 1, Dinner = 2)
     preferences: Optional[MenuPreferences] = Field(default_factory=MenuPreferences)
+    slug: Optional[str] = None
 
 
 MenuUpdate = make_optional_model(MenuBase)
@@ -59,5 +60,6 @@ class MenuDocument(Document, Menu):
         indexes = [
             IndexModel([("restaurantId", ASCENDING)], name="idx_restaurant_id"),
             IndexModel([("isActive", ASCENDING)], name="idx_is_active"),
-            IndexModel([("position", ASCENDING)], name="idx_position")
+            IndexModel([("position", ASCENDING)], name="idx_position"),
+            IndexModel([("slug", ASCENDING)], unique=True, name="idx_slug")
         ]
