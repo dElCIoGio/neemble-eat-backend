@@ -7,6 +7,7 @@ from app.api.v1.endpoint.restaurants import router as analysis_router
 from app.api.v1.endpoint.invitation import router as invitation_router
 from app.api.v1.endpoint.blog import router as blog_router
 from app.api.v1.endpoint.bookings import router as booking_router
+from app.api.v1.endpoints.insights import router as insights_router
 
 
 router = APIRouter()
@@ -19,3 +20,4 @@ router.include_router(analysis_router, prefix="/restaurants", tags=["Restaurant"
 router.include_router(auth_router, prefix="/auth", tags=["Authentication"])
 router.include_router(analytics_router, prefix="/analytics", tags=["Analytics"])
 router.include_router(booking_router, prefix="/bookings", tags=["Bookings"])
+router.include_router(insights_router, prefix="/insights", tags=["AI Insights"])
