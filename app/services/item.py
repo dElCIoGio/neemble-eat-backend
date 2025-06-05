@@ -1,4 +1,5 @@
 from app.models.item import ItemModel
+from app.models.category import CategoryModel
 from app.utils.slug import generate_unique_slug
 from app.schema import item as item_schema
 
@@ -119,4 +120,14 @@ async def delete_customization_option(item_id: str, customization_index: int, op
 
     item.customizations[customization_index].options.pop(option_index)
     return await item_model.update(item_id, {"customizations": _serialize_customizations(item.customizations)})
+
+
+async def list_items_by_menu(menu_id: str):
+    """List all available items for a specific menu."""
+    categories = await CategoryModel().get_by_fields({"menuId": menu_id, "isActive": True})
+    all_items: list[item_schema.ItemDocument] = []
+    for category in categories:
+        items = await item_model.get_by_fields({"categoryId": str(category.id), "isAvailable": True})
+        all_items.extend(items)
+    return all_items
 
