@@ -54,7 +54,6 @@ async def list_category_items(category_id: str):
     items = await item_service.list_items_by_category(category_id)
     return [i.to_response() for i in items]
 
-
 @router.get("/{category_slug}/slug/items")
 async def list_category_items_by_slug(category_slug: str):
     category = await category_model.get_by_slug(category_slug)

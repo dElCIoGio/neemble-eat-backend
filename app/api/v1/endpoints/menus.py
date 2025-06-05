@@ -57,7 +57,6 @@ async def get_menu(menu_id: str):
         raise HTTPException(status_code=404, detail="Menu not found")
     return menu.to_response()
 
-
 @router.get("/slug/{slug}")
 async def get_menu_by_slug(slug: str):
     menu = await menu_service.get_menu_by_slug(slug)
@@ -96,7 +95,6 @@ async def list_menu_items_by_slug(menu_slug: str):
 
 @router.post("/copy/{menu_slug}")
 async def copy_menu(menu_slug: str, restaurant_id: str):
-    """Create a copy of a menu, its categories and items."""
     try:
         menu = await menu_service.copy_menu_by_slug(menu_slug, restaurant_id)
         return menu.to_response()

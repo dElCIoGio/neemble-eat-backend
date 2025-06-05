@@ -28,6 +28,13 @@ async def get_item(item_id: str):
         raise HTTPException(status_code=404, detail="Item not found")
     return item.to_response()
 
+@router.get("/slug/{item_id}")
+async def get_item_by_slug(item_slug: str):
+    item = await item_service.get_item_by_slug(item_slug)
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return item.to_response()
+
 
 @router.delete("/{item_id}")
 async def delete_item(item_id: str):
@@ -46,8 +53,8 @@ async def update_item(item_id: str, data: item_schema.ItemUpdate):
 
 
 @router.put("/{item_id}/availability")
-async def switch_item_availability(item_id: str, is_available: bool):
-    updated = await item_service.update_item_availability(item_id, is_available)
+async def switch_item_availability(item_id: str):
+    updated = await item_service.update_item_availability(item_id)
     if not updated:
         raise HTTPException(status_code=404, detail="Item not found")
     return updated.to_response()
