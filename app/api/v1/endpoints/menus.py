@@ -2,6 +2,8 @@ from fastapi import APIRouter, HTTPException
 
 from app.schema import menu as menu_schema
 from app.services import menu as menu_service
+from app.services import category as category_service
+from app.services import item as item_service
 
 router = APIRouter()
 
@@ -19,6 +21,20 @@ async def delete_menu(menu_id: str):
     if not result:
         raise HTTPException(status_code=404, detail="Menu not found")
     return True
+
+@router.put("/{menu_id}")
+async def update_menu(menu_id: str, data: menu_schema.MenuUpdate):
+    updated = await menu_service.update_menu(menu_id, data)
+    if not updated:
+        raise HTTPException(status_code=404, detail="Menu not found")
+    return updated.to_response()
+
+@router.put("/{menu_id}/preferences")
+async def update_menu_preferences(menu_id: str, preferences: menu_schema.MenuPreferences):
+    updated = await menu_service.update_menu(menu_id, menu_schema.MenuUpdate(preferences=preferences))
+    if not updated:
+        raise HTTPException(status_code=404, detail="Menu not found")
+    return updated.to_response()
 
 @router.put("/{menu_id}/status")
 async def update_menu_status(menu_id: str, is_active: bool):
@@ -38,3 +54,13 @@ async def get_menu(menu_id: str):
 async def list_restaurant_menus(restaurant_id: str):
     menus = await menu_service.list_menus(restaurant_id)
     return [m.to_response() for m in menus]
+
+@router.get("/{menu_id}/categories")
+async def list_menu_categories(menu_id: str):
+    categories = await category_service.list_categories_for_menu(menu_id)
+    return [c.to_response() for c in categories]
+
+@router.get("/{menu_id}/items")
+async def list_menu_items(menu_id: str):
+    items = await item_service.list_items_by_menu(menu_id)
+    return [i.to_response() for i in items]

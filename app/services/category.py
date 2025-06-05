@@ -15,6 +15,19 @@ async def update_category(category_id: str, data: category_schema.CategoryUpdate
 async def delete_category(category_id: str):
     return await category_model.delete(category_id)
 
+async def get_category(category_id: str):
+    """Retrieve a category by its id."""
+    return await category_model.get(category_id)
+
+async def list_categories_for_menu(menu_id: str):
+    """List all active categories that belong to a menu."""
+    filters = {"menuId": menu_id, "isActive": True}
+    return await category_model.get_by_fields(filters)
+
+async def update_category_availability(category_id: str, is_active: bool):
+    """Switch the availability flag of a category."""
+    return await category_model.update(category_id, {"isActive": is_active})
+
 async def list_categories_for_restaurant(restaurant_id: str):
     filters = {"restaurantId": restaurant_id, "isActive": True}
     return await category_model.get_by_fields(filters)
