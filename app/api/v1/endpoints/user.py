@@ -35,16 +35,19 @@ async def get_user(user_id: str):
 async def get_current_restaurant(
         uid: str = Depends(get_current_user)
 ):
-    user = await user_model.get_user_by_firebase_uid(uid)
-    if not user:
-        raise HTTPException(
-            detail="User not found",
-            status_code=404
-        )
-    if user.current_restaurant_id is None:
-        return None
-    restaurant = await restaurant_model.get(user.current_restaurant_id)
-    return restaurant.to_response()
+    try:
+        user = await user_model.get_user_by_firebase_uid(uid)
+        if not user:
+            raise HTTPException(
+                detail="User not found",
+                status_code=404
+            )
+        if user.current_restaurant_id is None:
+            return None
+        restaurant = await restaurant_model.get(user.current_restaurant_id)
+        return restaurant.to_response()
+    except Exception as error:
+        print(str(error))
 
 
 @router.put("/restaurant/{restaurant_id}")

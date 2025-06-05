@@ -187,7 +187,8 @@ async def register_user(
     try:
         # Verify the ID token
         decoded_token = auth.verify_id_token(id_token, clock_skew_seconds=settings.CLOCK_SKEW_SECONDS)
-        firebase_uid = decoded_token.get("uid")
+
+        firebase_uid = decoded_token["sub"]
 
         # Check if user already exists
         existing_user = await user_model.get_user_by_firebase_uid(firebase_uid)

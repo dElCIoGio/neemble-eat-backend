@@ -78,9 +78,9 @@ class UserDocument(Document, UserBase, DocumentId):
                 unique=True,
                 name="idx_email"
             ),
-            IndexModel(
-                "firebase_uuid",
-                unique=True,
-                name="idx_firebase_uuid"
-            )
+            # IndexModel(
+            #     "firebase_uuid",
+            #     unique=True,
+            #     name="idx_firebase_uuid"
+            # )
         ]
