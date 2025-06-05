@@ -56,7 +56,6 @@ async def change_current_restaurant(
     uid: str = Depends(get_current_user)
 ):
     user = await user_model.get_user_by_firebase_uid(uid)
-    print(user)
     if not user:
         raise HTTPException(
             detail="User not found",
