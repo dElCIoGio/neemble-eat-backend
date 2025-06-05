@@ -5,13 +5,19 @@ from fastapi import HTTPException
 from app.models.menu import MenuModel
 from app.models.category import CategoryModel
 from app.models.restaurant import RestaurantModel
+from app.models.item import ItemModel
 from app.schema import menu as menu_schema
+from app.schema import category as category_schema
+from app.schema import item as item_schema
 from app.utils.slug import generate_unique_slug
+from app.services import category as category_service
+from app.services import item as item_service
 
 
 menu_model = MenuModel()
 category_model = CategoryModel()
 restaurant_model = RestaurantModel()
+item_model = ItemModel()
 
 async def create_menu(data: menu_schema.MenuCreate):
     payload = data.model_dump(by_alias=False)
@@ -103,3 +109,65 @@ async def remove_category_from_menu(menu_id: str, category_id: str):
         await menu_model.update(menu_id, {"categoryIds": menu.category_ids})
 
     return menu
+
+
+async def copy_menu_by_slug(menu_slug: str, restaurant_id: str) -> menu_schema.MenuDocument:
+    """Duplicate a menu, its categories and items using the menu slug."""
+    original_menu = await menu_model.get_by_slug(menu_slug)
+    if not original_menu:
+        raise Exception("Menu not found")
+
+    # Create the new menu
+    new_menu_data = menu_schema.MenuCreate(
+        restaurant_id=restaurant_id,
+        name=original_menu.name,
+        description=original_menu.description,
+        is_active=original_menu.is_active,
+        preferences=original_menu.preferences,
+    )
+    new_menu = await create_menu(new_menu_data)
+
+    new_slug = await generate_unique_slug(new_menu.name, menu_schema.MenuDocument)
+    new_menu = await menu_model.update(str(new_menu.id), {
+        "slug": new_slug,
+        "position": original_menu.position,
+    })
+
+    # Duplicate categories
+    categories = await category_model.get_by_fields({"menuId": str(original_menu.id)})
+    for category in categories:
+        cat_data = category_schema.CategoryCreate(
+            name=category.name,
+            restaurant_id=restaurant_id,
+            description=category.description,
+            menu_id=str(new_menu.id),
+        )
+        new_cat = await category_service.create_category(cat_data)
+        cat_slug = await generate_unique_slug(new_cat.name, category_schema.CategoryDocument)
+        await category_model.update(str(new_cat.id), {
+            "slug": cat_slug,
+            "position": category.position,
+            "isActive": category.is_active,
+            "tags": category.tags,
+        })
+        await add_category_to_menu(str(new_menu.id), str(new_cat.id))
+
+        # Duplicate items within the category
+        items = await item_model.get_by_fields({"categoryId": str(category.id)})
+        for item in items:
+            item_payload = {
+                "name": item.name,
+                "price": item.price,
+                "restaurantId": restaurant_id,
+                "categoryId": str(new_cat.id),
+                "description": item.description,
+                "customizations": [c.model_dump(by_alias=True) for c in item.customizations],
+                "imageUrl": item.image_url,
+                "isAvailable": item.is_available,
+            }
+            new_item = await item_service.create_item(item_payload)
+            item_slug = await generate_unique_slug(new_item.name, item_schema.ItemDocument)
+            await item_model.update(str(new_item.id), {"slug": item_slug})
+            await category_service.add_item_to_category(str(new_cat.id), str(new_item.id))
+
+    return new_menu
