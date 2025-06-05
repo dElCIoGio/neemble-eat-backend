@@ -93,10 +93,10 @@ async def list_menu_items_by_slug(menu_slug: str):
         )
 
 
-@router.post("/copy/{menu_slug}")
+@router.post("/copy/{menu_slug}/{restaurant_id}")
 async def copy_menu(menu_slug: str, restaurant_id: str):
     try:
-        menu = await menu_service.copy_menu_by_slug(menu_slug, restaurant_id)
+        menu = await menu_service.copy_menu_by_slug(menu_slug.lower(), restaurant_id)
         return menu.to_response()
     except Exception as error:
         raise HTTPException(status_code=400, detail=str(error))

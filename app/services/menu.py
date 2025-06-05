@@ -1,4 +1,3 @@
-from tkinter.constants import RAISED
 
 from fastapi import HTTPException
 
