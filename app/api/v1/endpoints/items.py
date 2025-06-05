@@ -2,6 +2,8 @@ from fastapi import APIRouter, HTTPException
 
 from app.schema import item as item_schema
 from app.services import item as item_service
+from app.services.item import item_model
+from app.utils.slug import generate_unique_slug
 
 router = APIRouter()
 
@@ -10,8 +12,12 @@ router = APIRouter()
 async def create_item(data: item_schema.ItemCreate):
     try:
         created = await item_service.create_item(data.model_dump(by_alias=True))
-        return created.to_response()
+        slug = await generate_unique_slug(name=created.name, model=item_schema.ItemDocument)
+        item = await item_model.update(created.id, {"slug": slug})
+        return item.to_response()
     except Exception as error:
+        if item:
+            await item_model.delete(item.id)
         raise HTTPException(status_code=500, detail=str(error))
 
 
@@ -21,6 +27,14 @@ async def get_item(item_id: str):
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")
     return item.to_response()
+
+
+@router.delete("/{item_id}")
+async def delete_item(item_id: str):
+    is_deleted = await item_service.delete_item(item_id)
+    if not is_deleted:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return is_deleted
 
 
 @router.put("/{item_id}")

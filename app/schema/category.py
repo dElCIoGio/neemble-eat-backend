@@ -16,13 +16,12 @@ class CategoryCreate(BaseModel):
     name: str
     restaurant_id: str = Field(..., alias="restaurantId")
     description: Optional[str] = ""
-    item_ids: List[str] = Field(default_factory=list, alias="itemIds")
     menu_id: str = Field(..., alias="menuId")
 
 
 class CategoryBase(CategoryCreate):
 
-    image_url: Optional[str] = Field(default=None, alias="imageUrl")
+    item_ids: List[str] = Field(default_factory=list, alias="itemIds")
 
     position: int = 0
     is_active: bool = Field(default=True, alias="isActive")

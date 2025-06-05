@@ -87,14 +87,13 @@ class MongoCrud(Generic[T]):
 
         # Return the updated document
         updated_doc = await self.get(_id)
-        print("UPDATED DOCUMENT:", updated_doc)
         return updated_doc
 
 
     async def delete(self, _id: str) -> bool:
-        document = await self.model.get(_id)
+        document = await self.get(_id)
         if document:
-            await document.delete()
+            await self.model.get_motor_collection().delete_one({"_id": ObjectId(_id)})
             return True
         return False
 

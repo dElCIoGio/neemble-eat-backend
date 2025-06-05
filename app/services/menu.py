@@ -1,3 +1,7 @@
+from tkinter.constants import RAISED
+
+from fastapi import HTTPException
+
 from app.models.menu import MenuModel
 from app.models.category import CategoryModel
 from app.models.restaurant import RestaurantModel
@@ -26,25 +30,34 @@ async def update_menu(menu_id: str, data: menu_schema.MenuUpdate):
     return await menu_model.update(menu_id, data)
 
 async def delete_menu(menu_id: str):
-    menu = await menu_model.get(menu_id)
-    if not menu:
-        return False
+    try:
+        menu = await menu_model.get(menu_id)
 
-    # Remove categories linked to this menu
-    categories = await category_model.get_by_fields({"menuId": menu_id})
-    for category in categories:
-        await category_model.delete(str(category.id))
-
-    # Remove menu id from restaurant
-    restaurant = await restaurant_model.get(menu.restaurant_id)
-    if restaurant and menu_id in restaurant.menu_ids:
-        new_ids = [mid for mid in restaurant.menu_ids if mid != menu_id]
-        update_data = {"menuIds": new_ids}
-        if restaurant.current_menu_id == menu_id:
-            update_data["currentMenuId"] = None
-        await restaurant_model.update(str(restaurant.id), update_data)
-
-    return await menu_model.delete(menu_id)
+        print("MENU:", menu)
+        if not menu:
+            return False
+        print("checkpoint 1")
+        # Remove categories linked to this menu
+        categories = await category_model.get_by_fields({"menuId": menu_id})
+        for category in categories:
+            await category_model.delete(str(category.id))
+        print("checkpoint 2")
+        # Remove menu id from restaurant
+        restaurant = await restaurant_model.get(menu.restaurant_id)
+        if restaurant and menu_id in restaurant.menu_ids:
+            new_ids = [mid for mid in restaurant.menu_ids if mid != menu_id]
+            update_data = {"menuIds": new_ids}
+            if restaurant.current_menu_id == menu_id:
+                update_data["currentMenuId"] = None
+            await restaurant_model.update(str(restaurant.id), update_data)
+        print("checkpoint 3")
+        return await menu_model.delete(menu_id)
+    except Exception as error:
+        print(error)
+        raise HTTPException(
+            detail=str(error),
+            status_code=400
+        )
 
 async def deactivate_menu(menu_id: str):
     menu = await menu_model.get(menu_id)

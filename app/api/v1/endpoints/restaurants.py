@@ -35,6 +35,7 @@ from app.utils.images import (
     cleanup_restaurant_images
 )
 from app.models.user import UserModel
+from app.utils.slug import generate_unique_slug
 
 router = APIRouter()
 
@@ -173,11 +174,14 @@ async def create(
 
         # Update restaurant with image URLs
 
+        slug = await generate_unique_slug(name=restaurant.name, model=restaurant_schema.RestaurantDocument)
+
         await restaurant_model.update(
             str(restaurant.id),
             {
                 "bannerUrl": banner_result.public_url,
-                "logoUrl": logo_url
+                "logoUrl": logo_url,
+                "slug": slug
             }
         )
 

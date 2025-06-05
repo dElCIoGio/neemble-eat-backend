@@ -13,7 +13,7 @@ from app.utils.make_optional_model import make_optional_model
 # =====================
 
 class MenuPreferences(BaseModel):
-    highlight_featured_items: bool = Field(default=False, description="Highlight featured items at the top")
+    highlight_featured_items: bool = Field(default=False, description="Highlight featured items at the top", alias="highlightFeaturedItems")
     show_prices: bool = Field(default=True, description="Show item prices in this menu", alias="showPrices")
     show_item_images: bool = Field(default=True, description="Show item images in this menu", alias="showItemImages")
 
@@ -21,14 +21,13 @@ class MenuCreate(BaseModel):
     restaurant_id: str = Field(..., alias="restaurantId")
     name: str
     description: Optional[str] = ""
+    is_active: bool = Field(default=True, alias="isActive")
+    preferences: Optional[MenuPreferences] = Field(default_factory=MenuPreferences)
 
 
 class MenuBase(MenuCreate):
     category_ids: List[str] = Field(default_factory=list, alias="categoryIds")
-
-    is_active: bool = Field(default=True, alias="isActive")
     position: int = 0  # Menu ordering preference (e.g., Lunch = 1, Dinner = 2)
-    preferences: Optional[MenuPreferences] = Field(default_factory=MenuPreferences)
     slug: Optional[str] = None
 
 

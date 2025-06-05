@@ -3,15 +3,22 @@ from fastapi import APIRouter, HTTPException
 from app.schema import category as category_schema
 from app.services import category as category_service
 from app.services import item as item_service
+from app.services.category import category_model
+from app.services.menu import menu_model
+from app.utils.slug import generate_unique_slug
 
 router = APIRouter()
 
 @router.post("/")
 async def create_category(data: category_schema.CategoryCreate):
     try:
-        created = await category_service.create_category(data)
-        return created.to_response()
+        category = await category_service.create_category(data)
+        slug = await generate_unique_slug(name=category.name, model=category_schema.CategoryDocument)
+        category = await category_model.update(category.id, {"slug": slug})
+        return category.to_response()
     except Exception as error:
+        if category:
+            await category_model.delete(category.id)
         raise HTTPException(status_code=500, detail=str(error))
 
 @router.get("/{category_id}")
@@ -47,6 +54,18 @@ async def list_category_items(category_id: str):
     items = await item_service.list_items_by_category(category_id)
     return [i.to_response() for i in items]
 
+
+@router.get("/{category_slug}/slug/items")
+async def list_category_items_by_slug(category_slug: str):
+    category = await category_model.get_by_slug(category_slug)
+    if not category:
+        raise HTTPException(
+            detail="The menu was not found",
+            status_code=400
+        )
+    items = await item_service.list_items_by_category(category.id)
+    return [i.to_response() for i in items]
+
 @router.post("/{category_id}/items/{item_id}")
 async def add_item(category_id: str, item_id: str):
     try:
@@ -67,6 +86,24 @@ async def remove_item(category_id: str, item_id: str):
 async def list_menu_categories(menu_id: str):
     categories = await category_service.list_categories_for_menu(menu_id)
     return [c.to_response() for c in categories]
+
+@router.get("/menu/slug/{menu_slug}")
+async def list_menu_categories_by_slug(menu_slug: str):
+    try:
+        menu = await menu_model.get_by_slug(menu_slug)
+        if not menu:
+            raise HTTPException(
+                detail="The menu was not found",
+                status_code=400
+            )
+        categories = await category_service.list_categories_for_menu(menu.id)
+        return [c.to_response() for c in categories]
+    except Exception as error:
+        print(error)
+        raise HTTPException(
+            detail=str(error),
+            status_code=400
+        )
 
 @router.get("/restaurant/{restaurant_id}")
 async def list_restaurant_categories(restaurant_id: str):
