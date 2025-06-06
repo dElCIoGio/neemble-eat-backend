@@ -1653,3 +1653,13 @@
 2025-06-06 00:52:27,061 - main - INFO - App started in development mode
 2025-06-06 00:52:27,094 - main - INFO - Initializing Firebase
 2025-06-06 00:52:27,094 - main - INFO - Initializing Mongo DB client
+2025-06-06 01:31:08,532 - main - INFO - Closing Mongo DB client connection
+2025-06-06 01:31:08,616 - main - INFO - Shutting down
+2025-06-06 01:31:14,623 - main - INFO - App started in development mode
+2025-06-06 01:31:14,679 - main - INFO - Initializing Firebase
+2025-06-06 01:31:14,679 - main - INFO - Initializing Mongo DB client
+2025-06-06 01:32:13,683 - main - INFO - Closing Mongo DB client connection
+2025-06-06 01:32:13,710 - main - INFO - Shutting down
+2025-06-06 01:35:25,099 - main - INFO - App started in development mode
+2025-06-06 01:35:25,143 - main - INFO - Initializing Firebase
+2025-06-06 01:35:25,144 - main - INFO - Initializing Mongo DB client

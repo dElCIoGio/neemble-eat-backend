@@ -5,6 +5,16 @@ from bson import ObjectId
 from pydantic import BaseModel, Field
 from app.schema.collection_id.document_id import DocumentId  # your existing DocumentId with id, createdAt, updatedAt
 from app.utils.make_optional_model import make_optional_model
+from enum import Enum
+
+
+class Sections(Enum):
+    GENERAL="Geral"
+    MENU="Menu"
+    QRCODES="Mesas e QR Code"
+    RESERVATIONS="Reservas"
+
+
 
 
 class Permissions(BaseModel):

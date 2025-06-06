@@ -9,16 +9,17 @@ from app.schema.collection_id.document_id import DocumentId
 from app.utils.make_optional_model import make_optional_model
 
 
-class TableBase(BaseModel):
-    number: int = Field(..., description="Table number (e.g., 1, 2, 3...)")
+
+class TableCreate(BaseModel):
     restaurant_id: str = Field(..., alias="restaurantId")
+    number: int = Field(..., description="Table number (e.g., 1, 2, 3...)")
+
+
+class TableBase(TableCreate):
     current_session_id: Optional[str] = Field(default=None, alias="currentSessionId")
     url: Optional[str] = None
     is_active: bool = Field(default=True, alias="isActive", description="Whether the table is active or disabled")
 
-
-class TableCreate(TableBase):
-    pass
 
 TableUpdate = make_optional_model(TableBase)
 
