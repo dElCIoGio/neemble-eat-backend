@@ -3,6 +3,7 @@ from typing import Optional, List
 from app.models.table import TableModel
 from app.models.restaurant import RestaurantModel
 from app.schema import table as table_schema
+from app.services import table_session as session_service
 
 
 table_model = TableModel()
@@ -17,7 +18,8 @@ async def create_table(data: table_schema.TableCreate) -> table_schema.TableDocu
         table_ids = restaurant.table_ids or []
         table_ids.append(str(table.id))
         await restaurant_model.update(str(restaurant.id), {"tableIds": table_ids})
-    return table
+    session = await session_service.create_session_for_table(str(table.id), data.restaurant_id)
+    return await table_model.update(str(table.id), {"currentSessionId": str(session.id)})
 
 
 async def get_table(table_id: str) -> Optional[table_schema.TableDocument]:
@@ -41,6 +43,8 @@ async def delete_table(table_id: str) -> bool:
     if restaurant and table_id in restaurant.table_ids:
         ids = [tid for tid in restaurant.table_ids if tid != table_id]
         await restaurant_model.update(str(restaurant.id), {"tableIds": ids})
+    if table.current_session_id:
+        await session_service.delete_session(table.current_session_id)
 
     return await table_model.delete(table_id)
 
