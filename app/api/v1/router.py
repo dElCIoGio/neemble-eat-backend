@@ -11,6 +11,7 @@ from app.api.v1.endpoints.insights import router as insights_router
 from app.api.v1.endpoints.items import router as items_router
 from app.api.v1.endpoints.menus import router as menus_router
 from app.api.v1.endpoints.categories import router as categories_router
+from app.api.v1.endpoints.tables import router as tables_router
 
 
 router = APIRouter()
@@ -27,3 +28,4 @@ router.include_router(insights_router, prefix="/insights", tags=["AI Insights"])
 router.include_router(items_router, prefix="/items", tags=["Items"])
 router.include_router(menus_router, prefix="/menus", tags=["Menus"])
 router.include_router(categories_router, prefix="/categories", tags=["Categories"])
+router.include_router(tables_router, prefix="/tables", tags=["Tables"])
