@@ -21,7 +21,7 @@ async def get_category(category_id: str):
 
 async def list_categories_for_menu(menu_id: str):
     """List all active categories that belong to a menu."""
-    filters = {"menuId": menu_id, "isActive": True}
+    filters = {"menuId": menu_id}
     return await category_model.get_by_fields(filters)
 
 async def update_category_availability(category_id: str, is_active: bool):
@@ -29,7 +29,7 @@ async def update_category_availability(category_id: str, is_active: bool):
     return await category_model.update(category_id, {"isActive": is_active})
 
 async def list_categories_for_restaurant(restaurant_id: str):
-    filters = {"restaurantId": restaurant_id, "isActive": True}
+    filters = {"restaurantId": restaurant_id}
     return await category_model.get_by_fields(filters)
 
 async def add_item_to_category(category_id: str, item_id: str):

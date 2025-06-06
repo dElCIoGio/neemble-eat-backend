@@ -48,16 +48,10 @@ async def orders_summary(
     from_date: Optional[datetime] = Query(None, alias="fromDate"),
     to_date: Optional[datetime] = Query(None, alias="toDate"),
 ):
-    print("RESTAURANT ID:", restaurant_id)
-    print("FROM DATE:", from_date)
-    print("TO DATE:", to_date)
     if not from_date or not to_date:
         today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
         from_date = today
         to_date = today + timedelta(days=1)
-
-    print("TESTING ORDERS ENDPOINT")
-
     return await count_orders(restaurant_id, from_date, to_date)
 
 # Add menu filtering

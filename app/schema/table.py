@@ -20,7 +20,6 @@ class TableBase(TableCreate):
     url: Optional[str] = None
     is_active: bool = Field(default=True, alias="isActive", description="Whether the table is active or disabled")
 
-
 TableUpdate = make_optional_model(TableBase)
 
 class Table(TableBase, DocumentId):

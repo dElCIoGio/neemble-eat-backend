@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Body
 
 from app.schema import category as category_schema
 from app.services import category as category_service
@@ -42,8 +42,10 @@ async def delete_category(category_id: str):
         raise HTTPException(status_code=404, detail="Category not found")
     return True
 
-@router.put("/{category_id}/availability")
-async def switch_category_availability(category_id: str, is_active: bool):
+@router.put("/availability/{category_id}")
+async def switch_category_availability(
+        category_id: str,
+        is_active: bool = Body(..., embed=True, alias="isActive")):
     updated = await category_service.update_category_availability(category_id, is_active)
     if not updated:
         raise HTTPException(status_code=404, detail="Category not found")
@@ -98,7 +100,6 @@ async def list_menu_categories_by_slug(menu_slug: str):
         categories = await category_service.list_categories_for_menu(menu.id)
         return [c.to_response() for c in categories]
     except Exception as error:
-        print(error)
         raise HTTPException(
             detail=str(error),
             status_code=400
