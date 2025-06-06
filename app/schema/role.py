@@ -50,7 +50,13 @@ class Role(RoleBase, DocumentId):
     }
 
 class RoleDocument(Document, Role):
+    """Database representation for roles."""
+
+    def to_response(self) -> "Role":
+        """Convert document to API response model."""
+        return Role(**self.model_dump(by_alias=True))
 
     class Settings:
         name = "roles"
         bson_encoders = {ObjectId: str}
+
