@@ -1,4 +1,6 @@
-from beanie import Document
+from datetime import datetime
+
+from beanie import Document, Indexed
 from bson import ObjectId
 from pydantic import Field, BaseModel, EmailStr
 from pymongo import IndexModel
@@ -11,7 +13,7 @@ class InvitationCreate(BaseModel):
     email: EmailStr
     restaurant_id: str = Field(..., alias="restaurantId")
     manager_id: str = Field(..., alias="managerId"),
-    role: str = Field(..., alias="role")
+    role_id: str = Field(..., alias="roleId")
 
 class InvitationBase(InvitationCreate):
     pass
@@ -30,6 +32,8 @@ class Invitation(InvitationBase, DocumentId):
 class InvitationDocument(Document, Invitation):
     email: EmailStr = Field(..., alias="email")
     restaurantId: str = Field(..., alias="restaurantId")
+    expire_at: datetime = Indexed(expire_after_seconds=60 * 60 * 24 * 7, name="ttl_expires_at")
+
 
     def to_response(self):
         return Invitation(**self.model_dump(by_alias=True))
@@ -40,5 +44,6 @@ class InvitationDocument(Document, Invitation):
         indexes = [
             IndexModel(
                 [("restaurantId", 1)],
-                name="idx_restaurant_id")
+                name="idx_restaurant_id"),
+            IndexModel("expires_at", expireAfterSeconds=60 * 60 * 24 * 7, name="ttl_expires_at")
         ]
