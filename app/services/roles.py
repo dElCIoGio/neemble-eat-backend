@@ -74,8 +74,6 @@ async def create_default_roles_for_restaurant(restaurant_id: str) -> list[RoleDo
 
         roles.append(role)
 
-        print("New role created:", role.name)
-
     return roles
 
 
@@ -92,7 +90,6 @@ async def deactivate_role(role_id: str) -> RoleDocument:
 
 async def get_role(role_id: str) -> RoleDocument:
     return await role_model.get(role_id)
-
 
 async def list_roles(restaurant_id: str) -> list[RoleDocument]:
     filters = {
