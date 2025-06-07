@@ -1,8 +1,10 @@
 
 from app.models.role import RoleModel
 from app.schema.role import RoleDocument, SectionPermission, Permissions, RoleCreate
+from app.models.user import UserModel
 
 role_model = RoleModel()
+user_model = UserModel()
 
 
 def get_default_roles(restaurant_id: str) -> dict[str, RoleCreate]:
@@ -99,3 +101,47 @@ async def list_roles(restaurant_id: str) -> list[RoleDocument]:
     return await role_model.get_by_fields(filters)
 
 
+
+async def _get_or_create_no_role(restaurant_id: str) -> RoleDocument:
+    existing = await role_model.get_by_fields({
+        "restaurantId": restaurant_id,
+        "name": "no_role"
+    })
+    if existing:
+        return existing[0]
+    return await create_role(RoleCreate(
+        name="no_role",
+        description="Fallback role with no permissions",
+        restaurantId=restaurant_id,
+        permissions=[]
+    ))
+
+
+async def delete_role(role_id: str, user_id: str) -> bool:
+    user = await user_model.get(user_id)
+    if not user:
+        raise Exception("User not found")
+    if any(m.role_id == role_id for m in user.memberships):
+        raise Exception("Cannot delete a role you are assigned to")
+
+    role = await role_model.get(role_id)
+    if not role:
+        return False
+
+    no_role = await _get_or_create_no_role(role.restaurant_id)
+
+    affected_users = await user_model.get_by_fields({
+        "memberships": {"$elemMatch": {"roleId": role_id}}
+    })
+
+    for u in affected_users:
+        updated = False
+        for membership in u.memberships:
+            if membership.role_id == role_id:
+                membership.role_id = str(no_role.id)
+                updated = True
+        if updated:
+            await user_model.update(str(u.id), {"memberships": u.memberships})
+
+    await role_model.delete(role_id)
+    return True
