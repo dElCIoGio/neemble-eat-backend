@@ -318,3 +318,50 @@ async def get_all_members(
     except Exception as error:
         print(error)
 
+
+@router.delete("/{restaurant_id}/members/{user_id}")
+async def remove_member(
+        restaurant_id: str,
+        user_id: str
+):
+    """Remove a member from a restaurant.
+
+    This will deactivate the user's membership for the provided restaurant.
+    """
+    restaurant = await restaurant_model.get(restaurant_id)
+    if not restaurant:
+        raise HTTPException(
+            detail="Restaurant not found",
+            status_code=400
+        )
+
+    user = await user_model.get(user_id)
+    if not user:
+        raise HTTPException(
+            detail="User not found",
+            status_code=404
+        )
+
+    updated = False
+    for membership in user.memberships:
+        if membership.is_active:
+            role = await role_model.get(membership.roleId)
+            if role and role.restaurantId == restaurant_id:
+                membership.is_active = False
+                updated = True
+
+    if not updated:
+        raise HTTPException(
+            detail="User is not a member of this restaurant",
+            status_code=400
+        )
+
+    update_data = {
+        "memberships": [m.model_dump(by_alias=True) for m in user.memberships]
+    }
+    if user.current_restaurant_id == restaurant_id:
+        update_data["currentRestaurantId"] = None
+
+    await user_model.update(str(user.id), update_data)
+    return True
+
