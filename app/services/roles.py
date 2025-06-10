@@ -96,7 +96,6 @@ async def get_role(role_id: str) -> RoleDocument:
 async def list_roles(restaurant_id: str) -> list[RoleDocument]:
     filters = {
         "restaurantId": restaurant_id,
-        "isActive": True
     }
     return await role_model.get_by_fields(filters)
 

@@ -302,6 +302,8 @@ async def get_all_members(
             }
         })
 
+        print(users)
+
         # Filter users to only include those with active memberships for this restaurant
         restaurant_members = []
         for user in users:

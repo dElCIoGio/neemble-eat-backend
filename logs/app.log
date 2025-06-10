@@ -1684,3 +1684,33 @@
 2025-06-06 21:05:25,147 - main - INFO - App started in development mode
 2025-06-06 21:05:25,200 - main - INFO - Initializing Firebase
 2025-06-06 21:05:25,200 - main - INFO - Initializing Mongo DB client
+2025-06-07 19:49:10,514 - main - INFO - App started in development mode
+2025-06-07 19:49:10,575 - main - INFO - Initializing Firebase
+2025-06-07 19:49:10,575 - main - INFO - Initializing Mongo DB client
+2025-06-07 19:56:54,909 - main - INFO - Closing Mongo DB client connection
+2025-06-07 19:56:54,980 - main - INFO - Shutting down
+2025-06-07 19:57:01,302 - main - INFO - App started in development mode
+2025-06-07 19:57:01,356 - main - INFO - Initializing Firebase
+2025-06-07 19:57:01,357 - main - INFO - Initializing Mongo DB client
+2025-06-08 19:10:21,865 - main - INFO - App started in development mode
+2025-06-08 19:10:21,922 - main - INFO - Initializing Firebase
+2025-06-08 19:10:21,923 - main - INFO - Initializing Mongo DB client
+2025-06-08 19:10:43,675 - main - ERROR - The resolution lifetime expired after 21.607 seconds: Server Do53:192.168.1.1@53 answered The DNS operation timed out.; Server Do53:192.168.100.1@53 answered The DNS operation timed out.; Server Do53:192.168.1.1@53 answered The DNS operation timed out.; Server Do53:192.168.100.1@53 answered The DNS operation timed out.; Server Do53:192.168.1.1@53 answered The DNS operation timed out.; Server Do53:192.168.100.1@53 answered The DNS operation timed out.; Server Do53:192.168.1.1@53 answered The DNS operation timed out.; Server Do53:192.168.100.1@53 answered The DNS operation timed out.; Server Do53:192.168.1.1@53 answered The DNS operation timed out.; Server Do53:192.168.100.1@53 answered The DNS operation timed out.
+2025-06-10 11:54:16,273 - main - INFO - App started in development mode
+2025-06-10 11:54:16,329 - main - INFO - Initializing Firebase
+2025-06-10 11:54:16,330 - main - INFO - Initializing Mongo DB client
+2025-06-10 13:42:31,235 - main - INFO - Closing Mongo DB client connection
+2025-06-10 13:42:31,381 - main - INFO - Shutting down
+2025-06-10 13:42:41,288 - main - INFO - App started in development mode
+2025-06-10 13:42:41,338 - main - INFO - Initializing Firebase
+2025-06-10 13:42:41,338 - main - INFO - Initializing Mongo DB client
+2025-06-10 13:43:02,383 - main - INFO - Closing Mongo DB client connection
+2025-06-10 13:43:02,463 - main - INFO - Shutting down
+2025-06-10 13:43:07,073 - main - INFO - App started in development mode
+2025-06-10 13:43:07,126 - main - INFO - Initializing Firebase
+2025-06-10 13:43:07,126 - main - INFO - Initializing Mongo DB client
+2025-06-10 13:43:56,702 - main - INFO - Closing Mongo DB client connection
+2025-06-10 13:43:56,781 - main - INFO - Shutting down
+2025-06-10 13:44:01,627 - main - INFO - App started in development mode
+2025-06-10 13:44:01,674 - main - INFO - Initializing Firebase
+2025-06-10 13:44:01,674 - main - INFO - Initializing Mongo DB client
