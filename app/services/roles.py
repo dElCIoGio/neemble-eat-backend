@@ -2,6 +2,7 @@
 from app.models.role import RoleModel
 from app.schema.role import RoleDocument, SectionPermission, Permissions, RoleCreate
 from app.models.user import UserModel
+from app.schema import user as user_schema
 
 role_model = RoleModel()
 user_model = UserModel()
@@ -144,3 +145,14 @@ async def delete_role(role_id: str, user_id: str) -> bool:
 
     await role_model.delete(role_id)
     return True
+
+async def get_user_role_for_current_restaurant(user: user_schema.UserDocument) -> RoleDocument | None:
+    """Return the user's role for their current restaurant."""
+    if not user.current_restaurant_id:
+        return None
+    for membership in user.memberships:
+        if membership.is_active:
+            role = await role_model.get(membership.role_id)
+            if role and role.restaurant_id == user.current_restaurant_id:
+                return role
+    return None

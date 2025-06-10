@@ -7,6 +7,7 @@ from app.models.user import UserModel
 from app.utils.auth import get_current_user
 from app.schema.restaurant import RestaurantDocument
 from app.utils.user import is_member
+from app.services import roles as role_service
 
 router = APIRouter()
 user_model = UserModel()
@@ -101,4 +102,17 @@ async def get_restaurants(uid: str = Depends(get_current_user)):
                              detail=str(e))
 
     
+
+
+@router.get("/role")
+async def get_current_role(uid: str = Depends(get_current_user)):
+    """Get current user's role for their active restaurant."""
+    user = await user_model.get_user_by_firebase_uid(uid)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    role = await role_service.get_user_role_for_current_restaurant(user)
+    if role:
+        return role.to_response()
+    return None
 
