@@ -296,25 +296,17 @@ async def get_all_members(
     try:
 
         # Get all users who have a membership for this restaurant
-        users = await UserDocument.find(
-        {
-            "memberships": {
-                "$elemMatch": {"role_id": {"$exists": True}}
-            }
-        }
-        ).to_list()
-
-        print(users)
+        users = await user_model.get_all()
 
         # Filter users to only include those with active memberships for this restaurant
         restaurant_members = []
         for user in users:
             for membership in user.memberships:
-                if membership.is_active:
+                if membership:
 
                     # Get the role to check if it belongs to this restaurant
-                    role = await role_model.get(membership.roleId)
-                    if role and role.restaurantId == restaurant_id:
+                    role = await role_model.get(membership.role_id)
+                    if role and role.restaurant_id == restaurant_id:
                         restaurant_members.append(user.to_response())
                         break
 
