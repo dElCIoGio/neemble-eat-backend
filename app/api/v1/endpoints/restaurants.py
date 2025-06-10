@@ -285,6 +285,8 @@ async def get_all_members(
 ):
     restaurant = await restaurant_model.get(restaurant_id)
 
+
+
     if not restaurant:
         raise HTTPException(
             detail="Restaurant not found",
@@ -294,13 +296,13 @@ async def get_all_members(
     try:
 
         # Get all users who have a membership for this restaurant
-        users = await user_model.get_by_fields({
+        users = await UserDocument.find(
+        {
             "memberships": {
-                "$elemMatch": {
-                    "role_id": {"$exists": True}
-                }
+                "$elemMatch": {"role_id": {"$exists": True}}
             }
-        })
+        }
+        ).to_list()
 
         print(users)
 
