@@ -88,3 +88,42 @@ async def list_user_memberships(user_id: str) -> List[user_schema.UserRestaurant
     if not user:
         raise Exception("User not found")
     return user.memberships
+
+
+async def get_membership(user_id: str, restaurant_id: str) -> user_schema.UserRestaurantMembership:
+    user = await user_model.get(user_id)
+    if not user:
+        raise Exception("User not found")
+
+    existing_role_ids = [m.role_id for m in user.memberships]
+    roles = await role_model.get_many(existing_role_ids) if existing_role_ids else []
+    role_map = {str(r.id): r for r in roles}
+
+    for membership in user.memberships:
+        m_role = role_map.get(membership.role_id)
+        if m_role and m_role.restaurant_id == restaurant_id:
+            return membership
+
+    raise Exception("Membership not found for restaurant")
+
+
+async def activate_membership(user_id: str, restaurant_id: str) -> user_schema.UserDocument:
+    user = await user_model.get(user_id)
+    if not user:
+        raise Exception("User not found")
+
+    existing_role_ids = [m.role_id for m in user.memberships]
+    roles = await role_model.get_many(existing_role_ids) if existing_role_ids else []
+    role_map = {str(r.id): r for r in roles}
+
+    updated = False
+    for membership in user.memberships:
+        m_role = role_map.get(membership.role_id)
+        if m_role and m_role.restaurant_id == restaurant_id:
+            membership.is_active = True
+            updated = True
+    if not updated:
+        raise Exception("Membership not found for restaurant")
+
+    await user_model.update(str(user.id), {"memberships": [m.model_dump(by_alias=True) for m in user.memberships]})
+    return await user_model.get(user_id)
