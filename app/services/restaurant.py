@@ -42,7 +42,7 @@ async def deactivate_restaurant(restaurant_id: str):
 async def get_restaurant(restaurant_id: str):
     return await restaurant_model.get(restaurant_id)
 
-async def get_restaurant_by_slug(slug: str):
+async def get_by_slug(slug: str):
     return await restaurant_model.get_by_slug(slug)
 
 async def get_current_menu(restaurant_id: str):

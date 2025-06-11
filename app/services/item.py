@@ -1,5 +1,6 @@
 from app.models.item import ItemModel
 from app.models.category import CategoryModel
+from app.services.category import category_model
 from app.utils.slug import generate_unique_slug
 from app.schema import item as item_schema
 
@@ -21,6 +22,11 @@ async def delete_item(item_id: str):
 
 async def list_items_by_category(category_id: str):
     """List all available items for a category."""
+    category = await category_model.get(category_id)
+
+    if not category.is_active:
+        return []
+
     filters = {
         "categoryId": category_id,
         "isAvailable": True

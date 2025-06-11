@@ -1,7 +1,6 @@
 import os
 from typing import List, Optional
 
-from beanie.odm.operators.update.general import Set
 from fastapi import APIRouter, Depends, Form, UploadFile, File, Request, HTTPException
 from pymongo.errors import DuplicateKeyError
 
@@ -11,7 +10,7 @@ from app.services.restaurant import (
     create_restaurant,
     deactivate_restaurant,
     get_restaurant,
-    get_restaurant_by_slug,
+    get_by_slug,
     update_restaurant,
     delete_restaurant,
     get_restaurants,
@@ -253,8 +252,8 @@ async def get_single_restaurant(restaurant_id: str):
 
 
 @router.get("/slug/{slug}")
-async def get_restaurant_by_slug_endpoint(slug: str):
-    restaurant = await get_restaurant_by_slug(slug)
+async def get_restaurant_by_slug(slug: str):
+    restaurant = await get_by_slug(slug)
     if not restaurant:
         raise HTTPException(status_code=404, detail="Restaurant not found")
     return restaurant.to_response()
@@ -266,11 +265,11 @@ async def update_existing_restaurant(restaurant_id: str, data: restaurant_schema
 
 
 @router.put("/{restaurant_id}/current-menu/{menu_id}")
-async def change_current_menu_endpoint(restaurant_id: str, menu_id: str):
+async def change_current_menu(restaurant_id: str, menu_id: str):
     return await change_current_menu(restaurant_id, menu_id)
 
 
-@router.get("/{restaurant_id}/current-menu")
+@router.get("/{restaurant_id}/menu")
 async def get_current_menu_endpoint(restaurant_id: str):
     menu = await get_current_menu(restaurant_id)
     if not menu:
