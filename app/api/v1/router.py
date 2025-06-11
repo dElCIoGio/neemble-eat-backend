@@ -14,6 +14,7 @@ from app.api.v1.endpoints.categories import router as categories_router
 from app.api.v1.endpoints.tables import router as tables_router
 from app.api.v1.endpoints.table_sessions import router as table_sessions_router
 from app.api.v1.endpoints.roles import router as roles_router
+from app.api.v1.endpoints.memberships import router as memberships_router
 
 
 router = APIRouter()
@@ -33,3 +34,4 @@ router.include_router(categories_router, prefix="/categories", tags=["Categories
 router.include_router(tables_router, prefix="/tables", tags=["Tables"])
 router.include_router(table_sessions_router, prefix="/sessions", tags=["Table Sessions"])
 router.include_router(roles_router, prefix="/roles", tags=["Roles"])
+router.include_router(memberships_router, prefix="/memberships", tags=["Memberships"])
