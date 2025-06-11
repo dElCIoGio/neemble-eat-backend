@@ -1,4 +1,9 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form
+from typing import Optional
+import json
+
+from app.utils.images import save_item_image
+from app.services import category as category_service
 
 from app.schema import item as item_schema
 from app.services import item as item_service
@@ -9,15 +14,54 @@ router = APIRouter()
 
 
 @router.post("/")
-async def create_item(data: item_schema.ItemCreate):
+async def create_item(
+    name: str = Form(...),
+    price: float = Form(...),
+    restaurant_id: str = Form(..., alias="restaurantId"),
+    category_id: str = Form(..., alias="categoryId"),
+    description: str = Form(""),
+    customizations: Optional[str] = Form(None),
+    image_file: UploadFile = File(...),
+):
+    item = None
+    created = None
     try:
-        created = await item_service.create_item(data.model_dump(by_alias=True))
-        slug = await generate_unique_slug(name=created.name, model=item_schema.ItemDocument)
-        item = await item_model.update(created.id, {"slug": slug})
+        customization_rules = []
+        if customizations:
+            data = json.loads(customizations)
+            customization_rules = [item_schema.CustomizationRule(**c) for c in data]
+
+        item_data = item_schema.ItemBase(
+            name=name,
+            price=price,
+            restaurantId=restaurant_id,
+            categoryId=category_id,
+            description=description,
+            customizations=customization_rules,
+            imageUrl="",
+        )
+
+        created = await item_service.create_item(item_data.model_dump(by_alias=True))
+
+        upload = await save_item_image(image_file, restaurant_id, str(created.id))
+        if not upload.success:
+            await item_model.delete(created.id)
+            raise HTTPException(status_code=500, detail="Failed to upload item image")
+
+        slug = await generate_unique_slug(
+            name=created.name, model=item_schema.ItemDocument
+        )
+        item = await item_model.update(
+            created.id,
+            {"slug": slug, "imageUrl": upload.public_url},
+        )
+
+        await category_service.add_item_to_category(category_id, str(created.id))
+
         return item.to_response()
     except Exception as error:
-        if item:
-            await item_model.delete(item.id)
+        if created:
+            await item_model.delete(created.id)
         raise HTTPException(status_code=500, detail=str(error))
 
 
@@ -27,6 +71,7 @@ async def get_item(item_id: str):
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")
     return item.to_response()
+
 
 @router.get("/slug/{item_id}")
 async def get_item_by_slug(item_slug: str):
@@ -46,7 +91,9 @@ async def delete_item(item_id: str):
 
 @router.put("/{item_id}")
 async def update_item(item_id: str, data: item_schema.ItemUpdate):
-    updated = await item_service.update_item(item_id, data.model_dump(exclude_none=True, by_alias=True))
+    updated = await item_service.update_item(
+        item_id, data.model_dump(exclude_none=True, by_alias=True)
+    )
     if not updated:
         raise HTTPException(status_code=404, detail="Item not found")
     return updated.to_response()
@@ -69,10 +116,14 @@ async def add_customization(item_id: str, customization: item_schema.Customizati
 
 
 @router.put("/{item_id}/customizations/{index}")
-async def update_customization(item_id: str, index: int, customization: item_schema.CustomizationRule):
+async def update_customization(
+    item_id: str, index: int, customization: item_schema.CustomizationRule
+):
     updated = await item_service.update_customization(item_id, index, customization)
     if not updated:
-        raise HTTPException(status_code=404, detail="Item not or customization not found")
+        raise HTTPException(
+            status_code=404, detail="Item not or customization not found"
+        )
     return updated.to_response()
 
 
@@ -80,12 +131,16 @@ async def update_customization(item_id: str, index: int, customization: item_sch
 async def delete_customization(item_id: str, index: int):
     updated = await item_service.delete_customization(item_id, index)
     if not updated:
-        raise HTTPException(status_code=404, detail="Item not or customization not found")
+        raise HTTPException(
+            status_code=404, detail="Item not or customization not found"
+        )
     return updated.to_response()
 
 
 @router.post("/{item_id}/customizations/{c_index}/options")
-async def add_customization_option(item_id: str, c_index: int, option: item_schema.CustomizationOption):
+async def add_customization_option(
+    item_id: str, c_index: int, option: item_schema.CustomizationOption
+):
     updated = await item_service.add_customization_option(item_id, c_index, option)
     if not updated:
         raise HTTPException(status_code=404, detail="Item or customization not found")
@@ -99,7 +154,9 @@ async def update_customization_option(
     o_index: int,
     option: item_schema.CustomizationOption,
 ):
-    updated = await item_service.update_customization_option(item_id, c_index, o_index, option)
+    updated = await item_service.update_customization_option(
+        item_id, c_index, o_index, option
+    )
     if not updated:
         raise HTTPException(status_code=404, detail="Item or option not found")
     return updated.to_response()
@@ -118,4 +175,3 @@ async def list_active_items(category_id: str):
     """Return all active items that belong to the given category."""
     items = await item_service.list_items_by_category(category_id)
     return [i.to_response() for i in items]
-
