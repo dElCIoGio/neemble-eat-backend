@@ -1950,3 +1950,5 @@
 2025-06-11 15:49:57,292 - main - INFO - App started in development mode
 2025-06-11 15:49:57,328 - main - INFO - Initializing Firebase
 2025-06-11 15:49:57,329 - main - INFO - Initializing Mongo DB client
+2025-06-11 17:37:07,110 - main - INFO - Closing Mongo DB client connection
+2025-06-11 17:37:07,405 - main - INFO - Shutting down
