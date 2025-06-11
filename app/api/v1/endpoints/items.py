@@ -112,3 +112,10 @@ async def delete_customization_option(item_id: str, c_index: int, o_index: int):
         raise HTTPException(status_code=404, detail="Item or option not found")
     return updated.to_response()
 
+
+@router.get("/category/{category_id}")
+async def list_active_items(category_id: str):
+    """Return all active items that belong to the given category."""
+    items = await item_service.list_items_by_category(category_id)
+    return [i.to_response() for i in items]
+
