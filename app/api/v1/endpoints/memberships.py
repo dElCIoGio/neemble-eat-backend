@@ -36,3 +36,21 @@ async def list_user_memberships(user_id: str):
         return [m.model_dump(by_alias=True) for m in memberships]
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/{user_id}/restaurant/{restaurant_id}")
+async def get_membership(user_id: str, restaurant_id: str):
+    try:
+        membership = await membership_service.get_membership(user_id, restaurant_id)
+        return membership.model_dump(by_alias=True)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.put("/{user_id}/restaurant/{restaurant_id}/activate")
+async def activate_membership(user_id: str, restaurant_id: str):
+    try:
+        user = await membership_service.activate_membership(user_id, restaurant_id)
+        return user.to_response()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
