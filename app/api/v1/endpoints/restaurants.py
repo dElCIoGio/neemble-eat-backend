@@ -11,12 +11,14 @@ from app.services.restaurant import (
     create_restaurant,
     deactivate_restaurant,
     get_restaurant,
+    get_restaurant_by_slug,
     update_restaurant,
     delete_restaurant,
     get_restaurants,
     get_active_restaurants,
     restaurant_model,
     change_current_menu,
+    get_current_menu,
 )
 from app.schema import restaurant as restaurant_schema
 from app.services.roles import create_default_roles_for_restaurant
@@ -250,6 +252,14 @@ async def get_single_restaurant(restaurant_id: str):
     return await get_restaurant(restaurant_id)
 
 
+@router.get("/slug/{slug}")
+async def get_restaurant_by_slug_endpoint(slug: str):
+    restaurant = await get_restaurant_by_slug(slug)
+    if not restaurant:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+    return restaurant.to_response()
+
+
 @router.put("/{restaurant_id}")
 async def update_existing_restaurant(restaurant_id: str, data: restaurant_schema.RestaurantUpdate):
     return await update_restaurant(restaurant_id, data)
@@ -258,6 +268,14 @@ async def update_existing_restaurant(restaurant_id: str, data: restaurant_schema
 @router.put("/{restaurant_id}/current-menu/{menu_id}")
 async def change_current_menu_endpoint(restaurant_id: str, menu_id: str):
     return await change_current_menu(restaurant_id, menu_id)
+
+
+@router.get("/{restaurant_id}/current-menu")
+async def get_current_menu_endpoint(restaurant_id: str):
+    menu = await get_current_menu(restaurant_id)
+    if not menu:
+        raise HTTPException(status_code=404, detail="Current menu not found")
+    return menu.to_response()
 
 
 @router.delete("/{restaurant_id}", dependencies=[Depends(admin_required)])

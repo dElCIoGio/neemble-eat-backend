@@ -1,11 +1,14 @@
 from fastapi import HTTPException
 
+from app.models.menu import MenuModel
+
 from app.models.restaurant import RestaurantModel
 from app.schema import restaurant as restaurant_schema
 from app.utils.slug import generate_unique_slug
 
 
 restaurant_model = RestaurantModel()
+menu_model = MenuModel()
 
 async def create_restaurant(data: restaurant_schema.RestaurantCreate):
     try:
@@ -41,6 +44,17 @@ async def get_restaurant(restaurant_id: str):
 
 async def get_restaurant_by_slug(slug: str):
     return await restaurant_model.get_by_slug(slug)
+
+async def get_current_menu(restaurant_id: str):
+    restaurant = await restaurant_model.get(restaurant_id)
+    if not restaurant:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+
+    if not restaurant.current_menu_id:
+        return None
+
+    menu = await menu_model.get(restaurant.current_menu_id)
+    return menu
 
 async def change_current_menu(restaurant_id: str, menu_id: str) -> bool:
     restaurant = await restaurant_model.get(restaurant_id)
