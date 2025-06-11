@@ -1,5 +1,10 @@
+from datetime import datetime, timedelta
+
+from beanie.operators import And, Eq, GTE
+
 from app.models.order import OrderModel
 from app.schema import order as order_schema
+from app.schema.order import OrderDocument
 from app.services import table_session as table_session_service
 
 order_model = OrderModel()
@@ -43,6 +48,19 @@ async def list_orders_by_prep_status(status: order_schema.OrderPrepStatus) -> li
 async def list_orders_for_restaurant(restaurant_id: str) -> list[order_schema.OrderDocument]:
     filters = {"restaurantId": restaurant_id}
     return await order_model.get_by_fields(filters)
+
+
+async def list_recent_orders_for_restaurant(
+    restaurant_id: str, hours: int = 24
+) -> list[order_schema.OrderDocument]:
+    """List orders placed within the last ``hours`` for a restaurant."""
+    cutoff = datetime.now() - timedelta(hours=hours)
+    return await OrderDocument.find(
+        And(
+            Eq(OrderDocument.restaurant_id, restaurant_id),
+            GTE(OrderDocument.order_time, cutoff),
+        )
+    ).sort("-order_time").to_list()
 
 
 async def update_order(order_id: str, data: order_schema.OrderUpdate) -> order_schema.OrderDocument | None:

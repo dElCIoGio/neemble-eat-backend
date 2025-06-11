@@ -79,6 +79,17 @@ async def list_restaurant_orders(restaurant_id: str):
     return [o.to_response() for o in orders]
 
 
+@router.get("/restaurant/{restaurant_id}/recent")
+async def list_recent_restaurant_orders(
+    restaurant_id: str, hours: int = 24
+):
+    """Return orders from the last ``hours`` for the given restaurant."""
+    orders = await order_service.list_recent_orders_for_restaurant(
+        restaurant_id, hours
+    )
+    return [o.to_response() for o in orders]
+
+
 @router.get("/status/{prep_status}")
 async def list_orders_by_status(prep_status: order_schema.OrderPrepStatus):
     orders = await order_service.list_orders_by_prep_status(prep_status)
