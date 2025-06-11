@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Optional
 
 from beanie import Document
@@ -24,6 +25,7 @@ class UserBase(BaseModel):
     email: EmailStr
     phone_number: str = Field(..., alias="phoneNumber")
     firebase_uuid: str = Field(..., alias="firebaseUUID")
+    last_logged: str = Field(alias="lastLogged", default=datetime.now().isoformat())
 
     # Optional Fields
     current_restaurant_id: Optional[str] = Field(alias="currentRestaurantId", default=None)

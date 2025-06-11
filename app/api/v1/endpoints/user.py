@@ -101,8 +101,6 @@ async def get_restaurants(uid: str = Depends(get_current_user)):
         raise HTTPException(status_code=500,
                              detail=str(e))
 
-    
-
 
 @router.get("/role")
 async def get_current_role(uid: str = Depends(get_current_user)):

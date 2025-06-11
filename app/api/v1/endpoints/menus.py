@@ -1,7 +1,6 @@
 from fastapi import APIRouter, HTTPException
 
 from app.schema import menu as menu_schema
-from app.schema.menu import MenuDocument
 from app.services import menu as menu_service
 from app.services import category as category_service
 from app.services import item as item_service
@@ -91,7 +90,6 @@ async def list_menu_items_by_slug(menu_slug: str):
             detail=str(error),
             status_code=400
         )
-
 
 @router.post("/copy/{menu_slug}/{restaurant_id}")
 async def copy_menu(menu_slug: str, restaurant_id: str):

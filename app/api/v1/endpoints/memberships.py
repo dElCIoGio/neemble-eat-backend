@@ -21,7 +21,7 @@ async def update_membership(user_id: str, restaurant_id: str, data: membership_s
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@router.delete("/{user_id}/restaurant/{restaurant_id}")
+@router.put("/{user_id}/restaurant/{restaurant_id}/deactivate")
 async def deactivate_membership(user_id: str, restaurant_id: str):
     try:
         user = await membership_service.deactivate_membership(user_id, restaurant_id)

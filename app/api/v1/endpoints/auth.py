@@ -1,3 +1,4 @@
+from datetime import datetime
 
 from fastapi import APIRouter, Depends, Request, Response, HTTPException, Body
 from starlette.status import HTTP_401_UNAUTHORIZED
@@ -41,7 +42,12 @@ async def login(
 
         # Get or create user in our database
 
+
         user = await user_model.get_user_by_firebase_uid(firebase_uid)
+
+        await user_model.update(str(user.id), {
+            "lastLogged": datetime.now().isoformat()
+        })
 
         # if not user:
         #     # User doesn't exist in our database yet, create them

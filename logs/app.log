@@ -1816,3 +1816,44 @@
 2025-06-11 00:59:25,795 - main - INFO - App started in development mode
 2025-06-11 00:59:25,843 - main - INFO - Initializing Firebase
 2025-06-11 00:59:25,844 - main - INFO - Initializing Mongo DB client
+2025-06-11 01:00:57,030 - main - INFO - App started in development mode
+2025-06-11 01:00:57,068 - main - INFO - Initializing Firebase
+2025-06-11 01:00:57,068 - main - INFO - Initializing Mongo DB client
+2025-06-11 01:19:08,567 - main - INFO - App started in development mode
+2025-06-11 01:19:08,637 - main - INFO - Initializing Firebase
+2025-06-11 01:19:08,637 - main - INFO - Initializing Mongo DB client
+2025-06-11 11:42:45,482 - main - INFO - App started in development mode
+2025-06-11 11:42:45,624 - main - INFO - Initializing Firebase
+2025-06-11 11:42:45,624 - main - INFO - Initializing Mongo DB client
+2025-06-11 12:09:28,781 - main - INFO - Closing Mongo DB client connection
+2025-06-11 12:09:28,876 - main - INFO - Shutting down
+2025-06-11 12:09:39,158 - main - INFO - App started in development mode
+2025-06-11 12:09:39,372 - main - INFO - Initializing Firebase
+2025-06-11 12:09:39,372 - main - INFO - Initializing Mongo DB client
+2025-06-11 12:09:47,115 - main - ERROR - An existing index has the same name as the requested index. When index names are not specified, they are auto generated and can cause conflicts. Please refer to our documentation. Requested index: { v: 2, key: { restaurantId: 1, number: 1 }, name: "idx_restaurant_number" }, existing index: { v: 2, unique: true, key: { restaurantId: 1, number: 1 }, name: "idx_restaurant_number" }, full error: {'ok': 0.0, 'errmsg': 'An existing index has the same name as the requested index. When index names are not specified, they are auto generated and can cause conflicts. Please refer to our documentation. Requested index: { v: 2, key: { restaurantId: 1, number: 1 }, name: "idx_restaurant_number" }, existing index: { v: 2, unique: true, key: { restaurantId: 1, number: 1 }, name: "idx_restaurant_number" }', 'code': 86, 'codeName': 'IndexKeySpecsConflict', '$clusterTime': {'clusterTime': Timestamp(1749636595, 24), 'signature': {'hash': b'>;\xf9\xc2\xb8\x8fu\xd8\n\x16K7\x99\x88\n\x9a\x90\xd5D\x9d', 'keyId': 7476099016363606034}}, 'operationTime': Timestamp(1749636595, 24)}
+2025-06-11 12:11:21,064 - main - INFO - App started in development mode
+2025-06-11 12:11:21,147 - main - INFO - Initializing Firebase
+2025-06-11 12:11:21,148 - main - INFO - Initializing Mongo DB client
+2025-06-11 12:11:25,151 - main - ERROR - An existing index has the same name as the requested index. When index names are not specified, they are auto generated and can cause conflicts. Please refer to our documentation. Requested index: { v: 2, key: { restaurantId: 1, number: 1 }, name: "idx_restaurant_number" }, existing index: { v: 2, unique: true, key: { restaurantId: 1, number: 1 }, name: "idx_restaurant_number" }, full error: {'ok': 0.0, 'errmsg': 'An existing index has the same name as the requested index. When index names are not specified, they are auto generated and can cause conflicts. Please refer to our documentation. Requested index: { v: 2, key: { restaurantId: 1, number: 1 }, name: "idx_restaurant_number" }, existing index: { v: 2, unique: true, key: { restaurantId: 1, number: 1 }, name: "idx_restaurant_number" }', 'code': 86, 'codeName': 'IndexKeySpecsConflict', '$clusterTime': {'clusterTime': Timestamp(1749636693, 20), 'signature': {'hash': b'\x83\xb3\xc10\x1b\x07\x1c\x8c\xeer\x971\x11\xe4x\x9d\x10\xe9\xb0@', 'keyId': 7476099016363606034}}, 'operationTime': Timestamp(1749636693, 20)}
+2025-06-11 12:12:01,276 - main - INFO - Closing Mongo DB client connection
+2025-06-11 12:12:01,405 - main - INFO - Shutting down
+2025-06-11 12:12:07,758 - main - INFO - App started in development mode
+2025-06-11 12:12:07,846 - main - INFO - Initializing Firebase
+2025-06-11 12:12:07,847 - main - INFO - Initializing Mongo DB client
+2025-06-11 12:13:36,673 - main - INFO - Closing Mongo DB client connection
+2025-06-11 12:13:36,764 - main - INFO - Shutting down
+2025-06-11 12:13:43,968 - main - INFO - App started in development mode
+2025-06-11 12:13:44,053 - main - INFO - Initializing Firebase
+2025-06-11 12:13:44,053 - main - INFO - Initializing Mongo DB client
+2025-06-11 12:19:15,113 - main - INFO - Closing Mongo DB client connection
+2025-06-11 12:19:15,228 - main - INFO - Shutting down
+2025-06-11 12:19:22,044 - main - INFO - App started in development mode
+2025-06-11 12:19:22,126 - main - INFO - Initializing Firebase
+2025-06-11 12:19:22,127 - main - INFO - Initializing Mongo DB client
+2025-06-11 12:20:23,240 - main - INFO - Closing Mongo DB client connection
+2025-06-11 12:20:23,324 - main - INFO - Shutting down
+2025-06-11 12:20:30,364 - main - INFO - App started in development mode
+2025-06-11 12:20:30,425 - main - INFO - Initializing Firebase
+2025-06-11 12:20:30,426 - main - INFO - Initializing Mongo DB client
+2025-06-11 13:12:00,684 - main - INFO - Closing Mongo DB client connection
+2025-06-11 13:12:00,792 - main - INFO - Shutting down

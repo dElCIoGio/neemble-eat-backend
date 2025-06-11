@@ -285,8 +285,6 @@ async def get_all_members(
 ):
     restaurant = await restaurant_model.get(restaurant_id)
 
-
-
     if not restaurant:
         raise HTTPException(
             detail="Restaurant not found",
