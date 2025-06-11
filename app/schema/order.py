@@ -33,7 +33,7 @@ class OrderCreate(BaseModel):
     restaurant_id: str = Field(..., alias="restaurantId")
     customizations: Optional[List[OrderCustomizationSelection]] = Field(default_factory=list)
     additional_note: Optional[str] = Field(default=None, alias="additionalNote")
-
+    table_number: int = Field(..., alias="tableNumber")
 
 
 
