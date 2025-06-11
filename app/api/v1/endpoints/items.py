@@ -16,13 +16,15 @@ router = APIRouter()
 @router.post("/")
 async def create_item(
     name: str = Form(...),
-    price: float = Form(...),
+    price: str = Form(...),
     restaurant_id: str = Form(..., alias="restaurantId"),
     category_id: str = Form(..., alias="categoryId"),
     description: str = Form(""),
     customizations: Optional[str] = Form(None),
-    image_file: UploadFile = File(...),
+    image_file: UploadFile = File(..., alias="imageFile"),
 ):
+
+    price = float(price)
     item = None
     created = None
     try:
