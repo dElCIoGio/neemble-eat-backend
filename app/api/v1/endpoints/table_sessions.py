@@ -4,6 +4,13 @@ from app.schema.table_session import TableSession, TableSessionStatus
 
 router = APIRouter()
 
+@router.get("/active/{restaurant_id}/{table_number}")
+async def get_active_session_by_number(restaurant_id: str, table_number: int):
+    session = await session_service.get_active_session_for_restaurant_table(restaurant_id, table_number)
+    if not session:
+        raise HTTPException(status_code=404, detail="Active session not found")
+    return session.to_response()
+
 @router.get("/active/{table_id}")
 async def get_active_session(table_id: str):
     session = await session_service.get_active_session_for_table(table_id)
