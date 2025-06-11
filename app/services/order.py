@@ -1,11 +1,17 @@
 from app.models.order import OrderModel
 from app.schema import order as order_schema
+from app.services import table_session as table_session_service
 
 order_model = OrderModel()
 
 
 async def place_order(data: dict) -> order_schema.OrderDocument:
-    return await order_model.create(data)
+    """Create a new order and attach it to the related table session."""
+    order = await order_model.create(data)
+    session_id = data.get("sessionId")
+    if session_id:
+        await table_session_service.add_order_to_session(session_id, str(order.id))
+    return order
 
 
 async def get_order(order_id: str) -> order_schema.OrderDocument | None:
