@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Body
 
 from app.schema import order as order_schema
 from app.services import order as order_service
@@ -7,7 +7,7 @@ router = APIRouter()
 
 
 @router.post("/")
-async def create_order(data: order_schema.OrderCreate, session_id: str | None = None):
+async def create_order(data: order_schema.OrderCreate, session_id: str = Body(..., alias="sessionId")):
     """Create a new order and append it to the related session."""
     try:
         payload = data.model_dump(by_alias=True)
@@ -67,7 +67,7 @@ async def cancel_order_endpoint(order_id: str):
     return updated.to_response()
 
 
-@router.get("/session/{session_id}")
+@router.get("/sessions/{session_id}")
 async def list_session_orders(session_id: str):
     orders = await order_service.list_orders_for_session(session_id)
     return [o.to_response() for o in orders]

@@ -118,7 +118,11 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/docs",
             "/redoc",
             "/openapi.json",
-            "/api/v1/restaurants/slug"
+            "/api/v1/restaurants/slug",
+            "/api/v1/tables",
+            "/api/v1/restaurants/slug",
+            "/api/v1/restaurants/",
+            "/api/v1/menus"
         ]
 
         return any(path.startswith(public_path) for public_path in public_paths)

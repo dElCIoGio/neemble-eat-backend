@@ -23,25 +23,27 @@ class OrderCustomizationSelection(BaseModel):
     selected_options: List[str]  # What options the customer picked
 
 
-class OrderBase(BaseModel):
+class OrderCreate(BaseModel):
     session_id: str = Field(..., alias="sessionId")
     item_id: str = Field(..., alias="itemId")
-    order_time: datetime = Field(default_factory=datetime.now, alias="orderTime")
-
     quantity: int
     unit_price: float = Field(default=0.0, alias="unitPrice")
-    total: float = Field(default=0.0)
     ordered_item_name: Optional[str] = Field(default=None, alias="orderedItemName")
+    total: float = Field(default=0.0)
     restaurant_id: str = Field(..., alias="restaurantId")
-
-    prep_status: OrderPrepStatus = Field(default=OrderPrepStatus.QUEUED, alias="prepStatus")
-
-    customizations: List[OrderCustomizationSelection] = Field(default_factory=list)
+    customizations: Optional[List[OrderCustomizationSelection]] = Field(default_factory=list)
     additional_note: Optional[str] = Field(default=None, alias="additionalNote")
 
 
-class OrderCreate(OrderBase):
-    pass
+
+
+class OrderBase(OrderCreate):
+
+    order_time: datetime = Field(default_factory=datetime.now, alias="orderTime")
+    prep_status: OrderPrepStatus = Field(default=OrderPrepStatus.QUEUED, alias="prepStatus")
+
+
+
 
 OrderUpdate = make_optional_model(OrderBase)
 

@@ -1970,3 +1970,95 @@
 2025-06-11 18:32:50,298 - main - INFO - App started in development mode
 2025-06-11 18:32:50,423 - main - INFO - Initializing Firebase
 2025-06-11 18:32:50,424 - main - INFO - Initializing Mongo DB client
+2025-06-11 18:33:02,780 - main - INFO - App started in development mode
+2025-06-11 18:33:02,883 - main - INFO - Initializing Firebase
+2025-06-11 18:33:02,885 - main - INFO - Initializing Mongo DB client
+2025-06-11 18:33:17,466 - main - INFO - Successfully uploaded image: restaurants/683d5bdc225dc0edaf0fd51f/items/6849afc90eed529f66764016/image_2025-06-11_182352922_20250611_183316_fc39127b.jpeg
+2025-06-11 19:21:15,571 - main - INFO - Closing Mongo DB client connection
+2025-06-11 19:21:15,761 - main - INFO - Shutting down
+2025-06-11 19:21:29,238 - main - INFO - App started in development mode
+2025-06-11 19:21:29,433 - main - INFO - Initializing Firebase
+2025-06-11 19:21:29,434 - main - INFO - Initializing Mongo DB client
+2025-06-11 19:28:08,431 - main - INFO - Closing Mongo DB client connection
+2025-06-11 19:28:08,542 - main - INFO - Shutting down
+2025-06-11 19:28:15,623 - main - INFO - App started in development mode
+2025-06-11 19:28:15,699 - main - INFO - Initializing Firebase
+2025-06-11 19:28:15,699 - main - INFO - Initializing Mongo DB client
+2025-06-11 19:49:50,894 - main - INFO - Closing Mongo DB client connection
+2025-06-11 19:49:51,015 - main - INFO - Shutting down
+2025-06-11 19:49:58,092 - main - INFO - App started in development mode
+2025-06-11 19:49:58,144 - main - INFO - Initializing Firebase
+2025-06-11 19:49:58,145 - main - INFO - Initializing Mongo DB client
+2025-06-11 19:58:16,944 - main - INFO - Closing Mongo DB client connection
+2025-06-11 19:58:17,077 - main - INFO - Shutting down
+2025-06-11 19:58:23,443 - main - INFO - App started in development mode
+2025-06-11 19:58:23,500 - main - INFO - Initializing Firebase
+2025-06-11 19:58:23,500 - main - INFO - Initializing Mongo DB client
+2025-06-11 20:00:02,859 - main - INFO - Closing Mongo DB client connection
+2025-06-11 20:00:02,957 - main - INFO - Shutting down
+2025-06-11 20:00:07,499 - main - INFO - App started in development mode
+2025-06-11 20:00:07,540 - main - INFO - Initializing Firebase
+2025-06-11 20:00:07,540 - main - INFO - Initializing Mongo DB client
+2025-06-11 20:00:14,974 - main - INFO - App started in development mode
+2025-06-11 20:00:15,010 - main - INFO - Initializing Firebase
+2025-06-11 20:00:15,011 - main - INFO - Initializing Mongo DB client
+2025-06-11 20:02:50,515 - main - INFO - Closing Mongo DB client connection
+2025-06-11 20:02:50,616 - main - INFO - Shutting down
+2025-06-11 20:02:55,368 - main - INFO - App started in development mode
+2025-06-11 20:02:55,416 - main - INFO - Initializing Firebase
+2025-06-11 20:02:55,416 - main - INFO - Initializing Mongo DB client
+2025-06-11 23:27:36,226 - main - INFO - Closing Mongo DB client connection
+2025-06-11 23:27:36,458 - main - INFO - Shutting down
+2025-06-11 23:27:45,884 - main - INFO - App started in development mode
+2025-06-11 23:27:45,961 - main - INFO - Initializing Firebase
+2025-06-11 23:27:45,961 - main - INFO - Initializing Mongo DB client
+2025-06-12 00:03:13,178 - main - INFO - Closing Mongo DB client connection
+2025-06-12 00:03:13,346 - main - INFO - Shutting down
+2025-06-12 00:03:22,186 - main - INFO - App started in development mode
+2025-06-12 00:03:22,245 - main - INFO - Initializing Firebase
+2025-06-12 00:03:22,245 - main - INFO - Initializing Mongo DB client
+2025-06-12 00:05:17,522 - main - INFO - Closing Mongo DB client connection
+2025-06-12 00:05:17,620 - main - INFO - Shutting down
+2025-06-12 00:05:21,870 - main - INFO - App started in development mode
+2025-06-12 00:05:21,914 - main - INFO - Initializing Firebase
+2025-06-12 00:05:21,915 - main - INFO - Initializing Mongo DB client
+2025-06-12 00:05:40,604 - main - INFO - Closing Mongo DB client connection
+2025-06-12 00:05:40,716 - main - INFO - Shutting down
+2025-06-12 00:05:45,414 - main - INFO - App started in development mode
+2025-06-12 00:05:45,452 - main - INFO - Initializing Firebase
+2025-06-12 00:05:45,453 - main - INFO - Initializing Mongo DB client
+2025-06-12 00:05:56,318 - main - INFO - Closing Mongo DB client connection
+2025-06-12 00:05:56,405 - main - INFO - Shutting down
+2025-06-12 00:06:01,323 - main - INFO - App started in development mode
+2025-06-12 00:06:01,368 - main - INFO - Initializing Firebase
+2025-06-12 00:06:01,368 - main - INFO - Initializing Mongo DB client
+2025-06-12 00:06:12,294 - main - INFO - Closing Mongo DB client connection
+2025-06-12 00:06:12,376 - main - INFO - Shutting down
+2025-06-12 00:06:17,013 - main - INFO - App started in development mode
+2025-06-12 00:06:17,064 - main - INFO - Initializing Firebase
+2025-06-12 00:06:17,064 - main - INFO - Initializing Mongo DB client
+2025-06-12 00:06:31,520 - main - INFO - Closing Mongo DB client connection
+2025-06-12 00:06:31,629 - main - INFO - Shutting down
+2025-06-12 00:06:36,391 - main - INFO - App started in development mode
+2025-06-12 00:06:36,437 - main - INFO - Initializing Firebase
+2025-06-12 00:06:36,438 - main - INFO - Initializing Mongo DB client
+2025-06-12 00:09:26,439 - main - INFO - Closing Mongo DB client connection
+2025-06-12 00:09:26,531 - main - INFO - Shutting down
+2025-06-12 00:09:32,488 - main - INFO - App started in development mode
+2025-06-12 00:09:32,561 - main - INFO - Initializing Firebase
+2025-06-12 00:09:32,563 - main - INFO - Initializing Mongo DB client
+2025-06-12 00:09:41,566 - main - INFO - Closing Mongo DB client connection
+2025-06-12 00:09:41,658 - main - INFO - Shutting down
+2025-06-12 00:09:46,011 - main - INFO - App started in development mode
+2025-06-12 00:09:46,046 - main - INFO - Initializing Firebase
+2025-06-12 00:09:46,046 - main - INFO - Initializing Mongo DB client
+2025-06-12 00:10:59,797 - main - INFO - Closing Mongo DB client connection
+2025-06-12 00:10:59,885 - main - INFO - Shutting down
+2025-06-12 00:11:04,493 - main - INFO - App started in development mode
+2025-06-12 00:11:04,526 - main - INFO - Initializing Firebase
+2025-06-12 00:11:04,528 - main - INFO - Initializing Mongo DB client
+2025-06-12 00:11:10,452 - main - INFO - Closing Mongo DB client connection
+2025-06-12 00:11:10,545 - main - INFO - Shutting down
+2025-06-12 00:11:15,216 - main - INFO - App started in development mode
+2025-06-12 00:11:15,265 - main - INFO - Initializing Firebase
+2025-06-12 00:11:15,266 - main - INFO - Initializing Mongo DB client
