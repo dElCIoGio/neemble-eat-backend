@@ -7,9 +7,13 @@ router = APIRouter()
 
 
 @router.post("/")
-async def create_order(data: order_schema.OrderCreate):
+async def create_order(data: order_schema.OrderCreate, session_id: str | None = None):
+    """Create a new order and append it to the related session."""
     try:
-        order = await order_service.place_order(data.model_dump(by_alias=True))
+        payload = data.model_dump(by_alias=True)
+        if session_id:
+            payload["sessionId"] = session_id
+        order = await order_service.place_order(payload)
         return order.to_response()
     except Exception as error:
         raise HTTPException(status_code=500, detail=str(error))

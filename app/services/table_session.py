@@ -49,6 +49,19 @@ async def get_active_session_for_restaurant_table(restaurant_id: str, table_numb
         return None
     return await get_active_session_for_table(str(table.id))
 
+
+async def add_order_to_session(session_id: str, order_id: str) -> TableSessionDocument | None:
+    """Append an order ID to a table session's order list."""
+    session = await session_model.get(session_id)
+    if not session:
+        return None
+
+    if order_id not in session.orders:
+        session.orders.append(order_id)
+        return await session_model.update(session_id, {"orders": session.orders})
+
+    return session
+
 async def close_table_session(session_id: str, cancelled: bool = False) -> TableSessionDocument:
     """Close or cancel a session and create the next one."""
     session = await session_model.get(session_id)
