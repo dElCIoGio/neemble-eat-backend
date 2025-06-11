@@ -55,3 +55,12 @@ async def update_table_status(table_id: str, is_active: bool) -> Optional[table_
 
 async def update_table_session(table_id: str, session_id: Optional[str]) -> Optional[table_schema.TableDocument]:
     return await table_model.update(table_id, {"currentSessionId": session_id})
+
+
+async def get_table_by_restaurant_and_number(restaurant_id: str, number: int) -> Optional[table_schema.TableDocument]:
+    """Retrieve a table by restaurant id and table number."""
+    filters = {"restaurantId": restaurant_id, "number": number}
+    tables = await table_model.get_by_fields(filters, limit=1)
+    if tables:
+        return tables[0]
+    return None

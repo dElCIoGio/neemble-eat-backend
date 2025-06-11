@@ -39,6 +39,16 @@ async def get_active_session_for_table(table_id: str):
         return sessions[0]
     return None
 
+
+async def get_active_session_for_restaurant_table(restaurant_id: str, table_number: int):
+    """Return the active session given restaurant id and table number."""
+    from app.services import table as table_service  # Imported here to avoid circular imports
+
+    table = await table_service.get_table_by_restaurant_and_number(restaurant_id, table_number)
+    if not table:
+        return None
+    return await get_active_session_for_table(str(table.id))
+
 async def close_table_session(session_id: str, cancelled: bool = False) -> TableSessionDocument:
     """Close or cancel a session and create the next one."""
     session = await session_model.get(session_id)
