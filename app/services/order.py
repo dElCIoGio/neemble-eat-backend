@@ -11,11 +11,31 @@ order_model = OrderModel()
 
 
 async def place_order(data: dict) -> order_schema.OrderDocument:
-    """Create a new order and attach it to the related table session."""
-    order = await order_model.create(data)
+    """Create a new order and attach it to the related table session.
+
+    If the provided ``sessionId`` is missing or refers to a session that is not
+    active, a new session is created and linked to the table automatically.
+    """
     session_id = data.get("sessionId")
+    restaurant_id = data.get("restaurantId")
+    table_number = data.get("tableNumber")
+
+    # Ensure there is an active session
+    if not session_id and restaurant_id and table_number is not None:
+        session = await table_session_service.get_active_session_for_restaurant_table(
+            restaurant_id,
+            table_number,
+            create_if_missing=True,
+        )
+        if session:
+            session_id = str(session.id)
+            data["sessionId"] = session_id
+
+    order = await order_model.create(data)
+
     if session_id:
         await table_session_service.add_order_to_session(session_id, str(order.id))
+
     return order
 
 
