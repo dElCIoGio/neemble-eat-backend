@@ -8,7 +8,7 @@ from app.schema.collection_id.document_id import DocumentId
 from app.utils.make_optional_model import make_optional_model
 
 
-class BookingBase(BaseModel):
+class BookingCreate(BaseModel):
     restaurant_id: str = Field(..., alias="restaurantId")
     table_id: str = Field(..., alias="tableId")
     start_time: datetime = Field(..., alias="startTime")
@@ -20,11 +20,10 @@ class BookingBase(BaseModel):
     email: str = Field(..., alias="email")
     occasion: str = Field(..., alias="occasion")
     notes: str = Field(..., alias="notes")
+
+class BookingBase(BookingCreate):
+
     status: str = Field(default="upcoming")
-
-
-class BookingCreate(BookingBase):
-    pass
 
 
 BookingUpdate = make_optional_model(BookingBase)
