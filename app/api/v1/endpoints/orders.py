@@ -7,10 +7,10 @@ router = APIRouter()
 
 
 @router.post("/")
-async def create_order(data: order_schema.OrderCreate, session_id: str = Body(..., alias="sessionId")):
+async def create_order(order_data: order_schema.OrderCreate = Body(..., alias="orderData"), session_id: str = Body(..., alias="sessionId")):
     """Create a new order and append it to the related session."""
     try:
-        payload = data.model_dump(by_alias=True)
+        payload = order_data.model_dump(by_alias=True)
         if session_id:
             payload["sessionId"] = session_id
         order = await order_service.place_order(payload)
@@ -44,7 +44,7 @@ async def delete_order(order_id: str):
 
 
 @router.put("/{order_id}/status")
-async def update_order_status(order_id: str, status: order_schema.OrderPrepStatus):
+async def update_order_status(order_id: str, status: order_schema.OrderPrepStatus = Body(...)):
     updated = await order_service.update_order_prep_status(order_id, status)
     if not updated:
         raise HTTPException(status_code=404, detail="Order not found")

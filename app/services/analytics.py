@@ -202,13 +202,14 @@ async def average_session_duration(
 async def active_sessions_count(
         restaurant_id: str
 ) -> ActiveSessionCount:
-    count = await TableSessionDocument.find(
+    sessions = await TableSessionDocument.find(
         And(
             Eq(TableSessionDocument.restaurant_id, restaurant_id),
             Eq(TableSessionDocument.status, "active")
         )
-    ).count()
-
+    ).to_list()
+    sessions = [session for session in sessions if len(session.orders) > 0]
+    count = len(sessions)
     return ActiveSessionCount(active_sessions=count)
 
 
