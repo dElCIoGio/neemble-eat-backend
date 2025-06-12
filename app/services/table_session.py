@@ -61,8 +61,7 @@ async def get_active_session_for_table(
 async def get_active_session_for_restaurant_table(
     restaurant_id: str,
     table_number: int,
-    *,
-    create_if_missing: bool = False
+    create_if_missing: bool = True
 ) -> TableSessionDocument | None:
     """Return the active session for a restaurant table.
 
@@ -97,6 +96,9 @@ async def add_order_to_session(session_id: str, order_id: str) -> TableSessionDo
 async def close_table_session(session_id: str, cancelled: bool = False) -> TableSessionDocument:
     """Close or cancel a session and create the next one."""
     session = await session_model.get(session_id)
+
+    print(session)
+
     if not session:
         raise Exception("Session not found")
 
