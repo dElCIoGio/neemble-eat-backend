@@ -18,20 +18,15 @@ async def get_sales_summary(
     to_date: datetime
 ) -> SalesSummary:
 
-    print("trying to get...")
 
     # 1. Find all PAID invoices in the date range
-    invoices = await InvoiceDocument.find(
-        And(
-            Eq(InvoiceDocument.restaurant_id, restaurant_id),
-            Eq(InvoiceDocument.status, "paid"),
-            GTE(InvoiceDocument.generated_time, from_date),
-            LTE(InvoiceDocument.generated_time, to_date),
-        )
-    ).to_list()
+    filters = {
+        "restaurantId": restaurant_id,
+        # "status": "paid",
+        "createdAt": {"$gte": from_date,}
+    }
+    invoices = await invoice_model.get_by_fields(filters)
 
-    print("DONE")
-    print(invoices)
 
     if invoices is None or invoices is []:
         return SalesSummary(
@@ -57,8 +52,6 @@ async def get_sales_summary(
         revenue_per_table=round(revenue_per_table, 2)
     )
 
-    print(summary)
-
     return summary
 
 
@@ -66,17 +59,24 @@ async def count_invoices(
     restaurant_id: str,
     from_date: datetime,
     to_date: datetime,
-    status_filter: str = "paid"
 ) -> InvoiceCount:
 
     count = await InvoiceDocument.find(
         And(
             Eq(InvoiceDocument.restaurant_id, restaurant_id),
-            Eq(InvoiceDocument.status, status_filter),
-            GTE(InvoiceDocument.generated_time, from_date),
-            LTE(InvoiceDocument.generated_time, to_date)
+            GTE(InvoiceDocument.created_at, from_date),
+            # LTE(InvoiceDocument.created_at, to_date)
         )
     ).count()
+
+    filters = {
+        "restaurantId": restaurant_id,
+        # "status": "paid",
+        "createdAt": {"$gte": from_date}
+    }
+    invoices = await invoice_model.get_by_fields(filters)
+    count = len(invoices)
+
 
     return InvoiceCount(invoice_count=count)
 
@@ -93,7 +93,7 @@ async def count_orders(
             And(
                 Eq(OrderDocument.restaurant_id, restaurant_id),
                 GTE(OrderDocument.order_time, from_date),
-                LTE(OrderDocument.order_time, to_date)
+                # LTE(OrderDocument.order_time, to_date)
             )
         ).count()
 
@@ -120,7 +120,7 @@ async def get_top_items(
         And(
             Eq(OrderDocument.restaurant_id, restaurant_id),
             GTE(OrderDocument.order_time, from_date),
-            LTE(OrderDocument.order_time, to_date),
+            # LTE(OrderDocument.order_time, to_date),
             Or(
                 Eq(OrderDocument.prep_status, "queued"),
                 Eq(OrderDocument.prep_status, "in_progress"),
@@ -139,12 +139,13 @@ async def get_top_items(
     for order in orders:
         key = order.item_id
         if key not in counter:
-            item = ItemOrderQuantity(
-                item_id=key,
-                item_name=order.item_name if hasattr(order, "item_name") else None,
-                quantity=0
-            )
-            counter[key] = item
+            if order.ordered_item_name:
+                item = ItemOrderQuantity(
+                    item_id=key,
+                    item_name=order.ordered_item_name if hasattr(order, "ordered_item_name") else None,
+                    quantity=0
+                )
+                counter[key] = item
         counter[key].quantity += order.quantity
 
     # 3. Sort and return top N
@@ -163,7 +164,7 @@ async def count_cancelled_orders(
             Eq(OrderDocument.restaurant_id, restaurant_id),
             Eq(OrderDocument.prep_status, "cancelled"),
             GTE(OrderDocument.order_time, from_date),
-            LTE(OrderDocument.order_time, to_date)
+            # LTE(OrderDocument.order_time, to_date)
         )
     ).count()
 
@@ -181,7 +182,7 @@ async def average_session_duration(
             Eq(TableSessionDocument.restaurant_id, restaurant_id),
             Eq(TableSessionDocument.status, "closed"),
             GTE(TableSessionDocument.start_time, from_date),
-            LTE(TableSessionDocument.end_time, to_date)
+            # LTE(TableSessionDocument.end_time, to_date)
         )
     ).to_list()
 

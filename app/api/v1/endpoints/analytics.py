@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from fastapi import APIRouter, Query
@@ -21,6 +21,12 @@ async def sales_summary(
     from_date: Optional[datetime] = Query(None, alias="fromDate"),
     to_date: Optional[datetime] = Query(None, alias="toDate"),
 ):
+
+
+
+    print("FROM DATE:", from_date)
+    print("TO DATE:", to_date)
+
     if not from_date or not to_date:
         today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
         from_date = today
@@ -35,12 +41,15 @@ async def invoices_summary(
     to_date: Optional[datetime] = Query(None, alias="toDate"),
     status: str = Query("paid")
 ):
-    if not from_date or not to_date:
-        today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-        from_date = today
-        to_date = today + timedelta(days=1)
+    try:
+        if not from_date or not to_date:
+            today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+            from_date = today
+            to_date = today + timedelta(days=1)
 
-    return await count_invoices(restaurant_id, from_date, to_date, status_filter=status)
+        return await count_invoices(restaurant_id, from_date, to_date, status_filter=status)
+    except Exception as error:
+        print(error)
 
 @router.get("/orders")
 async def orders_summary(
@@ -62,12 +71,15 @@ async def top_items_summary(
     to_date: Optional[datetime] = Query(None, alias="toDate"),
     top_n: int = Query(5, ge=1, le=20, alias="topN")
 ):
-    if not from_date or not to_date:
-        today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-        from_date = today
-        to_date = today + timedelta(days=1)
+    try:
+        if not from_date or not to_date:
+            today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+            from_date = today
+            to_date = today + timedelta(days=1)
 
-    return await get_top_items(restaurant_id, from_date, to_date, top_n=top_n)
+        return await get_top_items(restaurant_id, from_date, to_date, top_n=top_n)
+    except Exception as error:
+        print(error)
 
 @router.get("/cancelled-orders")
 async def cancelled_orders_summary(
@@ -86,11 +98,15 @@ async def cancelled_orders_summary(
 async def session_duration_summary(
     restaurant_id: str = Query(..., alias="restaurantId"),
 ):
-    today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-    from_date = today
-    to_date = today + timedelta(days=1)
+    try:
+        today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        from_date = today
+        to_date = today + timedelta(days=1)
 
-    return await average_session_duration(restaurant_id, from_date, to_date)
+        return await average_session_duration(restaurant_id, from_date, to_date)
+
+    except Exception as error:
+        print(error)
 
 @router.get("/active-sessions")
 async def active_sessions_summary(

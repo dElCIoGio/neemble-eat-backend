@@ -95,35 +95,53 @@ async def add_order_to_session(session_id: str, order_id: str) -> TableSessionDo
 
 async def close_table_session(session_id: str, cancelled: bool = False) -> TableSessionDocument:
     """Close or cancel a session and create the next one."""
-    session = await session_model.get(session_id)
+    try:
+        session = await session_model.get(session_id)
 
-    print(session)
+        print("SESSION TO BE CLOSED:", session)
 
-    if not session:
-        raise Exception("Session not found")
+        if not session:
+            raise Exception("Session not found")
 
-    if session.status != TableSessionStatus.ACTIVE:
-        raise Exception("Session is not active")
+        if session.status != TableSessionStatus.ACTIVE:
+            raise Exception("Session is not active")
 
-    orders: List[OrderDocument] = await OrderDocument.find(OrderDocument.session_id == session_id).to_list()
+        orders: List[OrderDocument] = await OrderDocument.find(OrderDocument.session_id == session_id).to_list()
 
-    if cancelled:
-        if any(o.prep_status != "cancelled" for o in orders):
-            raise Exception("All orders must be cancelled to cancel session")
-        new_status = TableSessionStatus.CANCELLED
-    else:
-        new_status = TableSessionStatus.CLOSED
+        print("ORDERS:", orders)
 
-    await session_model.update(session_id, {
-        "status": new_status,
-        "endTime": datetime.now()
-    })
+        if cancelled:
+            print("CHECKING IF IT IS BEING CANCELLED")
+            if any(o.prep_status != "cancelled" for o in orders):
+                raise Exception("All orders must be cancelled to cancel session")
+            new_status = TableSessionStatus.CANCELLED
+        else:
+            new_status = TableSessionStatus.CLOSED
 
-    if not cancelled and any(o.prep_status != "cancelled" for o in orders):
-        await invoice_service.generate_invoice_for_session(session_id)
+        print("checkpiont")
 
-    new_session = await create_session_for_table(session.table_id, session.restaurant_id)
-    return new_session
+        await session_model.update(session_id, {
+            "status": new_status,
+            "endTime": datetime.now()
+        })
+
+        print("UPDATED SESSION")
+
+        if not cancelled and any(o.prep_status != "cancelled" for o in orders):
+            await invoice_service.generate_invoice_for_session(session_id)
+
+        print("checkpiont 2")
+
+
+        new_session = await create_session_for_table(session.table_id, session.restaurant_id)
+
+        print("checkpiont 3")
+        print("NEW SESSION:", new_session)
+
+
+        return new_session
+    except Exception as error:
+        print(error)
 
 async def list_sessions_for_table(table_id: str):
     filters = {"tableId": table_id}

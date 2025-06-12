@@ -30,7 +30,7 @@ async def generate_invoice_for_session(session_id: str) -> invoice_schema.Invoic
             raise Exception("No orders found for session")
 
         # 3. Calculate total
-        total = sum(order.total for order in orders if order.is_active)
+        total = sum(order.total for order in orders)
 
         # 4. Create invoice_schema.Invoice
         invoice = invoice_schema.InvoiceDocument(

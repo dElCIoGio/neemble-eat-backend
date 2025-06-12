@@ -6,9 +6,6 @@ router = APIRouter()
 
 @router.get("/active/{restaurant_id}/{table_number}")
 async def get_active_session_by_number(restaurant_id: str, table_number: str):
-
-    print(restaurant_id, table_number)
-
     session = await session_service.get_active_session_for_restaurant_table(restaurant_id, int(table_number))
     if not session:
         raise HTTPException(status_code=404, detail="Active session not found")
