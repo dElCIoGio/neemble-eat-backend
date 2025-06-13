@@ -15,6 +15,7 @@ from PIL import Image, ImageOps
 from google.oauth2.service_account import Credentials
 
 from app.core.dependencies import get_logger, get_settings, get_gcp_service_account_credentials
+from app.utils.time import now_in_luanda
 
 
 class ImageFormat(Enum):
@@ -126,7 +127,7 @@ class GCSImageManager:
         extension = file_path.suffix.lower()
 
         # Generate unique identifier
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        timestamp = now_in_luanda().strftime("%Y%m%d_%H%M%S")
         unique_id = str(uuid.uuid4())[:8]
 
         # Create blob name
@@ -198,7 +199,7 @@ class GCSImageManager:
                 height=image.size[1],
                 format=image.format or 'Unknown',
                 content_type=f'image/{image.format.lower()}' if image.format else 'application/octet-stream',
-                created_at=datetime.now()
+                created_at=now_in_luanda()
             )
         except Exception as e:
             self.logger.warning(f"Failed to extract image metadata: {e}")
@@ -209,7 +210,7 @@ class GCSImageManager:
                 height=0,
                 format='Unknown',
                 content_type='application/octet-stream',
-                created_at=datetime.now()
+                created_at=now_in_luanda()
             )
 
     def upload_image(
@@ -408,7 +409,7 @@ class GCSImageManager:
                 self.logger.error(f"Blob does not exist: {blob_name}")
                 return None
 
-            expiration = datetime.now() + timedelta(hours=expiration_hours)
+            expiration = now_in_luanda() + timedelta(hours=expiration_hours)
 
             signed_url = blob.generate_signed_url(
                 expiration=expiration,

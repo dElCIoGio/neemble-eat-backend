@@ -5,6 +5,7 @@ from app.models.table_session import TableSessionModel
 from app.schema.table_session import TableSessionStatus, TableSessionDocument
 from app.schema.order import OrderDocument
 from app.services import invoice as invoice_service
+from app.utils.time import now_in_luanda
 
 session_model = TableSessionModel()
 
@@ -22,7 +23,7 @@ async def create_session_for_table(table_id: str, restaurant_id: str) -> TableSe
         "restaurantId": restaurant_id,
         "status": TableSessionStatus.ACTIVE,
         "orders": [],
-        "startTime": datetime.now(),
+        "startTime": now_in_luanda(),
     }
     session = await start_session(payload)
     await table_service.update_table_session(table_id, str(session.id))
@@ -122,7 +123,7 @@ async def close_table_session(session_id: str, cancelled: bool = False) -> Table
 
         await session_model.update(session_id, {
             "status": new_status,
-            "endTime": datetime.now()
+            "endTime": now_in_luanda()
         })
 
         print("UPDATED SESSION")

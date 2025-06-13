@@ -8,6 +8,7 @@ from pymongo import IndexModel, ASCENDING
 from enum import Enum
 
 from app.utils.make_optional_model import make_optional_model
+from app.utils.time import now_in_luanda
 
 
 # =====================
@@ -32,7 +33,7 @@ class InvoiceBase(BaseModel):
     tax: Optional[float] = None
     discount: Optional[float] = None
 
-    generated_time: datetime = Field(default_factory=datetime.now, alias="generatedTime")
+    generated_time: datetime = Field(default_factory=now_in_luanda, alias="generatedTime")
 
     status: InvoiceStatus = Field(default=InvoiceStatus.PENDING)
     is_active: bool = Field(default=True, alias="isActive")

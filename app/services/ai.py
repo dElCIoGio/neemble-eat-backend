@@ -20,6 +20,8 @@ from pydantic import BaseModel, Field, validator
 from beanie import Document
 import openai
 
+from app.utils.time import now_in_luanda
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -239,7 +241,7 @@ class TimeSeriesProcessor(DataProcessor):
             }).round(2)
 
             # Revenue velocity (recent vs historical)
-            recent_cutoff = datetime.now() - timedelta(days=14)
+            recent_cutoff = now_in_luanda() - timedelta(days=14)
             recent_df = df[df['timestamp'] >= recent_cutoff]
             historical_df = df[df['timestamp'] < recent_cutoff]
 

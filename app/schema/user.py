@@ -8,6 +8,8 @@ from pymongo import IndexModel
 
 from app.schema.collection_id.document_id import DocumentId
 from app.utils.make_optional_model import make_optional_model
+from app.utils.time import now_in_luanda
+
 
 class UserPreferences(BaseModel):
     language: Optional[str] = Field(default="pt", description="Preferred language (default: Portuguese)")
@@ -25,7 +27,7 @@ class UserBase(BaseModel):
     email: EmailStr
     phone_number: str = Field(..., alias="phoneNumber")
     firebase_uuid: str = Field(..., alias="firebaseUUID")
-    last_logged: str = Field(alias="lastLogged", default=datetime.now().isoformat())
+    last_logged: str = Field(alias="lastLogged", default_factory=now_in_luanda)
 
     # Optional Fields
     current_restaurant_id: Optional[str] = Field(alias="currentRestaurantId", default=None)

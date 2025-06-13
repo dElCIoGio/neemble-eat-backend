@@ -9,6 +9,7 @@ from pymongo import IndexModel, ASCENDING
 
 from app.schema.collection_id.document_id import DocumentId
 from app.utils.make_optional_model import make_optional_model
+from app.utils.time import now_in_luanda
 
 
 class OrderPrepStatus(str, Enum):
@@ -39,7 +40,7 @@ class OrderCreate(BaseModel):
 
 class OrderBase(OrderCreate):
 
-    order_time: datetime = Field(default_factory=datetime.now, alias="orderTime")
+    order_time: datetime = Field(default_factory=now_in_luanda, alias="orderTime")
     prep_status: OrderPrepStatus = Field(default=OrderPrepStatus.QUEUED, alias="prepStatus")
 
 

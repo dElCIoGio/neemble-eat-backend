@@ -3,6 +3,8 @@ from app.models.table_session import TableSessionModel
 from app.schema.order import OrderDocument
 from datetime import datetime
 
+from app.utils.time import now_in_luanda
+
 session_model = TableSessionModel()
 invoice_model = InvoiceModel()
 
@@ -32,7 +34,7 @@ async def generate_invoice_for_session(session_id: str):
         "sessionId": str(session.id),
         "orders": [str(order.id) for order in orders],
         "total": total,
-        "generatedTime": datetime.now(),
+        "generatedTime": now_in_luanda(),
         "status": "pending",
         "isActive": True
     }

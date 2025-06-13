@@ -6,6 +6,7 @@ from app.models.order import OrderModel
 from app.schema import order as order_schema
 from app.schema.order import OrderDocument
 from app.services import table_session as table_session_service
+from app.utils.time import now_in_luanda
 
 order_model = OrderModel()
 
@@ -74,7 +75,7 @@ async def list_recent_orders_for_restaurant(
     restaurant_id: str, hours: int = 24
 ) -> list[order_schema.OrderDocument]:
     """List orders placed within the last ``hours`` for a restaurant."""
-    cutoff = datetime.now() - timedelta(hours=hours)
+    cutoff = now_in_luanda() - timedelta(hours=hours)
     return await OrderDocument.find(
         And(
             Eq(OrderDocument.restaurant_id, restaurant_id),

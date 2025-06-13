@@ -9,6 +9,7 @@ from app.schema.analytics import ItemOrderQuantity, SalesSummary, InvoiceCount, 
 from app.schema.invoice import InvoiceDocument
 from app.schema.order import OrderDocument
 from app.schema.table_session import TableSessionDocument
+from app.utils.time import now_in_luanda
 
 invoice_model = InvoiceModel()
 
@@ -221,7 +222,7 @@ async def last_seven_days_order_count(
 
     try:
         for i in range(7):
-            day = datetime.now() - timedelta(days=i + 1)
+            day = now_in_luanda() - timedelta(days=i + 1)
             day_midnight = day.replace(hour=0, minute=0, second=0, microsecond=0)
             weekday = day_midnight.strftime("%A")
 

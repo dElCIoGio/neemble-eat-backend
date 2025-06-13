@@ -9,6 +9,7 @@ from pymongo import IndexModel, ASCENDING
 
 from app.schema.collection_id.document_id import DocumentId
 from app.utils.make_optional_model import make_optional_model
+from app.utils.time import now_in_luanda
 
 
 class TableSessionStatus(str, Enum):
@@ -24,7 +25,7 @@ class TableSessionBase(BaseModel):
     table_id: str = Field(..., alias="tableId")
     restaurant_id: str = Field(..., alias="restaurantId")
     invoice_id: Optional[str] = Field(default=None, alias="invoiceId")
-    start_time: datetime = Field(default_factory=datetime.now, alias="startTime")
+    start_time: datetime = Field(default_factory=now_in_luanda, alias="startTime")
     end_time: Optional[datetime] = Field(default=None, alias="endTime")
     orders: List[str] = Field(default_factory=list)
     status: TableSessionStatus = Field(default=TableSessionStatus.ACTIVE)

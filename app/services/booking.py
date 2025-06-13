@@ -7,6 +7,7 @@ from beanie.odm.operators.find.logical import And
 from app.models.booking import BookingModel
 from app.schema import bookings as booking_schema
 from app.schema.bookings import BookingDocument
+from app.utils.time import now_in_luanda
 
 booking_model = BookingModel()
 
@@ -36,7 +37,7 @@ async def list_bookings_for_table(table_id: str) -> List[booking_schema.BookingD
 
 
 async def list_upcoming_bookings(restaurant_id: str) -> List[booking_schema.BookingDocument]:
-    day = datetime.now().replace(minute=0, second=0, microsecond=0) - timedelta(hours=1)
+    day = now_in_luanda().replace(minute=0, second=0, microsecond=0) - timedelta(hours=1)
     return await BookingDocument.find(
         And(
             Eq(BookingDocument.restaurant_id, restaurant_id),

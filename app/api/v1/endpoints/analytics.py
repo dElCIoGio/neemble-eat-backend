@@ -11,6 +11,7 @@ from app.services.analytics import (
     average_session_duration,
     active_sessions_count, last_seven_days_order_count
 )
+from app.utils.time import now_in_luanda
 
 router = APIRouter()
 
@@ -28,7 +29,7 @@ async def sales_summary(
     print("TO DATE:", to_date)
 
     if not from_date or not to_date:
-        today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
         from_date = today
         to_date = today + timedelta(days=1)
 
@@ -43,7 +44,7 @@ async def invoices_summary(
 ):
     try:
         if not from_date or not to_date:
-            today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+            today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
             from_date = today
             to_date = today + timedelta(days=1)
 
@@ -58,7 +59,7 @@ async def orders_summary(
     to_date: Optional[datetime] = Query(None, alias="toDate"),
 ):
     if not from_date or not to_date:
-        today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
         from_date = today
         to_date = today + timedelta(days=1)
     return await count_orders(restaurant_id, from_date, to_date)
@@ -73,7 +74,7 @@ async def top_items_summary(
 ):
     try:
         if not from_date or not to_date:
-            today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+            today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
             from_date = today
             to_date = today + timedelta(days=1)
 
@@ -88,7 +89,7 @@ async def cancelled_orders_summary(
     to_date: Optional[datetime] = Query(None, alias="toDate"),
 ):
     if not from_date or not to_date:
-        today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
         from_date = today
         to_date = today + timedelta(days=1)
 
@@ -99,7 +100,7 @@ async def session_duration_summary(
     restaurant_id: str = Query(..., alias="restaurantId"),
 ):
     try:
-        today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
         from_date = today
         to_date = today + timedelta(days=1)
 

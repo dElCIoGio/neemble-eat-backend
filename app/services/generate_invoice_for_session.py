@@ -8,6 +8,7 @@ from app.schema import invoice as invoice_schema
 from app.schema import order as order_schema
 from app.schema import table_session as table_session_schema
 from app.core.dependencies import get_mongo
+from app.utils.time import now_in_luanda
 
 
 async def generate_invoice_for_session(session_id: str) -> invoice_schema.InvoiceDocument:
@@ -39,7 +40,7 @@ async def generate_invoice_for_session(session_id: str) -> invoice_schema.Invoic
             orders=[str(order.id) for order in orders],
             total=total,
             status=invoice_schema.InvoiceStatus.PENDING,
-            generated_time=datetime.now(),
+            generated_time=now_in_luanda(),
             is_active=True
         )
         await invoice.insert(session=db_session)
