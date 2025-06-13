@@ -2208,3 +2208,8 @@
 2025-06-12 13:07:40,240 - main - INFO - Initializing Mongo DB client
 2025-06-12 13:15:08,202 - main - INFO - Closing Mongo DB client connection
 2025-06-12 13:15:08,318 - main - INFO - Shutting down
+2025-06-12 13:15:15,778 - main - INFO - App started in development mode
+2025-06-12 13:15:15,848 - main - INFO - Initializing Firebase
+2025-06-12 13:15:15,849 - main - INFO - Initializing Mongo DB client
+2025-06-12 20:33:59,291 - main - INFO - Closing Mongo DB client connection
+2025-06-12 20:34:07,218 - main - INFO - Shutting down

@@ -127,7 +127,8 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/api/v1/sessions",
             "/api/v1/categories/",
             "/api/v1/orders/sessions/",
-            "/api/v1/"
+            "/api/v1/",
+            "/health"
         ]
 
         return any(path.startswith(public_path) for public_path in public_paths)
