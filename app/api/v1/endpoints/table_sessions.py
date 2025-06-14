@@ -1,6 +1,9 @@
+import json
+
 from fastapi import APIRouter, HTTPException
 from app.services import table_session as session_service
 from app.schema.table_session import TableSession, TableSessionStatus
+from app.services.websocket_manager import get_websocket_manger
 
 router = APIRouter()
 
@@ -26,8 +29,9 @@ async def list_sessions(table_id: str):
 @router.post("/{session_id}/close")
 async def close_session(session_id: str):
     try:
-        session = await session_service.close_table_session(session_id)
-        return session.to_response()
+        new_session = await session_service.close_table_session(session_id)
+
+        return new_session.to_response()
     except Exception as error:
         raise HTTPException(status_code=400, detail=str(error))
 

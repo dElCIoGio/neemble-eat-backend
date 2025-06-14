@@ -118,6 +118,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/api/v1/blog/",
             "/docs",
             "/redoc",
+            "/ws",
             "/openapi.json",
             "/api/v1/restaurants/slug",
             "/api/v1/tables",

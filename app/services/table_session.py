@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from typing import List
 
@@ -5,6 +6,8 @@ from app.models.table_session import TableSessionModel
 from app.schema.table_session import TableSessionStatus, TableSessionDocument
 from app.schema.order import OrderDocument
 from app.services import invoice as invoice_service
+from app.services.order import order_model
+from app.services.websocket_manager import get_websocket_manger
 from app.utils.time import now_in_luanda
 
 session_model = TableSessionModel()
@@ -90,7 +93,18 @@ async def add_order_to_session(session_id: str, order_id: str) -> TableSessionDo
 
     if order_id not in session.orders:
         session.orders.append(order_id)
-        return await session_model.update(session_id, {"orders": session.orders})
+        session = await session_model.update(session_id, {"orders": session.orders})
+
+    websocket_manager = get_websocket_manger()
+    restaurant_id = session.restaurant_id
+
+    order = await order_model.get(order_id)
+    order_data = order.model_dump()
+
+    json_data = json.dumps(order_data)
+
+    await websocket_manager.broadcast(json_data, f'{restaurant_id}/order')
+    await websocket_manager.broadcast(json_data, f"{restaurant_id}/session_order")
 
     return session
 
@@ -98,8 +112,6 @@ async def close_table_session(session_id: str, cancelled: bool = False) -> Table
     """Close or cancel a session and create the next one."""
     try:
         session = await session_model.get(session_id)
-
-        print("SESSION TO BE CLOSED:", session)
 
         if not session:
             raise Exception("Session not found")
@@ -109,36 +121,31 @@ async def close_table_session(session_id: str, cancelled: bool = False) -> Table
 
         orders: List[OrderDocument] = await OrderDocument.find(OrderDocument.session_id == session_id).to_list()
 
-        print("ORDERS:", orders)
-
         if cancelled:
-            print("CHECKING IF IT IS BEING CANCELLED")
             if any(o.prep_status != "cancelled" for o in orders):
                 raise Exception("All orders must be cancelled to cancel session")
             new_status = TableSessionStatus.CANCELLED
         else:
             new_status = TableSessionStatus.CLOSED
 
-        print("checkpiont")
-
         await session_model.update(session_id, {
             "status": new_status,
             "endTime": now_in_luanda()
         })
 
-        print("UPDATED SESSION")
-
         if not cancelled and any(o.prep_status != "cancelled" for o in orders):
             await invoice_service.generate_invoice_for_session(session_id)
 
-        print("checkpiont 2")
-
-
         new_session = await create_session_for_table(session.table_id, session.restaurant_id)
 
-        print("checkpiont 3")
-        print("NEW SESSION:", new_session)
+        restaurant_id = session.restaurant_id
+        websocket_manager = get_websocket_manger()
 
+        json_data = json.dumps([order.to_response().model_dump() for order in orders])
+        await websocket_manager.broadcast(json_data, f"{restaurant_id}/billed")
+
+        json_data = json.dumps(new_session.to_response().model_dump())
+        await websocket_manager.broadcast(json_data, f"{restaurant_id}/closed_session")
 
         return new_session
     except Exception as error:
