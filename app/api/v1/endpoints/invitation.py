@@ -33,3 +33,11 @@ async def get_user_invitations(email: EmailStr):
     documents = await invitation_model.get_by_fields({"email": email})
     invitations = [inv.to_response() for inv in documents]
     return invitations
+
+
+@router.get(
+    "/restaurant/{restaurant_id}", response_model=List[invitation_schema.Invitation]
+)
+async def list_restaurant_invitations(restaurant_id: str):
+    invitations = await invitation_service.list_restaurant_invitations(restaurant_id)
+    return [inv.to_response() for inv in invitations]
