@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 
 from beanie import Document
 from bson import ObjectId
@@ -17,7 +17,7 @@ class SupplierCreate(BaseModel):
     restaurant_id: str = Field(..., alias="restaurantId")
     phone: str
     address: str
-    products: List[str] = Field(default_factory=list)
+    products: list[str] = Field(default_factory=list)
     rating: float
 
 
