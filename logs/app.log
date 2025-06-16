@@ -2216,3 +2216,31 @@
 2025-06-13 11:59:43,617 - main - INFO - App started in development mode
 2025-06-13 11:59:43,842 - main - INFO - Initializing Firebase
 2025-06-13 11:59:43,844 - main - INFO - Initializing Mongo DB client
+2025-06-14 16:17:33,578 - main - INFO - App started in development mode
+2025-06-14 16:17:33,624 - main - INFO - Initializing Firebase
+2025-06-14 16:17:33,624 - main - INFO - Initializing Mongo DB client
+2025-06-15 12:20:55,678 - main - INFO - Closing Mongo DB client connection
+2025-06-15 12:20:55,771 - main - INFO - Shutting down
+2025-06-16 15:44:53,763 - main - INFO - App started in development mode
+2025-06-16 15:44:53,811 - main - INFO - Initializing Firebase
+2025-06-16 15:44:53,811 - main - INFO - Initializing Mongo DB client
+2025-06-16 16:20:22,381 - main - INFO - Closing Mongo DB client connection
+2025-06-16 16:20:22,456 - main - INFO - Shutting down
+2025-06-16 16:20:28,682 - main - INFO - App started in development mode
+2025-06-16 16:20:28,734 - main - INFO - Initializing Firebase
+2025-06-16 16:20:28,734 - main - INFO - Initializing Mongo DB client
+2025-06-16 16:55:46,065 - main - INFO - Closing Mongo DB client connection
+2025-06-16 16:55:46,156 - main - INFO - Shutting down
+2025-06-16 16:55:51,192 - main - INFO - App started in development mode
+2025-06-16 16:55:51,246 - main - INFO - Initializing Firebase
+2025-06-16 16:55:51,246 - main - INFO - Initializing Mongo DB client
+2025-06-16 16:59:53,193 - main - INFO - Closing Mongo DB client connection
+2025-06-16 16:59:53,263 - main - INFO - Shutting down
+2025-06-16 17:00:01,789 - main - INFO - App started in development mode
+2025-06-16 17:00:01,852 - main - INFO - Initializing Firebase
+2025-06-16 17:00:01,869 - main - INFO - Initializing Mongo DB client
+2025-06-16 17:01:41,228 - main - INFO - Closing Mongo DB client connection
+2025-06-16 17:01:41,282 - main - INFO - Shutting down
+2025-06-16 17:01:44,671 - main - INFO - App started in development mode
+2025-06-16 17:01:44,779 - main - INFO - Initializing Firebase
+2025-06-16 17:01:44,780 - main - INFO - Initializing Mongo DB client

@@ -9,30 +9,32 @@ from pymongo import IndexModel, ASCENDING
 
 from app.schema.collection_id.document_id import DocumentId
 from app.utils.make_optional_model import make_optional_model
+from app.utils.time import now_in_luanda
 
 
 class StockStatus(str, Enum):
     OK = "OK"
     BAIXO = "Baixo"
-    CRITICO = "Cr\u00edtico"
+    CRITICO = "Critico"
 
 
 class StockItemCreate(BaseModel):
     name: str
+    restaurant_id: str = Field(..., alias="restaurantId")
     unit: str
     current_quantity: float = Field(..., alias="currentQuantity")
     min_quantity: float = Field(..., alias="minQuantity")
-    last_entry: datetime = Field(..., alias="lastEntry")
+    last_entry: str = Field(..., alias="lastEntry")
     supplier: str
     status: StockStatus
     category: str
 
 
 class StockItemBase(StockItemCreate):
-    max_quantity: Optional[float] = Field(default=None, alias="maxQuantity")
-    notes: Optional[str] = None
-    cost: Optional[float] = None
-    expiry_date: Optional[datetime] = Field(default=None, alias="expiryDate")
+    max_quantity: Optional[float] = Field(default=0, alias="maxQuantity")
+    notes: Optional[str] = ""
+    cost: Optional[float] = 0.0
+    expiry_date: Optional[datetime] = Field(default_factory=now_in_luanda, alias="expiryDate")
     barcode: Optional[str] = None
     location: Optional[str] = None
     auto_reorder: Optional[bool] = Field(default=False, alias="autoReorder")

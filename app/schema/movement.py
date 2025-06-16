@@ -13,7 +13,7 @@ from app.utils.make_optional_model import make_optional_model
 
 class MovementType(str, Enum):
     ENTRADA = "entrada"
-    SAIDA = "sa\u00edda"
+    SAIDA = "saida"
     AJUSTE = "ajuste"
 
 
@@ -22,6 +22,7 @@ class MovementCreate(BaseModel):
     product_name: str = Field(..., alias="productName")
     type: MovementType
     quantity: float
+    restaurant_id: str = Field(..., alias="restaurantId")
     unit: str
     date: datetime
     reason: str

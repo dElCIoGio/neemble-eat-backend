@@ -12,7 +12,8 @@ from app.utils.make_optional_model import make_optional_model
 class SaleCreate(BaseModel):
     dish_name: str = Field(..., alias="dishName")
     quantity: int
-    date: datetime
+    date: str
+    restaurant_id: str = Field(..., alias="restaurantId")
     total: float
 
 

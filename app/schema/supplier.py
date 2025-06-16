@@ -14,6 +14,7 @@ class SupplierCreate(BaseModel):
     name: str
     contact: str
     email: str
+    restaurant_id: str = Field(..., alias="restaurantId")
     phone: str
     address: str
     products: List[str] = Field(default_factory=list)
