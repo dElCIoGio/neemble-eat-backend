@@ -1,6 +1,11 @@
 from fastapi import APIRouter
 
 from app.api.v1.endpoints.auth import router as auth_router
+from app.api.v1.endpoints.stock import router as stock_router
+from app.api.v1.endpoints.movements import router as movements_router
+from app.api.v1.endpoints.recipes import router as recipes_router
+from app.api.v1.endpoints.sales import router as sales_router
+from app.api.v1.endpoints.suppliers import router as suppliers_router
 from app.api.v1.endpoints.analytics import router as analytics_router
 from app.api.v1.endpoints.user import router as user_router
 from app.api.v1.endpoints.restaurants import router as analysis_router
@@ -36,4 +41,9 @@ router.include_router(tables_router, prefix="/tables", tags=["Tables"])
 router.include_router(table_sessions_router, prefix="/sessions", tags=["Table Sessions"])
 router.include_router(roles_router, prefix="/roles", tags=["Roles"])
 router.include_router(memberships_router, prefix="/memberships", tags=["Memberships"])
+router.include_router(stock_router, prefix="/stock", tags=["Stock"])
+router.include_router(movements_router, prefix="/movements", tags=["Movements"])
+router.include_router(recipes_router, prefix="/recipes", tags=["Recipes"])
+router.include_router(sales_router, prefix="/sales", tags=["Sales"])
+router.include_router(suppliers_router, prefix="/suppliers", tags=["Suppliers"])
 router.include_router(orders_router, prefix="/orders", tags=["Orders"])
