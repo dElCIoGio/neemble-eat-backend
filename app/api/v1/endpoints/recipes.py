@@ -8,8 +8,11 @@ router = APIRouter()
 
 @router.get("/restaurant/{restaurant_id}")
 async def list_recipes(restaurant_id: str):
-    recipes = await recipe_service.list_recipes_for_restaurant(restaurant_id)
-    return [r.to_response() for r in recipes]
+    try:
+        recipes = await recipe_service.list_recipes_for_restaurant(restaurant_id)
+        return [r.to_response() for r in recipes]
+    except Exception as error:
+        print(error)
 
 
 @router.post("/restaurant/{restaurant_id}")

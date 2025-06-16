@@ -14,7 +14,6 @@ class RecipeIngredient(BaseModel):
     product_name: str = Field(..., alias="productName")
     quantity: float
     unit: str
-    restaurant_id: str = Field(..., alias="restaurantId")
 
 
 class RecipeCreate(BaseModel):
@@ -23,8 +22,6 @@ class RecipeCreate(BaseModel):
     servings: int
     cost: float
     restaurant_id: str = Field(..., alias="restaurantId")
-
-
 
 
 class RecipeBase(RecipeCreate):

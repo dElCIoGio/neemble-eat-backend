@@ -24,22 +24,24 @@ class StockItemCreate(BaseModel):
     unit: str
     current_quantity: float = Field(..., alias="currentQuantity")
     min_quantity: float = Field(..., alias="minQuantity")
-    last_entry: str = Field(..., alias="lastEntry")
+    last_entry: datetime = Field(..., alias="lastEntry")
     supplier: str
     status: StockStatus
     category: str
-
-
-class StockItemBase(StockItemCreate):
-    max_quantity: Optional[float] = Field(default=0, alias="maxQuantity")
+    max_quantity: Optional[float] = Field(default=None, alias="maxQuantity")
     notes: Optional[str] = ""
     cost: Optional[float] = 0.0
     expiry_date: Optional[datetime] = Field(default_factory=now_in_luanda, alias="expiryDate")
-    barcode: Optional[str] = None
     location: Optional[str] = None
     auto_reorder: Optional[bool] = Field(default=False, alias="autoReorder")
     reorder_point: Optional[float] = Field(default=None, alias="reorderPoint")
     reorder_quantity: Optional[float] = Field(default=None, alias="reorderQuantity")
+
+
+class StockItemBase(StockItemCreate):
+
+    barcode: Optional[str] = None
+
 
 
 StockItemUpdate = make_optional_model(StockItemBase)

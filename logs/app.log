@@ -2249,3 +2249,83 @@
 2025-06-16 17:03:35,789 - main - INFO - App started in development mode
 2025-06-16 17:03:35,824 - main - INFO - Initializing Firebase
 2025-06-16 17:03:35,825 - main - INFO - Initializing Mongo DB client
+2025-06-16 17:21:58,085 - main - INFO - Closing Mongo DB client connection
+2025-06-16 17:21:58,163 - main - INFO - Shutting down
+2025-06-16 17:22:04,968 - main - INFO - App started in development mode
+2025-06-16 17:22:05,015 - main - INFO - Initializing Firebase
+2025-06-16 17:22:05,015 - main - INFO - Initializing Mongo DB client
+2025-06-16 17:28:01,934 - main - INFO - Closing Mongo DB client connection
+2025-06-16 17:28:01,968 - main - INFO - Shutting down
+2025-06-16 17:28:07,855 - main - INFO - App started in development mode
+2025-06-16 17:28:07,914 - main - INFO - Initializing Firebase
+2025-06-16 17:28:07,914 - main - INFO - Initializing Mongo DB client
+2025-06-16 17:31:49,352 - main - INFO - Closing Mongo DB client connection
+2025-06-16 17:31:49,389 - main - INFO - Shutting down
+2025-06-16 17:31:55,104 - main - INFO - App started in development mode
+2025-06-16 17:31:55,183 - main - INFO - Initializing Firebase
+2025-06-16 17:31:55,184 - main - INFO - Initializing Mongo DB client
+2025-06-16 17:33:20,835 - main - INFO - Closing Mongo DB client connection
+2025-06-16 17:33:20,857 - main - INFO - Shutting down
+2025-06-16 17:33:25,999 - main - INFO - App started in development mode
+2025-06-16 17:33:26,122 - main - INFO - Initializing Firebase
+2025-06-16 17:33:26,123 - main - INFO - Initializing Mongo DB client
+2025-06-16 17:34:30,542 - main - INFO - Closing Mongo DB client connection
+2025-06-16 17:34:30,568 - main - INFO - Shutting down
+2025-06-16 17:34:36,218 - main - INFO - App started in development mode
+2025-06-16 17:34:36,274 - main - INFO - Initializing Firebase
+2025-06-16 17:34:36,274 - main - INFO - Initializing Mongo DB client
+2025-06-16 17:44:03,262 - main - INFO - Closing Mongo DB client connection
+2025-06-16 17:44:03,325 - main - INFO - Shutting down
+2025-06-16 17:44:08,202 - main - INFO - App started in development mode
+2025-06-16 17:44:08,243 - main - INFO - Initializing Firebase
+2025-06-16 17:44:08,243 - main - INFO - Initializing Mongo DB client
+2025-06-16 17:49:54,693 - main - INFO - Closing Mongo DB client connection
+2025-06-16 17:49:54,774 - main - INFO - Shutting down
+2025-06-16 17:50:07,088 - main - INFO - App started in development mode
+2025-06-16 17:50:07,196 - main - INFO - Initializing Firebase
+2025-06-16 17:50:07,196 - main - INFO - Initializing Mongo DB client
+2025-06-16 18:27:42,252 - main - INFO - Closing Mongo DB client connection
+2025-06-16 18:27:42,469 - main - INFO - Shutting down
+2025-06-16 18:27:50,327 - main - INFO - App started in development mode
+2025-06-16 18:27:50,371 - main - INFO - Initializing Firebase
+2025-06-16 18:27:50,372 - main - INFO - Initializing Mongo DB client
+2025-06-16 18:30:20,969 - main - INFO - Closing Mongo DB client connection
+2025-06-16 18:30:21,001 - main - INFO - Shutting down
+2025-06-16 18:30:24,577 - main - INFO - App started in development mode
+2025-06-16 18:30:24,613 - main - INFO - Initializing Firebase
+2025-06-16 18:30:24,614 - main - INFO - Initializing Mongo DB client
+2025-06-16 18:33:56,682 - main - INFO - Closing Mongo DB client connection
+2025-06-16 18:33:56,713 - main - INFO - Shutting down
+2025-06-16 18:34:00,815 - main - INFO - App started in development mode
+2025-06-16 18:34:00,850 - main - INFO - Initializing Firebase
+2025-06-16 18:34:00,850 - main - INFO - Initializing Mongo DB client
+2025-06-16 18:36:37,944 - main - INFO - Closing Mongo DB client connection
+2025-06-16 18:36:37,971 - main - INFO - Shutting down
+2025-06-16 18:36:42,510 - main - INFO - App started in development mode
+2025-06-16 18:36:42,542 - main - INFO - Initializing Firebase
+2025-06-16 18:36:42,543 - main - INFO - Initializing Mongo DB client
+2025-06-16 18:37:01,166 - main - INFO - Closing Mongo DB client connection
+2025-06-16 18:37:01,193 - main - INFO - Shutting down
+2025-06-16 18:37:04,764 - main - INFO - App started in development mode
+2025-06-16 18:37:04,803 - main - INFO - Initializing Firebase
+2025-06-16 18:37:04,804 - main - INFO - Initializing Mongo DB client
+2025-06-16 18:37:27,047 - main - INFO - Closing Mongo DB client connection
+2025-06-16 18:37:27,069 - main - INFO - Shutting down
+2025-06-16 18:37:31,272 - main - INFO - App started in development mode
+2025-06-16 18:37:31,310 - main - INFO - Initializing Firebase
+2025-06-16 18:37:31,310 - main - INFO - Initializing Mongo DB client
+2025-06-16 18:48:33,285 - main - INFO - Closing Mongo DB client connection
+2025-06-16 18:48:33,347 - main - INFO - Shutting down
+2025-06-16 18:48:39,599 - main - INFO - App started in development mode
+2025-06-16 18:48:39,681 - main - INFO - Initializing Firebase
+2025-06-16 18:48:39,681 - main - INFO - Initializing Mongo DB client
+2025-06-16 18:49:37,899 - main - INFO - Closing Mongo DB client connection
+2025-06-16 18:49:37,925 - main - INFO - Shutting down
+2025-06-16 18:49:47,226 - main - INFO - App started in development mode
+2025-06-16 18:49:47,366 - main - INFO - Initializing Firebase
+2025-06-16 18:49:47,367 - main - INFO - Initializing Mongo DB client
+2025-06-16 18:59:53,206 - main - INFO - Closing Mongo DB client connection
+2025-06-16 18:59:53,259 - main - INFO - Shutting down
+2025-06-16 18:59:58,542 - main - INFO - App started in development mode
+2025-06-16 18:59:58,589 - main - INFO - Initializing Firebase
+2025-06-16 18:59:58,590 - main - INFO - Initializing Mongo DB client

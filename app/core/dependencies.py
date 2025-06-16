@@ -17,6 +17,13 @@ from app.schema import (
     bookings,
     item,
     invoice,
+    supplier,
+    stock_item,
+    sale,
+    recipe,
+    movement,
+
+
 )
 
 
@@ -79,6 +86,11 @@ def get_mongo():
             table.TableDocument,
             invoice.InvoiceDocument,
             bookings.BookingDocument,
-            invitation.InvitationDocument
+            invitation.InvitationDocument,
+            supplier.SupplierDocument,
+            stock_item.StockItemDocument,
+            sale.SaleDocument,
+            recipe.RecipeDocument,
+            movement.MovementDocument,
         ]
     )

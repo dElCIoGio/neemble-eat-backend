@@ -22,7 +22,6 @@ class AuthMiddleware(BaseHTTPMiddleware):
             self, request: Request, call_next: Callable[[Request], Awaitable[Response]]
     ) -> Response:
 
-
         if request.method == "OPTIONS":
             return await call_next(request)
 
