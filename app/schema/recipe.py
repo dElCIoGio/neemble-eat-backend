@@ -4,6 +4,7 @@ from beanie import Document
 from bson import ObjectId
 from pydantic import BaseModel, Field
 from pymongo import IndexModel, ASCENDING
+from typing_inspection.typing_objects import alias
 
 from app.schema.collection_id.document_id import DocumentId
 from app.utils.make_optional_model import make_optional_model
@@ -22,6 +23,7 @@ class RecipeCreate(BaseModel):
     servings: int
     cost: float
     restaurant_id: str = Field(..., alias="restaurantId")
+    menu_item_id: str = Field(..., alias="menuItemId")
 
 
 class RecipeBase(RecipeCreate):

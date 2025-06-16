@@ -2331,3 +2331,16 @@
 2025-06-16 18:59:58,590 - main - INFO - Initializing Mongo DB client
 2025-06-16 20:15:03,649 - main - INFO - Closing Mongo DB client connection
 2025-06-16 20:15:03,737 - main - INFO - Shutting down
+2025-06-16 20:15:10,583 - main - INFO - App started in development mode
+2025-06-16 20:15:10,647 - main - INFO - Initializing Firebase
+2025-06-16 20:15:10,648 - main - INFO - Initializing Mongo DB client
+2025-06-16 20:16:58,548 - main - INFO - Closing Mongo DB client connection
+2025-06-16 20:16:58,571 - main - INFO - Shutting down
+2025-06-16 20:17:03,164 - main - INFO - App started in development mode
+2025-06-16 20:17:03,202 - main - INFO - Initializing Firebase
+2025-06-16 20:17:03,202 - main - INFO - Initializing Mongo DB client
+2025-06-16 20:17:09,569 - main - INFO - App started in development mode
+2025-06-16 20:17:09,615 - main - INFO - Initializing Firebase
+2025-06-16 20:17:09,616 - main - INFO - Initializing Mongo DB client
+2025-06-16 20:21:49,797 - main - INFO - Closing Mongo DB client connection
+2025-06-16 20:21:49,825 - main - INFO - Shutting down
