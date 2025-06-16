@@ -16,6 +16,7 @@ class StockStatus(str, Enum):
     OK = "OK"
     BAIXO = "Baixo"
     CRITICO = "Critico"
+    OUTOFSTOCK="Indisponível"
 
 
 class StockItemCreate(BaseModel):
