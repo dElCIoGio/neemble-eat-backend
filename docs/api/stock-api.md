@@ -1,9 +1,8 @@
 # Backend Endpoints for Stock Page
 
-This document outlines the backend/database interactions required to make the
-`src/pages/dashboard/stock.tsx` page functional. The page manages stock items,
+This document outlines the backend/database interactions required to make the page functional. The page manages stock items,
 movements, recipes, sales and suppliers. Below is a summary of the required API
-endpoints and the data shapes used (see `src/types/stock.ts`).
+endpoints and the data shapes used.
 
 ## Stock Items
 
@@ -89,11 +88,9 @@ endpoints and the data shapes used (see `src/types/stock.ts`).
 
 Although categories are simple strings on the page, an endpoint may be useful
 for managing them:
-- **GET /api/v1/categories** – List distinct category names.
-- **POST /api/v1/categories** – Create a new category.
-- **DELETE /api/v1/categories/:name** – Remove a category (only possible if no
-  items are linked to it).
-
+- **GET /api/v1/stock/categories** – List distinct category names.
+- **DELETE /api/v1/categories/:name** – Remove a category (all items with such category name).
+g
 ## Stats and Reports
 
 The page displays statistics such as total products, items with low stock,
