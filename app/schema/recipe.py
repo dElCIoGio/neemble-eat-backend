@@ -4,8 +4,6 @@ from beanie import Document
 from bson import ObjectId
 from pydantic import BaseModel, Field
 from pymongo import IndexModel, ASCENDING
-from typing_inspection.typing_objects import alias
-
 from app.schema.collection_id.document_id import DocumentId
 from app.utils.make_optional_model import make_optional_model
 

@@ -11,18 +11,17 @@ class StockItemModel(MongoCrud[stock_item_schema.StockItemDocument]):
 
     async def update(self, _id: str, data: Dict[str, Any]) -> Optional[stock_item_schema.StockItemDocument]:
 
-        item_status = await self._get_updated_status(_id)
+        item_status = self._get_updated_status(data)
 
         data["status"] = item_status
 
         return await super().update(_id, data)
 
 
-    async def _get_updated_status(self, _id: str):
-        stock_item = await self.get(_id)
+    def _get_updated_status(self, data: Dict[str, Any]):
 
-        q = stock_item.current_quantity
-        min_q = stock_item.min_quantity
+        q = data.get("currentQuantity", 0)
+        min_q = data.get("minQuantity", 1)
 
         if q == 0:
             return StockStatus.OUTOFSTOCK
@@ -36,12 +35,11 @@ class StockItemModel(MongoCrud[stock_item_schema.StockItemDocument]):
 
     async def create(self, data: Dict[str, Any]):
 
-        _id = data["_id"]
-        item_status = await self._get_updated_status(_id)
-
+        item_status = self._get_updated_status(data)
         data["status"] = item_status
+        new_stock_item = await super().create(data)
 
-        return await super().create(data)
+        return new_stock_item
 
 
 

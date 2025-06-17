@@ -17,6 +17,7 @@ async def create_invitation(data: invitation_schema.InvitationCreate):
         invitation = await invitation_service.create_invitation(data)
         return invitation.to_response()
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=500, detail=str(e))
 
 

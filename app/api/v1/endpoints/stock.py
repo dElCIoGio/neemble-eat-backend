@@ -14,10 +14,17 @@ async def list_stock_items(restaurant_id: str):
 
 @router.post("/restaurant/{restaurant_id}")
 async def create_stock_item(restaurant_id: str, data: stock_schema.StockItemCreate):
-    if data.restaurant_id != restaurant_id:
-        raise HTTPException(status_code=400, detail="Mismatched restaurant id")
-    item = await stock_service.create_stock_item(data)
-    return item.to_response()
+    try:
+        if data.restaurant_id != restaurant_id:
+            raise HTTPException(status_code=400, detail="Mismatched restaurant id")
+        item = await stock_service.create_stock_item(data)
+        return item.to_response()
+    except Exception as error:
+        print(error)
+        raise HTTPException(
+            status_code=400,
+            detail=str(error)
+        )
 
 
 @router.get("/{item_id}")
@@ -46,10 +53,16 @@ async def delete_stock_item(item_id: str):
 
 @router.post("/{item_id}/add")
 async def add_stock(item_id: str, quantity: float = Body(...), reason: str = Body("", embed=True)):
-    updated = await stock_service.add_stock(item_id, quantity, reason)
-    if not updated:
-        raise HTTPException(status_code=404, detail="Item not found")
-    return updated.to_response()
+    try:
+        updated = await stock_service.add_stock(item_id, quantity, reason)
+        if not updated:
+            raise HTTPException(status_code=404, detail="Item not found")
+        return updated.to_response()
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=400, detail=str(e)
+        )
 
 
 @router.post("/{item_id}/remove")

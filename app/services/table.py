@@ -62,6 +62,5 @@ async def get_table_by_restaurant_and_number(restaurant_id: str, number: int) ->
     filters = {"restaurantId": restaurant_id, "number": number}
     tables = await table_model.get_by_fields(filters, limit=1)
     if tables:
-        print("Table found:", tables)
         return tables[0]
     return None

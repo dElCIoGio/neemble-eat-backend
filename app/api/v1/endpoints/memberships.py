@@ -44,6 +44,7 @@ async def get_membership(user_id: str, restaurant_id: str):
         membership = await membership_service.get_membership(user_id, restaurant_id)
         return membership.model_dump(by_alias=True)
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=400, detail=str(e))
 
 

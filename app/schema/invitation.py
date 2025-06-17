@@ -11,9 +11,8 @@ from app.utils.make_optional_model import make_optional_model
 
 class InvitationCreate(BaseModel):
     name: str
-    email: EmailStr
     restaurant_id: str = Field(..., alias="restaurantId")
-    manager_id: str = Field(..., alias="managerId"),
+    manager_id: str = Field(..., alias="managerId")
     role_id: str = Field(..., alias="roleId")
 
 class InvitationBase(InvitationCreate):
@@ -31,10 +30,9 @@ class Invitation(InvitationBase, DocumentId):
     }
 
 class InvitationDocument(Document, Invitation):
-    email: EmailStr = Field(..., alias="email")
-    restaurantId: str = Field(..., alias="restaurantId")
-    expire_at: datetime = Indexed(expire_after_seconds=60 * 60 * 24 * 7, name="ttl_expires_at")
-
+    # expires_at: datetime = Indexed(
+    #     datetime, expire_after_seconds=60 * 60 * 24 * 7, name="ttl_expires_at"
+    # )
     def to_response(self):
         return Invitation(**self.model_dump(by_alias=True))
 
