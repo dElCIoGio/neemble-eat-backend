@@ -26,6 +26,7 @@ class Settings(BaseSettings):
         "https://frontend-485828523035.africa-south1.run.app",
         "https://neemble-frontend-485828523035.europe-west1.run.app",
         "https://www.neemble-eat.com",
+        "https://adming.neemble-eat.com",
         "https://neemble-eat.com",
         "https://neemble-eat-admin-485828523035.europe-west1.run.app"
     ]
