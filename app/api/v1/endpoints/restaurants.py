@@ -18,6 +18,7 @@ from app.services.restaurant import (
     restaurant_model,
     change_current_menu,
     get_current_menu,
+    list_current_menu_items_by_slug,
 )
 from app.schema import restaurant as restaurant_schema
 from app.services.roles import create_default_roles_for_restaurant
@@ -284,6 +285,18 @@ async def get_restaurant_by_slug(slug: str):
     if not restaurant:
         raise HTTPException(status_code=404, detail="Restaurant not found")
     return restaurant.to_response()
+
+
+@router.get("/slug/{slug}/menu/items")
+async def list_current_menu_items(slug: str):
+    """Return all items in the restaurant's current menu identified by slug."""
+    try:
+        items = await list_current_menu_items_by_slug(slug)
+        return [i.to_response() for i in items]
+    except HTTPException:
+        raise
+    except Exception as error:
+        raise HTTPException(status_code=400, detail=str(error))
 
 
 
