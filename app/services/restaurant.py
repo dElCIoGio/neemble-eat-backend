@@ -5,6 +5,7 @@ from app.models.menu import MenuModel
 from app.models.restaurant import RestaurantModel
 from app.schema import restaurant as restaurant_schema
 from app.utils.slug import generate_unique_slug
+from app.services import item as item_service
 
 
 restaurant_model = RestaurantModel()
@@ -66,5 +67,18 @@ async def change_current_menu(restaurant_id: str, menu_id: str) -> bool:
 
     await restaurant_model.update(restaurant_id, {"currentMenuId": menu_id})
     return True
+
+
+async def list_current_menu_items_by_slug(slug: str):
+    """Return all available items in the restaurant's current menu using the restaurant slug."""
+    restaurant = await restaurant_model.get_by_slug(slug)
+    if not restaurant:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+
+    if not restaurant.current_menu_id:
+        return []
+
+    items = await item_service.list_items_by_menu(restaurant.current_menu_id)
+    return items
 
 
