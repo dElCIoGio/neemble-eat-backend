@@ -1,7 +1,7 @@
 import os
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
-from fastapi import APIRouter, Depends, Form, UploadFile, File, Request, HTTPException
+from fastapi import APIRouter, Depends, Form, UploadFile, File, Request, HTTPException, Query
 from pymongo.errors import DuplicateKeyError
 
 from app.schema.restaurant import OpeningHours, RestaurantDocument
@@ -43,6 +43,20 @@ router = APIRouter()
 role_model = RoleModel()
 user_model = UserModel()
 
+
+@router.get("/paginate")
+async def paginate_orders(
+    limit: int = Query(10, gt=0),
+    cursor: Optional[str] = Query(None),
+):
+    try:
+        filters: Dict[str, Any] = {}
+
+        result = await restaurant_model.paginate(filters=filters, limit=limit, cursor=cursor)
+
+        return result
+    except Exception as error:
+        print(error)
 
 @router.post("/")
 async def create(

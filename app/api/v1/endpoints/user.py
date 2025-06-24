@@ -27,13 +27,15 @@ async def user_exist(uid: str = Depends(get_current_user)):
 async def paginate_users(
     limit: int = Query(10, gt=0),
     cursor: Optional[str] = Query(None),
-    name: Optional[str] = Query(None),
 ):
-    filters: Dict[str, Any] = {}
-    if name:
-        filters["name"] = name
+    try:
+        filters: Dict[str, Any] = {}
 
-    return await user_model.paginate(filters=filters, limit=limit, cursor=cursor)
+        result = await user_model.paginate(filters=filters, limit=limit, cursor=cursor)
+
+        return result
+    except Exception as error:
+        print(error)
 
 
 @router.get("/user/{user_id}")

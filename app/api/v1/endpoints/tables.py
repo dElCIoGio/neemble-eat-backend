@@ -1,11 +1,29 @@
-from fastapi import APIRouter, HTTPException
-from typing import Optional
+from fastapi import APIRouter, HTTPException, Query
+from typing import Optional, Dict, Any
 
+from app.models.table import TableModel
 from app.schema import table as table_schema
 from app.services import table as table_service
 
 router = APIRouter()
+table_model = TableModel()
 
+
+@router.get("/paginate")
+async def paginate_tables(
+    limit: int = Query(10, gt=0),
+    cursor: Optional[str] = Query(None),
+):
+    try:
+        filters: Dict[str, Any] = {}
+
+        result = await table_model.paginate(filters=filters, limit=limit, cursor=cursor)
+
+        orders = result.items
+
+        return result
+    except Exception as error:
+        print(error)
 
 @router.post("/")
 async def create_table(data: table_schema.TableCreate):
