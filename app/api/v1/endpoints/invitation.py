@@ -42,3 +42,14 @@ async def get_user_invitations(email: EmailStr):
 async def list_restaurant_invitations(restaurant_id: str):
     invitations = await invitation_service.list_restaurant_invitations(restaurant_id)
     return [inv.to_response() for inv in invitations]
+
+
+@router.get("/{invitation_id}")
+async def get_invitation(invitation_id: str):
+    invitation = await invitation_model.get(invitation_id)
+    if not invitation:
+        raise HTTPException(
+            status_code=404,
+            detail="Invitation not found"
+        )
+    return invitation.to_response()

@@ -1,11 +1,24 @@
 import json
+from typing import Dict, Optional, Any
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from app.services import table_session as session_service
-from app.schema.table_session import TableSession, TableSessionStatus
-from app.services.websocket_manager import get_websocket_manger
+from app.services.table_session import session_model
 
 router = APIRouter()
+
+
+@router.get("/paginate")
+async def paginate_sessions(
+    limit: int = Query(10, gt=0),
+    cursor: Optional[str] = Query(None),
+):
+    try:
+        filters: Dict[str, Any] = {}
+        result = await session_model.paginate(filters=filters, limit=limit, cursor=cursor)
+        return result
+    except Exception as error:
+        print(error)
 
 @router.get("/active/{restaurant_id}/{table_number}")
 async def get_active_session_by_number(restaurant_id: str, table_number: str):

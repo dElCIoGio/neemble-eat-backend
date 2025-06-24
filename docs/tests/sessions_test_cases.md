@@ -19,7 +19,7 @@ This document outlines the basic requirements and comprehensive test cases for t
    - Sessions can be listed per table and removed when necessary (e.g. when deleting a table).
 6. **Error Handling**
    - Invalid IDs or attempts to operate on a non‑active session must return an error without modifying data.
-
+  
 ## Test Cases
 
 ### 1. Get Active Session by Table Number `/api/v1/sessions/active/{restaurant_id}/{table_number}`

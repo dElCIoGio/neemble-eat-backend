@@ -27,6 +27,7 @@ class Settings(BaseSettings):
         "https://neemble-frontend-485828523035.europe-west1.run.app",
         "https://www.neemble-eat.com",
         "https://neemble-eat.com",
+        "https://neemble-eat-admin-485828523035.europe-west1.run.app"
     ]
 
     # MongoDB Config

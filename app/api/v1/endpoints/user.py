@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
+from typing import Optional, Dict, Any
+
+from fastapi import APIRouter, Depends, HTTPException, Query
 from bson import ObjectId
 
 from app.models.restaurant import RestaurantModel
@@ -19,6 +21,19 @@ restaurant_model = RestaurantModel()
 async def user_exist(uid: str = Depends(get_current_user)):
     user = await user_model.get_user_by_firebase_uid(uid)
     return True if user else False
+
+
+@router.get("/paginate")
+async def paginate_users(
+    limit: int = Query(10, gt=0),
+    cursor: Optional[str] = Query(None),
+    name: Optional[str] = Query(None),
+):
+    filters: Dict[str, Any] = {}
+    if name:
+        filters["name"] = name
+
+    return await user_model.paginate(filters=filters, limit=limit, cursor=cursor)
 
 
 @router.get("/user/{user_id}")

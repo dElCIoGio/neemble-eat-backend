@@ -1,7 +1,10 @@
-from fastapi import APIRouter, HTTPException, Body
+from typing import Optional, Dict, Any
+
+from fastapi import APIRouter, HTTPException, Body, Query
 
 from app.schema import order as order_schema
 from app.services import order as order_service
+from app.services.order import order_model
 
 router = APIRouter()
 
@@ -17,6 +20,23 @@ async def create_order(order_data: order_schema.OrderCreate = Body(..., alias="o
         return order.to_response()
     except Exception as error:
         raise HTTPException(status_code=500, detail=str(error))
+
+
+@router.get("/paginate")
+async def paginate_orders(
+    limit: int = Query(10, gt=0),
+    cursor: Optional[str] = Query(None),
+):
+    try:
+        filters: Dict[str, Any] = {}
+
+        result = await order_model.paginate(filters=filters, limit=limit, cursor=cursor)
+
+        orders = result.items
+
+        return result
+    except Exception as error:
+        print(error)
 
 
 @router.get("/{order_id}")

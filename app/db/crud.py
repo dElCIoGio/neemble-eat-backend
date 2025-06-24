@@ -1,10 +1,10 @@
 from beanie import Document, PydanticObjectId
+from beanie.odm.operators.find.comparison import GT
 from bson import ObjectId
-from typing import Any, Dict, List, Optional, Type, TypeVar, Generic, Union
-from datetime import datetime
+from typing import Any, Dict, List, Optional, Type, TypeVar, Generic, Union, Mapping
 
-
-from app.core.dependencies import get_mongo
+from openai import BaseModel
+from pydantic import Field
 from app.schema.collection_id.object_id import PyObjectId
 from app.utils.time import now_in_luanda
 
@@ -20,6 +20,18 @@ def to_object_id(_id: str) -> PydanticObjectId:
         raise ValueError("Invalid ObjectId")
 
 
+class PaginationResult[T](BaseModel):
+    items: List[T]
+    next_cursor: Optional[PyObjectId] = Field(default=None, alias="nextCursor")
+    total_count: int = Field(..., alias="totalCount")
+    has_more: bool = Field(..., alias="hasMore")
+
+    model_config = {
+        "populate_by_name": True,
+        "arbitrary_types_allowed": True
+    }
+
+
 
 class MongoCrud(Generic[T]):
 
@@ -28,6 +40,8 @@ class MongoCrud(Generic[T]):
             raise ValueError("model must be a Beanie Document")
         self.model = model
 
+    def _validate(self, raw:  Mapping[str, Any]) -> T:
+        return self.model.model_validate(raw)
 
     async def create(self, data: Dict[str, Any]) -> T:
         data["created_at"] = now_in_luanda()
@@ -50,7 +64,7 @@ class MongoCrud(Generic[T]):
             raw = await self.model.get_motor_collection().find_one({"_id": ObjectId(_id)})
             if not raw:
                 return None
-            document = self.model.model_validate(raw)
+            document = self._validate(raw)
             return document
         except Exception as e:
             print(f"❌ Failed to retrieve document by id {_id}: {e}")
@@ -98,26 +112,34 @@ class MongoCrud(Generic[T]):
             return True
         return False
 
-    async def paginate(self, filters: Dict[str, Any], skip: int = 0, limit: int = 10, cursor: Optional[Union[str, datetime]] = None) -> Dict[str, Any]:
+    async def paginate(self,
+                       filters: Dict[str, Any],
+                       limit: int = 10,
+                       cursor: Optional[str] = None) -> PaginationResult[T]:
+
         query = filters.copy()
 
         if cursor:
-            if isinstance(cursor, str):  # If using `_id` for pagination
-                query["_id"] = {"$gt": cursor}
-            elif isinstance(cursor, datetime):  # If using `created_at` for pagination
-                query["created_at"] = {"$gt": cursor}
+            query["_id"] = {'$gt': ObjectId(cursor)}
 
-        documents = await self.model.find(query).sort("created_at").skip(skip).limit(limit).to_list()
+        raw = await self.model.get_motor_collection().find(query).sort("_id").limit(limit + 1).to_list()
 
-        next_cursor = None
-        if documents:
-            next_cursor = documents[-1].created_at  # Use `created_at` as the cursor
+        documents = [self._validate(doc) for doc in raw]
+
+        items = documents[:limit]
+
+        has_more = len(documents) > limit
+
+        next_cursor = str(items[-1].id) if has_more else None
 
         total_count = await self.model.find(filters).count()
 
-        return {
-            "items": documents,
-            "next_cursor": next_cursor,
-            "total_count": total_count,
-        }
+        return PaginationResult[T](
+            items=items,
+            next_cursor=next_cursor,
+            totalCount=total_count,
+            hasMore=has_more
+        )
+
+
 

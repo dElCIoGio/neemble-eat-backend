@@ -246,9 +246,22 @@ async def deactivate_existing_restaurant(restaurant_id: str):
     return await deactivate_restaurant(restaurant_id)
 
 
-@router.get("/{restaurant_id}", dependencies=[Depends(admin_required)])
+@router.get("/{restaurant_id}")
 async def get_single_restaurant(restaurant_id: str):
-    return await get_restaurant(restaurant_id)
+    try:
+        restaurant = await get_restaurant(restaurant_id)
+        if not restaurant:
+            raise HTTPException(
+                status_code=404,
+                detail="Restaurant not found"
+            )
+        return restaurant.to_response()
+    except Exception as error:
+        print(error)
+        raise HTTPException(
+            status_code=400,
+            detail=str(error)
+        )
 
 
 @router.get("/slug/{slug}")
@@ -257,6 +270,7 @@ async def get_restaurant_by_slug(slug: str):
     if not restaurant:
         raise HTTPException(status_code=404, detail="Restaurant not found")
     return restaurant.to_response()
+
 
 
 @router.put("/{restaurant_id}")
