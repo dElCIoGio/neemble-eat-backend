@@ -158,3 +158,23 @@ async def list_sessions_for_table(table_id: str):
 
 async def delete_session(session_id: str) -> bool:
     return await session_model.delete(session_id)
+
+
+async def calculate_session_time_length(session_id: str) -> float:
+    """Return the length of a session in minutes based on its orders."""
+    session = await session_model.get(session_id)
+    if not session:
+        return 0.0
+
+    orders = await OrderDocument.find(
+        OrderDocument.session_id == session_id
+    ).sort("order_time").to_list()
+
+    if not orders:
+        return 0.0
+
+    first_order_time = orders[0].order_time
+    end_time = session.end_time or now_in_luanda()
+
+    duration_seconds = (end_time - first_order_time).total_seconds()
+    return duration_seconds / 60.0
