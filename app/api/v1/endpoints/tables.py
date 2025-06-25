@@ -46,8 +46,6 @@ async def get_table(table_id: str):
 async def list_tables(restaurant_id: str):
     tables = await table_service.list_tables_for_restaurant(restaurant_id)
 
-    print(tables)
-    print(len(tables))
     return [t.to_response() for t in tables]
 
 

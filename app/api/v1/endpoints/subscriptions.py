@@ -1,20 +1,39 @@
-from fastapi import APIRouter, HTTPException, Depends
+from typing import Optional, Dict, Any
+
+from fastapi import APIRouter, HTTPException, Depends, Query
 
 from app.services import subscription as subscription_service
 from app.schema import subscription_plan as plan_schema
 from app.schema import user_subscription as subscription_schema
+from app.services.subscription import subscription_model, plan_model
 from app.utils.auth import admin_required
 
 router = APIRouter()
 
 
 # Subscription Plan CRUD
+
+@router.get("/plans/paginate")
+async def paginate_plans(
+    limit: int = Query(10, gt=0),
+    cursor: Optional[str] = Query(None),
+):
+    try:
+        filters: Dict[str, Any] = {}
+
+        result = await plan_model.paginate(filters=filters, limit=limit, cursor=cursor)
+
+        return result
+    except Exception as error:
+        print(error)
+
 @router.post('/plans', dependencies=[Depends(admin_required)])
 async def create_plan(data: plan_schema.SubscriptionPlanCreate):
     try:
         plan = await subscription_service.create_plan(data)
         return plan.to_response()
     except Exception as e:
+        print(str(e))
         raise HTTPException(status_code=400, detail=str(e))
 
 
@@ -55,6 +74,21 @@ async def list_all_plans():
 
 
 # User Subscription Endpoints
+
+@router.get("/subscriptions/paginate")
+async def paginate_subscriptions(
+    limit: int = Query(10, gt=0),
+    cursor: Optional[str] = Query(None),
+):
+    try:
+        filters: Dict[str, Any] = {}
+
+        result = await subscription_model.paginate(filters=filters, limit=limit, cursor=cursor)
+
+        return result
+    except Exception as error:
+        print(error)
+
 @router.post('/subscribe')
 async def subscribe(data: subscription_schema.UserSubscriptionCreate):
     try:

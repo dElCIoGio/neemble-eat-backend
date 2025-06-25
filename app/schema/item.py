@@ -22,8 +22,8 @@ class OptionLimitType(str, Enum):
 
 class CustomizationOption(BaseModel):
     name: str
-    price_modifier: float = 0.0
-    max_quantity: Optional[int] = 1
+    price_modifier: float = Field(alias="priceModifier", default=0.0)
+    max_quantity: Optional[int] = Field(alias="maxQuantity", default=1)
 
 
 class CustomizationRule(BaseModel):

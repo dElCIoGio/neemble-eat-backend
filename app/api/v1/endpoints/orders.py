@@ -46,8 +46,6 @@ async def paginate_orders(
 
         result = await order_model.paginate(filters=filters, limit=limit, cursor=cursor)
 
-        orders = result.items
-
         return result
     except Exception as error:
         print(error)

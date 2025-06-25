@@ -19,9 +19,15 @@ class OrderPrepStatus(str, Enum):
     SERVED = "served"
     CANCELLED = "cancelled"
 
+
+class SelectedOption(BaseModel):
+    option_name: str = Field(..., alias="optionName")
+    quantity: int
+    priceModifier: float
+
 class OrderCustomizationSelection(BaseModel):
-    rule_name: str  # Name of the customization rule (e.g., "Choose Side")
-    selected_options: List[str]  # What options the customer picked
+    rule_name: str = Field(..., alias="ruleName")  # Name of the customization rule (e.g., "Choose Side")
+    selected_options: List[SelectedOption] = Field(alias="selectedOptions", default_factory=list)  # What options the customer picked
 
 
 class OrderCreate(BaseModel):
@@ -32,7 +38,7 @@ class OrderCreate(BaseModel):
     ordered_item_name: Optional[str] = Field(default=None, alias="orderedItemName")
     total: float = Field(default=0.0)
     restaurant_id: str = Field(..., alias="restaurantId")
-    customizations: Optional[List[OrderCustomizationSelection]] = Field(default_factory=list)
+    customisations: Optional[List[OrderCustomizationSelection]] = Field(default_factory=list)
     additional_note: Optional[str] = Field(default=None, alias="additionalNote")
     table_number: int = Field(..., alias="tableNumber")
 
