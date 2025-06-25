@@ -86,7 +86,7 @@ class MongoCrud(Generic[T]):
             self, filters: Dict[str, Any], skip: int = 0, limit: int = 10
     ) -> List[T]:
         documents = await self.model.get_motor_collection().find(filters).skip(skip).limit(limit).to_list()
-        return documents
+        return [self._validate(doc) for doc in documents]
 
     async def update(self, _id: str, data: Dict[str, Any]) -> Optional[T]:
         collection = self.model.get_motor_collection()

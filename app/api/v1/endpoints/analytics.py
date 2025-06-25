@@ -23,11 +23,6 @@ async def sales_summary(
     to_date: Optional[datetime] = Query(None, alias="toDate"),
 ):
 
-
-
-    print("FROM DATE:", from_date)
-    print("TO DATE:", to_date)
-
     if not from_date or not to_date:
         today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
         from_date = today

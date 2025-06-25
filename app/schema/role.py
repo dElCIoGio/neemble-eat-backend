@@ -14,9 +14,6 @@ class Sections(Enum):
     QRCODES="Mesas e QR Code"
     RESERVATIONS="Reservas"
 
-
-
-
 class Permissions(BaseModel):
     can_view: bool = Field(alias="canView", default=False)
     can_edit: bool = Field(alias="canEdit", default=False)
@@ -33,6 +30,7 @@ class RoleBase(BaseModel):
     description: str = Field(default="", description="Role description")
     permissions: List[SectionPermission] = Field(default_factory=list)
     restaurant_id: str = Field(..., alias="restaurantId")
+    level: int = Field(default=0)
 
 
 class RoleCreate(RoleBase):

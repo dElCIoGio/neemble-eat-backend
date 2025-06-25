@@ -12,6 +12,7 @@ def get_default_roles(restaurant_id: str) -> dict[str, RoleCreate]:
     default_roles: dict[str, RoleCreate] = {
         "manager": RoleCreate(
             name="manager",
+            level=0,
             description="Full access to restaurant operations",
             restaurantId=restaurant_id,
             permissions=[
@@ -25,6 +26,7 @@ def get_default_roles(restaurant_id: str) -> dict[str, RoleCreate]:
         ),
         "chef": RoleCreate(
             name="chef",
+            level=1,
             description="Manages food orders in the kitchen",
             restaurantId=restaurant_id,
             permissions=[
@@ -33,6 +35,7 @@ def get_default_roles(restaurant_id: str) -> dict[str, RoleCreate]:
         ),
         "waiter": RoleCreate(
             name="waiter",
+            level=2,
             description="Handles tables and takes orders",
             restaurantId=restaurant_id,
             permissions=[
@@ -43,6 +46,7 @@ def get_default_roles(restaurant_id: str) -> dict[str, RoleCreate]:
         ),
         "bartender": RoleCreate(
             name="bartender",
+            level=2,
             description="Prepares and serves drinks",
             restaurantId=restaurant_id,
             permissions=[
@@ -51,6 +55,7 @@ def get_default_roles(restaurant_id: str) -> dict[str, RoleCreate]:
         ),
         "accountant": RoleCreate(
             name="accountant",
+            level=1,
             description="Manages invoices and analytics",
             restaurantId=restaurant_id,
             permissions=[

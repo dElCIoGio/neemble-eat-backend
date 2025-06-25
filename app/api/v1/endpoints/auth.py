@@ -44,8 +44,9 @@ async def login(
 
         # Get or create user in our database
 
-
         user = await user_model.get_user_by_firebase_uid(firebase_uid)
+
+        print(user)
 
         await user_model.update(str(user.id), {
             "lastLogged": now_in_luanda().isoformat()
