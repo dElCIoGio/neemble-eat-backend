@@ -22,6 +22,8 @@ from app.schema import (
     sale,
     recipe,
     movement,
+    subscription_plan,
+    user_subscription,
 
 
 )
@@ -92,5 +94,7 @@ def get_mongo():
             sale.SaleDocument,
             recipe.RecipeDocument,
             movement.MovementDocument,
+            subscription_plan.SubscriptionPlanDocument,
+            user_subscription.UserSubscriptionDocument,
         ]
     )
