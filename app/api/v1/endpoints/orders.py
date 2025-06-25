@@ -22,6 +22,20 @@ async def create_order(order_data: order_schema.OrderCreate = Body(..., alias="o
         raise HTTPException(status_code=500, detail=str(error))
 
 
+@router.post("/bulk")
+async def create_orders(
+    orders_data: list[order_schema.OrderCreate] = Body(..., alias="ordersData"),
+    session_id: str | None = Body(None, alias="sessionId"),
+):
+    """Create multiple orders sequentially."""
+    try:
+        payloads = [data.model_dump(by_alias=True) for data in orders_data]
+        orders = await order_service.place_orders(payloads, session_id)
+        return [o.to_response() for o in orders]
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))
+
+
 @router.get("/paginate")
 async def paginate_orders(
     limit: int = Query(10, gt=0),
