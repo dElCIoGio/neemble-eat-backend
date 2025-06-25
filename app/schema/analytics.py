@@ -17,6 +17,21 @@ class SalesSummary(BaseModel):
     average_invoice: float = Field(..., alias="averageInvoice")
     distinct_tables: int = Field(..., alias="distinctTables")
     revenue_per_table: float = Field(..., alias="revenuePerTable")
+    total_sales_growth: float | None = Field(
+        default=None, alias="totalSalesGrowth"
+    )
+    invoice_count_growth: float | None = Field(
+        default=None, alias="invoiceCountGrowth"
+    )
+    average_invoice_growth: float | None = Field(
+        default=None, alias="averageInvoiceGrowth"
+    )
+    distinct_tables_growth: float | None = Field(
+        default=None, alias="distinctTablesGrowth"
+    )
+    revenue_per_table_growth: float | None = Field(
+        default=None, alias="revenuePerTableGrowth"
+    )
 
     model_config = ConfigDict(
         populate_by_name=True

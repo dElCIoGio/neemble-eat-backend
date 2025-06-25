@@ -6,6 +6,7 @@ This document outlines the basic requirements and a comprehensive list of test c
 
 1. **Sales Summary Calculations**
    - Retrieve all invoices for the given restaurant and date range and compute overall sales metrics.
+   - Calculate percentage growth for each metric compared with the previous equal period.
 2. **Invoice Counting**
    - Count invoices created within the specified range for a restaurant.
 3. **Order Aggregations**
@@ -22,8 +23,9 @@ This document outlines the basic requirements and a comprehensive list of test c
 ### 1. Sales Summary Endpoint `/api/v1/analytics/sales-summary`
 - **TC1.1** Call without `fromDate` and `toDate` parameters and verify the endpoint defaults to today's range.
 - **TC1.2** Provide a valid date range and confirm the response includes total sales, invoice count, average invoice value, distinct tables and revenue per table.
-- **TC1.3** Use a range with no invoices and expect all fields in the response to be zero.
-- **TC1.4** Supply an invalid date format and expect HTTP 400.
+- **TC1.3** Ensure the response also returns growth rates for each metric compared to the preceding period.
+- **TC1.4** Use a range with no invoices and expect all fields in the response to be zero.
+- **TC1.5** Supply an invalid date format and expect HTTP 400.
 
 ### 2. Invoice Count Endpoint `/api/v1/analytics/invoices`
 - **TC2.1** Request with a valid date range and verify the invoice count matches the documents in the database.

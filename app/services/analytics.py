@@ -4,8 +4,16 @@ from beanie.operators import And, GTE, LTE, Eq, Or
 from starlette.exceptions import HTTPException
 
 from app.models.invoice import InvoiceModel
-from app.schema.analytics import ItemOrderQuantity, SalesSummary, InvoiceCount, OrderCount, CancelledCount, \
-    AverageSessionDuration, ActiveSessionCount, TotalOrdersCount
+from app.schema.analytics import (
+    ItemOrderQuantity,
+    SalesSummary,
+    InvoiceCount,
+    OrderCount,
+    CancelledCount,
+    AverageSessionDuration,
+    ActiveSessionCount,
+    TotalOrdersCount,
+)
 from app.schema.invoice import InvoiceDocument
 from app.schema.order import OrderDocument
 from app.schema.table_session import TableSessionDocument
@@ -19,41 +27,65 @@ async def get_sales_summary(
     to_date: datetime
 ) -> SalesSummary:
 
+    def _compute_metrics(inv_list: List[InvoiceDocument]):
+        total_sales = sum(inv.total or 0.0 for inv in inv_list)
+        invoice_count = len(inv_list)
+        average_invoice = (
+            total_sales / invoice_count if invoice_count > 0 else 0.0
+        )
+        distinct_tables = len(set(inv.session_id for inv in inv_list))
+        revenue_per_table = (
+            total_sales / distinct_tables if distinct_tables > 0 else 0.0
+        )
+        return (
+            round(total_sales, 2),
+            invoice_count,
+            round(average_invoice, 2),
+            distinct_tables,
+            round(revenue_per_table, 2),
+        )
 
-    # 1. Find all PAID invoices in the date range
+    def _growth(current: float, previous: float) -> float | None:
+        if previous == 0:
+            return None
+        return round(((current - previous) / previous) * 100, 2)
+
+    # current period invoices
     filters = {
         "restaurantId": restaurant_id,
-        # "status": "paid",
-        "createdAt": {"$gte": from_date,}
+        "createdAt": {"$gte": from_date},
     }
     invoices = await invoice_model.get_by_fields(filters)
 
+    current_metrics = _compute_metrics(invoices or [])
 
-    if invoices is None or invoices is []:
-        return SalesSummary(
-            total_sales=0.0,
-            invoice_count=0,
-            average_invoice=0.0,
-            distinct_tables=0,
-            revenue_per_table=0.0
-        )
+    # previous period invoices
+    period_delta = to_date - from_date
+    prev_from = from_date - period_delta
+    prev_filters = {
+        "restaurantId": restaurant_id,
+        "createdAt": {"$gte": prev_from},
+    }
+    previous_invoices = await invoice_model.get_by_fields(prev_filters)
+    previous_metrics = _compute_metrics(previous_invoices or [])
 
-    # 2. Calculate values
-    total_sales = sum(invoice.total or 0.0 for invoice in invoices)
-    invoice_count = len(invoices)
-    average_invoice = total_sales / invoice_count if invoice_count > 0 else 0.0
-    distinct_tables = len(set(inv.session_id for inv in invoices))
-    revenue_per_table = total_sales / distinct_tables if distinct_tables > 0 else 0.0
+    growths = [
+        _growth(curr, prev)
+        for curr, prev in zip(current_metrics, previous_metrics)
+    ]
 
-    summary = SalesSummary(
-        total_sales=round(total_sales, 2),
-        invoice_count=invoice_count,
-        average_invoice=round(average_invoice, 2),
-        distinct_tables=distinct_tables,
-        revenue_per_table=round(revenue_per_table, 2)
+    return SalesSummary(
+        total_sales=current_metrics[0],
+        invoice_count=current_metrics[1],
+        average_invoice=current_metrics[2],
+        distinct_tables=current_metrics[3],
+        revenue_per_table=current_metrics[4],
+        total_sales_growth=growths[0],
+        invoice_count_growth=growths[1],
+        average_invoice_growth=growths[2],
+        distinct_tables_growth=growths[3],
+        revenue_per_table_growth=growths[4],
     )
-
-    return summary
 
 
 async def count_invoices(
