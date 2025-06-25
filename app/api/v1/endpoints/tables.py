@@ -1,9 +1,10 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Depends
 from typing import Optional, Dict, Any
 
 from app.models.table import TableModel
 from app.schema import table as table_schema
 from app.services import table as table_service
+from app.utils.auth import admin_required
 
 router = APIRouter()
 table_model = TableModel()
@@ -78,6 +79,26 @@ async def update_table_status(table_id: str, is_active: bool):
 @router.put("/{table_id}/session")
 async def update_table_session(table_id: str, session_id: Optional[str] = None):
     table = await table_service.update_table_session(table_id, session_id)
+    if not table:
+        raise HTTPException(status_code=404, detail="Table not found")
+    return table.to_response()
+
+
+@router.post("/reset", dependencies=[Depends(admin_required)])
+async def reset_all_tables_endpoint():
+    tables = await table_service.reset_all_tables()
+    return [t.to_response() for t in tables]
+
+
+@router.post("/restaurant/{restaurant_id}/reset", dependencies=[Depends(admin_required)])
+async def reset_restaurant_tables_endpoint(restaurant_id: str):
+    tables = await table_service.reset_tables_for_restaurant(restaurant_id)
+    return [t.to_response() for t in tables]
+
+
+@router.post("/{table_id}/reset", dependencies=[Depends(admin_required)])
+async def reset_single_table_endpoint(table_id: str):
+    table = await table_service.reset_table(table_id)
     if not table:
         raise HTTPException(status_code=404, detail="Table not found")
     return table.to_response()
