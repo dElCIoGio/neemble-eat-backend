@@ -40,6 +40,22 @@ async def place_order(data: dict) -> order_schema.OrderDocument:
     return order
 
 
+async def place_orders(data_list: list[dict], session_id: str | None = None) -> list[order_schema.OrderDocument]:
+    """Place multiple orders sequentially.
+
+    If ``session_id`` is provided, it will be used for all orders unless an
+    individual order already specifies a ``sessionId``.
+    """
+    orders: list[order_schema.OrderDocument] = []
+    for data in data_list:
+        payload = data.copy()
+        if session_id and "sessionId" not in payload:
+            payload["sessionId"] = session_id
+        order = await place_order(payload)
+        orders.append(order)
+    return orders
+
+
 async def get_order(order_id: str) -> order_schema.OrderDocument | None:
     return await order_model.get(order_id)
 
