@@ -5,6 +5,8 @@ from typing import Any, Dict, List, Optional, Type, TypeVar, Generic, Union, Map
 
 from openai import BaseModel
 from pydantic import Field
+from watchfiles import awatch
+
 from app.schema.collection_id.object_id import PyObjectId
 from app.utils.time import now_in_luanda
 
@@ -83,7 +85,8 @@ class MongoCrud(Generic[T]):
     async def get_by_fields(
             self, filters: Dict[str, Any], skip: int = 0, limit: int = 10
     ) -> List[T]:
-        return await self.model.find(filters).skip(skip).limit(limit).to_list()
+        documents = await self.model.get_motor_collection().find(filters).skip(skip).limit(limit).to_list()
+        return documents
 
     async def update(self, _id: str, data: Dict[str, Any]) -> Optional[T]:
         collection = self.model.get_motor_collection()
