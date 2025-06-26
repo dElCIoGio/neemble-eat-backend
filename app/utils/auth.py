@@ -49,7 +49,14 @@ def set_auth_cookies(response: Response, id_token: str) -> None:
     session_cookie = create_session_cookie(id_token)
 
     # Set secure HTTP-only cookies
-    is_production = settings.ENVIRONMENT == "production" # This is returning False
+    is_production = settings.ENVIRONMENT.lower() == "production" # This is returning False
+
+    cookie_settings = {}
+    if is_production:
+        # Production config for cloud domains
+        cookie_settings = {
+            "domain": ".neemble-eat.com",
+        }
 
     response.set_cookie(
         key=AUTH_COOKIE_NAME,
@@ -57,7 +64,9 @@ def set_auth_cookies(response: Response, id_token: str) -> None:
         max_age=SESSION_COOKIE_MAX_AGE,
         httponly=True,
         secure=is_production,
-        samesite="none" if is_production else "lax"
+        samesite="none" if is_production else "lax",
+        path="/",
+        **cookie_settings
     )
 
     # Set refresh token cookie with longer expiration
@@ -67,7 +76,9 @@ def set_auth_cookies(response: Response, id_token: str) -> None:
         max_age=REFRESH_COOKIE_MAX_AGE,
         httponly=True,
         secure=is_production,
-        samesite="none" if is_production else "lax"
+        samesite="none" if is_production else "lax",
+        path="/",
+        **cookie_settings
     )
 
 

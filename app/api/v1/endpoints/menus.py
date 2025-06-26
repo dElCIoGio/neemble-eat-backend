@@ -82,7 +82,7 @@ async def list_menu_items_by_slug(menu_slug: str):
                 detail="The menu was not found",
                 status_code=400
             )
-        items = await item_service.list_items_by_menu(menu.id)
+        items = await item_service.list_items_by_menu(str(menu.id))
         return [i.to_response() for i in items]
     except Exception as error:
         print(error)

@@ -1,11 +1,11 @@
+
 from beanie import Document, PydanticObjectId
-from beanie.odm.operators.find.comparison import GT
 from bson import ObjectId
 from typing import Any, Dict, List, Optional, Type, TypeVar, Generic, Union, Mapping
 
+from motor.motor_asyncio import AsyncIOMotorCollection
 from openai import BaseModel
 from pydantic import Field
-from watchfiles import awatch
 
 from app.schema.collection_id.object_id import PyObjectId
 from app.utils.time import now_in_luanda
@@ -45,6 +45,9 @@ class MongoCrud(Generic[T]):
     def _validate(self, raw:  Mapping[str, Any]) -> T:
         return self.model.model_validate(raw)
 
+    def _get_collection(self) -> AsyncIOMotorCollection:
+        return self.model.get_motor_collection()
+
     async def create(self, data: Dict[str, Any]) -> T:
         data["created_at"] = now_in_luanda()
         data["updated_at"] = now_in_luanda()
@@ -56,10 +59,17 @@ class MongoCrud(Generic[T]):
         return await self.model.find().to_list()
 
     async def get_many(self, ids: List[str]) -> List[T]:
-        object_ids = [to_object_id(id) for id in ids]
-        return await self.model.find(
-            self.model.id.in_(object_ids)
-        ).to_list()
+        try:
+            object_ids = [to_object_id(id) for id in ids]
+            collection = self._get_collection()
+            documents = await collection.find(
+                {"_id": {"$in": object_ids}}
+            ).to_list()
+            print(documents)
+            return [self._validate(doc) for doc in documents]
+        except Exception as error:
+            print("Error trying to fetch it all")
+            print(error)
 
     async def get(self, _id: str) -> Optional[T]:
         try:

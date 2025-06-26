@@ -26,11 +26,17 @@ async def list_restaurant_roles(restaurant_id: str):
     return [r.to_response() for r in roles]
 
 @router.put("/{role_id}")
-async def update_role(role_id: str, data: role_schema.RoleUpdate):
-    updated = await role_service.update_role(role_id, data)
-    if not updated:
-        raise HTTPException(status_code=404, detail="Role not found")
-    return updated.to_response()
+async def update_role(role_id: str, data: dict):
+    try:
+        data = role_schema.RoleUpdate.model_validate(data)
+
+        updated = await role_service.update_role(role_id, data)
+        if not updated:
+            raise HTTPException(status_code=404, detail="Role not found")
+        return updated.to_response()
+    except Exception as error:
+        print(error)
+        raise HTTPException(status_code=500, detail=str(error))
 
 @router.delete("/{role_id}")
 async def deactivate_role(role_id: str):

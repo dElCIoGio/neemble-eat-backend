@@ -22,7 +22,8 @@ async def get_category(category_id: str):
 async def list_categories_for_menu(menu_id: str):
     """List all active categories that belong to a menu."""
     filters = {"menuId": menu_id}
-    return await category_model.get_by_fields(filters)
+    result = await category_model.get_by_fields(filters)
+    return result
 
 async def update_category_availability(category_id: str, is_active: bool):
     """Switch the availability flag of a category."""

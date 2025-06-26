@@ -37,15 +37,14 @@ class RoleCreate(RoleBase):
     pass  # Same fields when creating
 
 
-RoleUpdate = make_optional_model(RoleBase)
-
-
 class Role(RoleBase, DocumentId):
 
     model_config = {
         "populate_by_name": True,
         "arbitrary_types_allowed": True
     }
+
+RoleUpdate = make_optional_model(Role)
 
 class RoleDocument(Document, Role):
     """Database representation for roles."""

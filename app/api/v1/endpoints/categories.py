@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Body
+from pydantic import constr
 
 from app.schema import category as category_schema
 from app.services import category as category_service
@@ -97,7 +98,8 @@ async def list_menu_categories_by_slug(menu_slug: str):
                 detail="The menu was not found",
                 status_code=400
             )
-        categories = await category_service.list_categories_for_menu(menu.id)
+
+        categories = await category_service.list_categories_for_menu(str(menu.id))
         return [c.to_response() for c in categories]
     except Exception as error:
         raise HTTPException(
