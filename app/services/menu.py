@@ -70,6 +70,12 @@ async def deactivate_menu(menu_id: str):
         raise Exception("Menu not found")
     return await menu_model.update(menu_id, {"isActive": False})
 
+async def activate_menu(menu_id: str):
+    menu = await menu_model.get(menu_id)
+    if not menu:
+        raise Exception("Menu not found")
+    return await menu_model.update(menu_id, {"isActive": True})
+
 async def update_menu_status(menu_id: str, is_active: bool):
     menu = await menu_model.get(menu_id)
     if not menu:
