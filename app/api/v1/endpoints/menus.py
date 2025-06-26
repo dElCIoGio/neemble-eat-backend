@@ -49,6 +49,15 @@ async def update_menu_status(menu_id: str, is_active: bool):
     except Exception as error:
         raise HTTPException(status_code=404, detail=str(error))
 
+
+@router.put("/{menu_id}/deactivate")
+async def deactivate_menu(menu_id: str):
+    """Deactivate a menu by id by setting ``isActive`` to ``False``."""
+    try:
+        return await menu_service.deactivate_menu(menu_id)
+    except Exception as error:
+        raise HTTPException(status_code=404, detail=str(error))
+
 @router.get("/{menu_id}")
 async def get_menu(menu_id: str):
     menu = await menu_service.get_menu(menu_id)
