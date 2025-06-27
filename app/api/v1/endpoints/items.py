@@ -130,10 +130,16 @@ async def update_item_image(item_id: str, image_file: UploadFile = File(..., ali
 
 @router.put("/{item_id}/availability")
 async def switch_item_availability(item_id: str):
-    updated = await item_service.update_item_availability(item_id)
-    if not updated:
-        raise HTTPException(status_code=404, detail="Item not found")
-    return updated.to_response()
+    try:
+        updated = await item_service.update_item_availability(item_id)
+        if not updated:
+            raise HTTPException(status_code=404, detail="Item not found")
+        return updated.to_response()
+    except Exception as error:
+        print(str(error))
+        raise HTTPException(
+            status_code=400, detail=str(error)
+        )
 
 
 @router.post("/{item_id}/customizations")

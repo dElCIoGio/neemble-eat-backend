@@ -30,11 +30,20 @@ async def get_category(category_id: str):
     return category.to_response()
 
 @router.put("/{category_id}")
-async def update_category(category_id: str, data: category_schema.CategoryUpdate):
-    updated = await category_service.update_category(category_id, data)
-    if not updated:
-        raise HTTPException(status_code=404, detail="Category not found")
-    return updated.to_response()
+async def update_category(category_id: str, data: category_schema.CategoryUpdate = Body(...)):
+
+    try:
+
+        updated = await category_service.update_category(category_id, data)
+        if not updated:
+            raise HTTPException(status_code=404, detail="Category not found")
+        return updated.to_response()
+    except Exception as error:
+        print(str(error))
+        raise HTTPException(
+            status_code=400,
+            detail=str(error)
+        )
 
 @router.delete("/{category_id}")
 async def delete_category(category_id: str):

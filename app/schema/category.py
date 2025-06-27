@@ -15,7 +15,7 @@ from app.utils.make_optional_model import make_optional_model
 class CategoryCreate(BaseModel):
     name: str
     restaurant_id: str = Field(..., alias="restaurantId")
-    description: Optional[str] = ""
+    description: Optional[str] = Field(default="")
     menu_id: str = Field(..., alias="menuId")
 
 
@@ -32,10 +32,6 @@ class CategoryBase(CategoryCreate):
 
 CategoryUpdate = make_optional_model(CategoryBase)
 
-
-# =====================
-# Final Category Model
-# =====================
 
 class Category(CategoryBase, DocumentId):
     model_config = {

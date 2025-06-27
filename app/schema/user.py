@@ -57,6 +57,7 @@ class UserCreate(BaseModel):
 
 UserUpdate = make_optional_model(UserBase)
 
+
 class User(UserBase, DocumentId):
 
     model_config = ConfigDict(

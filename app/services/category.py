@@ -10,7 +10,12 @@ async def create_category(data: category_schema.CategoryCreate):
     return await category_model.create(payload)
 
 async def update_category(category_id: str, data: category_schema.CategoryUpdate):
-    return await category_model.update(category_id, data)
+    update_data = data.model_dump(
+        by_alias=True,  # keep camelCase if you use aliases in Mongo
+        exclude_none=True,  # drop explicit nulls
+        exclude_unset=True  # drop fields the client omitted
+    )
+    return await category_model.update(category_id, update_data)
 
 async def delete_category(category_id: str):
     return await category_model.delete(category_id)

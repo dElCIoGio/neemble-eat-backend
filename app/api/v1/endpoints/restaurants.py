@@ -308,7 +308,7 @@ async def update_existing_restaurant(restaurant_id: str, data: restaurant_schema
 
 
 @router.put("/{restaurant_id}/banner")
-async def update_restaurant_banner(restaurant_id: str, banner_file: UploadFile = File(...)):
+async def update_restaurant_banner(restaurant_id: str, banner_file: UploadFile = File(..., alias="bannerFile")):
     """Replace a restaurant's banner image and remove the old one."""
     restaurant = await get_restaurant(restaurant_id)
     if not restaurant:
@@ -334,7 +334,7 @@ async def update_restaurant_banner(restaurant_id: str, banner_file: UploadFile =
 
 
 @router.put("/{restaurant_id}/logo")
-async def update_restaurant_logo(restaurant_id: str, logo_file: UploadFile = File(...)):
+async def update_restaurant_logo(restaurant_id: str, logo_file: UploadFile = File(..., alias="logoFile")):
     """Replace a restaurant's logo image and remove the old one."""
     restaurant = await get_restaurant(restaurant_id)
     if not restaurant:

@@ -1,25 +1,36 @@
-from typing import Type, Optional
+from copy import deepcopy
+from typing import Type, Optional, Dict, Any
 
-from pydantic import BaseModel, Field, create_model
+from pydantic import BaseModel, Field, create_model, ConfigDict
 
 
-def make_optional_model(model: Type[BaseModel], name_suffix="Update") -> Type[BaseModel]:
-    """Creates a new model where all fields are optional with the same aliases."""
-    fields = {}
+def make_optional_model(
+    model: Type[BaseModel],
+    *,
+    name_suffix: str = "Update",
+) -> Type[BaseModel]:
+    """
+    Build a *new* Pydantic model where every field of *model*
+    becomes Optional with default None.
+    """
 
-    for field_name, field_type in model.__annotations__.items():
-        # Get the original field to preserve aliases and other metadata
-        original_field = model.model_fields.get(field_name)
+    # 1️⃣  Copy every FieldInfo but mark it optional/None
+    new_fields: Dict[str, tuple[Any, Any]] = {}
+    for name, fld in model.model_fields.items():
+        anno = Optional[fld.annotation]            # type: ignore[index]
+        copied_info = deepcopy(fld)                # fld *is* FieldInfo
+        copied_info.default = None
+        new_fields[name] = (anno, copied_info)
 
-        if original_field and original_field.alias:
-            # Create a new optional field with the same alias
-            fields[field_name] = (Optional[field_type], Field(default=None, alias=original_field.alias))
-        else:
-            # If no alias, just make it optional
-            fields[field_name] = (Optional[field_type], None)
+    # 2️⃣  Merge (or create) ConfigDict and be sure populate_by_name is True
+    base_cfg = getattr(model, "model_config", None)
+    merged_cfg: Dict[str, Any] = dict(base_cfg or {})
+    merged_cfg.setdefault("populate_by_name", True)   # only add if absent
+    new_cfg = ConfigDict(**merged_cfg)                # safe now
 
+    # 3️⃣  Create the actual model (no inheritance → no “required” bleed-through)
     return create_model(
         f"{model.__name__}{name_suffix}",
-        **fields,
-        __base__=model
+        __config__=new_cfg,
+        **new_fields,
     )

@@ -45,7 +45,7 @@ async def update_item_availability(item_id: str):
     """Update only the availability flag of an item."""
     item = await item_model.get(item_id)
     is_available = item.is_available
-    return await item_model.update(item_id, {"isAvailable": False if is_available == True else True})
+    return await item_model.update(item_id, {"isAvailable": False if is_available else True})
 
 
 def _serialize_customizations(customizations: list[item_schema.CustomizationRule]):
