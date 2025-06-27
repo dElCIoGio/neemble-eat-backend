@@ -14,7 +14,8 @@ from app.utils.time import now_in_luanda
 
 class TableSessionStatus(str, Enum):
     ACTIVE = "active"
-    CLOSED = "closed"
+    PAID = "paid"
+    NEED_BILL = "needs bill"
     CANCELLED = "cancelled"
 
 class TableSessionReview(BaseModel):
