@@ -4,6 +4,8 @@ from beanie.operators import And, GTE, LTE, Eq, Or
 from starlette.exceptions import HTTPException
 
 from app.models.invoice import InvoiceModel
+from app.models.order import OrderModel
+from app.models.table_session import TableSessionModel
 from app.schema.analytics import (
     ItemOrderQuantity,
     SalesSummary,
@@ -19,7 +21,10 @@ from app.schema.order import OrderDocument
 from app.schema.table_session import TableSessionDocument
 from app.utils.time import now_in_luanda
 
+
+order_model = OrderModel()
 invoice_model = InvoiceModel()
+session_model = TableSessionModel()
 
 async def get_sales_summary(
     restaurant_id: str,
@@ -92,22 +97,16 @@ async def count_invoices(
     restaurant_id: str,
     from_date: datetime,
     to_date: datetime,
+    status_filter: str
 ) -> InvoiceCount:
 
-    count = await InvoiceDocument.find(
-        And(
+    # {"$and": [{"price": {"$lt": 10}}, {"category": "Sweets"}]}
+
+    invoices = await invoice_model.get_by_fields(And(
             Eq(InvoiceDocument.restaurant_id, restaurant_id),
             GTE(InvoiceDocument.created_at, from_date),
-            # LTE(InvoiceDocument.created_at, to_date)
-        )
-    ).count()
-
-    filters = {
-        "restaurantId": restaurant_id,
-        # "status": "paid",
-        "createdAt": {"$gte": from_date}
-    }
-    invoices = await invoice_model.get_by_fields(filters)
+            LTE(InvoiceDocument.created_at, to_date)
+        ))
     count = len(invoices)
 
 
@@ -122,14 +121,15 @@ async def count_orders(
 
     try:
 
-        count = await OrderDocument.find(
+        documents = await order_model.get_by_fields(
             And(
                 Eq(OrderDocument.restaurant_id, restaurant_id),
                 GTE(OrderDocument.order_time, from_date),
-                # LTE(OrderDocument.order_time, to_date)
+                LTE(OrderDocument.order_time, to_date)
             )
-        ).count()
+        )
 
+        count = len(documents)
         return OrderCount(order_count=count)
 
     except Exception as e:
@@ -149,11 +149,11 @@ async def get_top_items(
 ) -> List[ItemOrderQuantity]:
 
     # 1. Filter orders
-    orders = await OrderDocument.find(
+    orders = await order_model.get_by_fields(
         And(
             Eq(OrderDocument.restaurant_id, restaurant_id),
             GTE(OrderDocument.order_time, from_date),
-            # LTE(OrderDocument.order_time, to_date),
+            LTE(OrderDocument.order_time, to_date),
             Or(
                 Eq(OrderDocument.prep_status, "queued"),
                 Eq(OrderDocument.prep_status, "in_progress"),
@@ -161,7 +161,7 @@ async def get_top_items(
                 Eq(OrderDocument.prep_status, "delivered")
             )
         )
-    ).to_list()
+    )
 
     if not orders:
         return []
@@ -192,14 +192,16 @@ async def count_cancelled_orders(
     to_date: datetime
 ) -> CancelledCount:
 
-    count = await OrderDocument.find(
+
+    documents = await order_model.get_by_fields(
         And(
             Eq(OrderDocument.restaurant_id, restaurant_id),
             Eq(OrderDocument.prep_status, "cancelled"),
             GTE(OrderDocument.order_time, from_date),
-            # LTE(OrderDocument.order_time, to_date)
+            LTE(OrderDocument.order_time, to_date)
         )
-    ).count()
+    )
+    count = len(documents)
 
     return CancelledCount(cancelled_count=count)
 
@@ -210,14 +212,14 @@ async def average_session_duration(
     to_date: datetime
 ) -> AverageSessionDuration:
 
-    sessions = await TableSessionDocument.find(
+    sessions = await session_model.get_by_fields(
         And(
             Eq(TableSessionDocument.restaurant_id, restaurant_id),
             Eq(TableSessionDocument.status, "closed"),
             GTE(TableSessionDocument.start_time, from_date),
-            # LTE(TableSessionDocument.end_time, to_date)
+            LTE(TableSessionDocument.end_time, to_date)
         )
-    ).to_list()
+    )
 
     if not sessions:
         return AverageSessionDuration(average_duration_minutes=0.0)
@@ -236,12 +238,12 @@ async def average_session_duration(
 async def active_sessions_count(
         restaurant_id: str
 ) -> ActiveSessionCount:
-    sessions = await TableSessionDocument.find(
+    sessions = await session_model.get_by_fields(
         And(
             Eq(TableSessionDocument.restaurant_id, restaurant_id),
             Eq(TableSessionDocument.status, "active")
         )
-    ).to_list()
+    )
     sessions = [session for session in sessions if len(session.orders) > 0]
     count = len(sessions)
     return ActiveSessionCount(active_sessions=count)
@@ -258,12 +260,14 @@ async def last_seven_days_order_count(
             day_midnight = day.replace(hour=0, minute=0, second=0, microsecond=0)
             weekday = day_midnight.strftime("%A")
 
-            count = await OrderDocument.find(
+            documents = await order_model.get_by_fields(
                 And(
                     Eq(OrderDocument.restaurant_id, restaurant_id),
                     GTE(OrderDocument.order_time, day_midnight),
                 )
-            ).count()
+            )
+
+            count = len(documents)
 
             data = TotalOrdersCount(
                 day=weekday,

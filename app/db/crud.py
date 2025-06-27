@@ -1,5 +1,6 @@
 
 from beanie import Document, PydanticObjectId
+from beanie.odm.operators.find.logical import LogicalOperatorForListOfExpressions
 from bson import ObjectId
 from typing import Any, Dict, List, Optional, Type, TypeVar, Generic, Union, Mapping
 
@@ -93,7 +94,7 @@ class MongoCrud(Generic[T]):
             return None
 
     async def get_by_fields(
-            self, filters: Dict[str, Any], skip: int = 0, limit: int = 10
+            self, filters: Dict[str, Any] | LogicalOperatorForListOfExpressions, skip: int = 0, limit: int = 10
     ) -> List[T]:
         documents = await self.model.get_motor_collection().find(filters).skip(skip).limit(limit).to_list()
         return [self._validate(doc) for doc in documents]
