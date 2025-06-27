@@ -19,6 +19,7 @@ class OpeningHours(BaseModel):
 
 class RestaurantSettings(BaseModel):
     opening_hours: Optional[OpeningHours] = Field(alias="openingHours", description="Restaurant opening hours by day")
+    automatic_stock_adjustments: bool = Field(alias="automaticStockAdjustments", default=False)
 
     model_config = ConfigDict(
         populate_by_name=True,

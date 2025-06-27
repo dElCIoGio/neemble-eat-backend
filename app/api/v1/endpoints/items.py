@@ -75,12 +75,16 @@ async def get_item(item_id: str):
     return item.to_response()
 
 
-@router.get("/slug/{item_id}")
+@router.get("/{item_slug}/slug")
 async def get_item_by_slug(item_slug: str):
-    item = await item_service.get_item_by_slug(item_slug)
-    if not item:
-        raise HTTPException(status_code=404, detail="Item not found")
-    return item.to_response()
+    try:
+        item = await item_service.get_item_by_slug(item_slug)
+        if not item:
+            raise HTTPException(status_code=404, detail="Item not found")
+        return item.to_response()
+    except Exception as error:
+        print(str(error))
+        raise HTTPException(status_code=500, detail=str(error))
 
 
 @router.delete("/{item_id}")
@@ -172,7 +176,7 @@ async def delete_customization_option(item_id: str, c_index: int, o_index: int):
     return updated.to_response()
 
 
-@router.get("/category/{category_id}")
+@router.get("/{category_id}/category")
 async def list_active_items(category_id: str):
     """Return all active items that belong to the given category."""
     items = await item_service.list_items_by_category(category_id)

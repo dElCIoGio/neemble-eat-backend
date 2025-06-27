@@ -50,8 +50,6 @@ class OrderBase(OrderCreate):
     prep_status: OrderPrepStatus = Field(default=OrderPrepStatus.QUEUED, alias="prepStatus")
 
 
-
-
 OrderUpdate = make_optional_model(OrderBase)
 
 class Order(OrderBase, DocumentId):
