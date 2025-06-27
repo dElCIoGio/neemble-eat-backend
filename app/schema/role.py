@@ -32,6 +32,10 @@ class RoleBase(BaseModel):
     restaurant_id: str = Field(..., alias="restaurantId")
     level: int = Field(default=0)
 
+    model_config = {
+        "populate_by_name": True,
+    }
+
 
 class RoleCreate(RoleBase):
     pass  # Same fields when creating
@@ -44,7 +48,7 @@ class Role(RoleBase, DocumentId):
         "arbitrary_types_allowed": True
     }
 
-RoleUpdate = make_optional_model(Role)
+RoleUpdate = make_optional_model(RoleBase)
 
 class RoleDocument(Document, Role):
     """Database representation for roles."""

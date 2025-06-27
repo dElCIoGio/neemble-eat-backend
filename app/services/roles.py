@@ -1,6 +1,6 @@
 
 from app.models.role import RoleModel
-from app.schema.role import RoleDocument, SectionPermission, Permissions, RoleCreate
+from app.schema.role import RoleDocument, SectionPermission, Permissions, RoleCreate, RoleUpdate
 from app.models.user import UserModel
 from app.schema import user as user_schema
 
@@ -88,8 +88,13 @@ async def create_default_roles_for_restaurant(restaurant_id: str) -> list[RoleDo
 async def create_role(data: RoleCreate) -> RoleDocument:
     return await role_model.create(data.model_dump(by_alias=True))
 
-async def update_role(role_id: str, data: dict) -> RoleDocument:
-    return await role_model.update(role_id, data)
+async def update_role(role_id: str, data: RoleUpdate) -> RoleDocument:
+    update_data = data.model_dump(
+        by_alias=True,  # keep camelCase if you use aliases in Mongo
+        exclude_none=True,  # drop explicit nulls
+        exclude_unset=True  # drop fields the client omitted
+    )
+    return await role_model.update(role_id, update_data)
 
 
 async def deactivate_role(role_id: str) -> RoleDocument:

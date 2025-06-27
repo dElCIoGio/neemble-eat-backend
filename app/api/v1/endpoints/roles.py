@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Body
 from app.utils.auth import get_current_user
 from app.schema import role as role_schema
 from app.services import roles as role_service
@@ -26,10 +26,8 @@ async def list_restaurant_roles(restaurant_id: str):
     return [r.to_response() for r in roles]
 
 @router.put("/{role_id}")
-async def update_role(role_id: str, data: dict):
+async def update_role(role_id: str, data: role_schema.RoleUpdate = Body(...)):
     try:
-        data = role_schema.RoleUpdate.model_validate(data)
-
         updated = await role_service.update_role(role_id, data)
         if not updated:
             raise HTTPException(status_code=404, detail="Role not found")

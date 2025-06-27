@@ -33,7 +33,6 @@ async def get_category(category_id: str):
 async def update_category(category_id: str, data: category_schema.CategoryUpdate = Body(...)):
 
     try:
-
         updated = await category_service.update_category(category_id, data)
         if not updated:
             raise HTTPException(status_code=404, detail="Category not found")
