@@ -34,7 +34,9 @@ from app.utils.images import (
     RESTAURANT_LOGO,
     validate_image_dimensions,
     rename_restaurant_image,
-    cleanup_restaurant_images
+    cleanup_restaurant_images,
+    delete_restaurant_image,
+    _blob_name_from_url
 )
 from app.models.user import UserModel
 from app.utils.slug import generate_unique_slug
@@ -303,6 +305,58 @@ async def list_current_menu_items(slug: str):
 @router.put("/{restaurant_id}")
 async def update_existing_restaurant(restaurant_id: str, data: restaurant_schema.RestaurantUpdate):
     return await update_restaurant(restaurant_id, data)
+
+
+@router.put("/{restaurant_id}/banner")
+async def update_restaurant_banner(restaurant_id: str, banner_file: UploadFile = File(...)):
+    """Replace a restaurant's banner image and remove the old one."""
+    restaurant = await get_restaurant(restaurant_id)
+    if not restaurant:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+
+    content = await banner_file.read()
+    is_valid, error = validate_image_dimensions(content, RESTAURANT_BANNER)
+    if not is_valid:
+        raise HTTPException(status_code=400, detail=error)
+
+    banner_file.file.seek(0)
+    upload = await save_restaurant_image(banner_file, restaurant_id, RESTAURANT_BANNER)
+    if not upload.success:
+        raise HTTPException(status_code=500, detail="Failed to upload banner image")
+
+    if restaurant.banner_url:
+        blob = _blob_name_from_url(restaurant.banner_url)
+        if blob:
+            await delete_restaurant_image(restaurant_id, RESTAURANT_BANNER, blob_name=blob)
+
+    updated = await restaurant_model.update(restaurant_id, {"bannerUrl": upload.public_url})
+    return updated.to_response()
+
+
+@router.put("/{restaurant_id}/logo")
+async def update_restaurant_logo(restaurant_id: str, logo_file: UploadFile = File(...)):
+    """Replace a restaurant's logo image and remove the old one."""
+    restaurant = await get_restaurant(restaurant_id)
+    if not restaurant:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+
+    content = await logo_file.read()
+    is_valid, error = validate_image_dimensions(content, RESTAURANT_LOGO)
+    if not is_valid:
+        raise HTTPException(status_code=400, detail=error)
+
+    logo_file.file.seek(0)
+    upload = await save_restaurant_image(logo_file, restaurant_id, RESTAURANT_LOGO)
+    if not upload.success:
+        raise HTTPException(status_code=500, detail="Failed to upload logo image")
+
+    if restaurant.logo_url:
+        blob = _blob_name_from_url(restaurant.logo_url)
+        if blob:
+            await delete_restaurant_image(restaurant_id, RESTAURANT_LOGO, blob_name=blob)
+
+    updated = await restaurant_model.update(restaurant_id, {"logoUrl": upload.public_url})
+    return updated.to_response()
 
 
 @router.put("/{restaurant_id}/current-menu/{menu_id}")

@@ -4,6 +4,8 @@ from PIL import Image
 import io
 import re
 
+from app.core.dependencies import get_settings
+
 from app.services.google_bucket import (
     get_google_bucket_manager,
     ImageFormat,
@@ -48,6 +50,24 @@ async def save_item_image(
             "original_filename": image.filename,
         },
     )
+
+
+def _blob_name_from_url(url: str) -> Optional[str]:
+    """Extract blob name from a public URL."""
+    settings = get_settings()
+    prefix = f"https://storage.googleapis.com/{settings.BUCKET_NAME}/"
+    if url and url.startswith(prefix):
+        return url[len(prefix) :]
+    return None
+
+
+async def delete_item_image(image_url: str) -> bool:
+    """Delete an item image using its public URL."""
+    blob_name = _blob_name_from_url(image_url)
+    if not blob_name:
+        return False
+    manager = get_google_bucket_manager()
+    return manager.delete_image(blob_name)
 
 
 async def save_restaurant_image(
