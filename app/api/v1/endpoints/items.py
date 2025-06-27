@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from typing import Optional
 import json
 
-from app.utils.images import save_item_image
+from app.utils.images import save_item_image, delete_item_image
 from app.services import category as category_service
 
 from app.schema import item as item_schema
@@ -103,6 +103,29 @@ async def update_item(item_id: str, data: item_schema.ItemUpdate):
     if not updated:
         raise HTTPException(status_code=404, detail="Item not found")
     return updated.to_response()
+
+
+@router.put("/{item_id}/image")
+async def update_item_image(item_id: str, image_file: UploadFile = File(..., alias="imageFile")):
+    """Update a menu item's image, removing the previous one."""
+    try:
+        item = await item_service.get_item(item_id)
+        if not item:
+            raise HTTPException(status_code=404, detail="Item not found")
+
+        upload = await save_item_image(image_file, item.restaurant_id, item_id)
+        if not upload.success:
+            raise HTTPException(status_code=500, detail="Failed to upload item image")
+
+        if item.image_url:
+            await delete_item_image(item.image_url)
+
+        updated = await item_service.update_item(item_id, {"imageUrl": upload.public_url})
+        return updated.to_response()
+    except HTTPException:
+        raise
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))
 
 
 @router.put("/{item_id}/availability")
