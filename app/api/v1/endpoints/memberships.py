@@ -21,6 +21,16 @@ async def update_membership(user_id: str, restaurant_id: str, data: membership_s
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+
+@router.put("/{user_id}/restaurant/{restaurant_id}/role/{role_id}")
+async def change_membership_role(user_id: str, restaurant_id: str, role_id: str):
+    """Change user's role within a restaurant."""
+    try:
+        user = await membership_service.update_membership_role(user_id, restaurant_id, role_id)
+        return user.to_response()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
 @router.put("/{user_id}/restaurant/{restaurant_id}/deactivate")
 async def deactivate_membership(user_id: str, restaurant_id: str):
     try:
