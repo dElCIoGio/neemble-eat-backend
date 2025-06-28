@@ -5,6 +5,8 @@ from app.models.restaurant import RestaurantModel
 from app.schema import table as table_schema
 from app.schema.order import OrderDocument
 from app.services import table_session as session_service
+from app.services import order as order_service
+from app.schema import order as order_schema
 
 
 table_model = TableModel()
@@ -74,6 +76,19 @@ async def _delete_orders_for_session(session_id: str) -> int:
     return result.deleted_count
 
 
+async def _cancel_orders_for_session(session_id: str) -> int:
+    """Cancel all orders for a session."""
+    coll = OrderDocument.get_motor_collection()
+    update = {
+        "$set": {
+            "prepStatus": order_schema.OrderPrepStatus.CANCELLED,
+            "isDelivered": False,
+        }
+    }
+    result = await coll.update_many({"sessionId": session_id}, update)
+    return result.modified_count
+
+
 async def reset_table(table_id: str) -> Optional[table_schema.TableDocument]:
     """Delete current session and orders for a table and create a new session."""
     table = await table_model.get(table_id)
@@ -91,6 +106,22 @@ async def reset_table(table_id: str) -> Optional[table_schema.TableDocument]:
     )
 
     return await table_model.update(table_id, {"currentSessionId": str(new_session.id)})
+
+
+async def clean_table(table_id: str) -> Optional[table_schema.TableDocument]:
+    """Cancel all orders, cancel the session and start a new one."""
+    table = await table_model.get(table_id)
+    if not table:
+        return None
+
+    session_id = table.current_session_id
+    if session_id:
+        await _cancel_orders_for_session(session_id)
+        await session_service.close_table_session(session_id, cancelled=True)
+    else:
+        await session_service.create_session_for_table(table_id, table.restaurant_id)
+
+    return await table_model.get(table_id)
 
 
 async def reset_tables_for_restaurant(restaurant_id: str) -> List[table_schema.TableDocument]:
