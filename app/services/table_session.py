@@ -156,6 +156,12 @@ async def list_sessions_for_table(table_id: str):
     return await session_model.get_by_fields(filters)
 
 
+async def list_active_sessions_for_restaurant(restaurant_id: str) -> List[TableSessionDocument]:
+    """Return all active sessions for the given restaurant."""
+    filters = {"restaurantId": restaurant_id, "status": TableSessionStatus.ACTIVE}
+    return await session_model.get_by_fields(filters)
+
+
 async def delete_session(session_id: str) -> bool:
     return await session_model.delete(session_id)
 

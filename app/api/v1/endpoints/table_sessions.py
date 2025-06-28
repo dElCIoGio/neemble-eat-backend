@@ -39,6 +39,13 @@ async def list_sessions(table_id: str):
     sessions = await session_service.list_sessions_for_table(table_id)
     return [s.to_response() for s in sessions]
 
+
+@router.get("/restaurant/{restaurant_id}/active")
+async def list_active_sessions(restaurant_id: str):
+    sessions = await session_service.list_active_sessions_for_restaurant(restaur
+ant_id)
+    return [s.to_response() for s in sessions]
+
 @router.post("/{session_id}/close")
 async def close_session(session_id: str):
     try:
