@@ -151,6 +151,35 @@ async def close_table_session(session_id: str, cancelled: bool = False) -> Table
     except Exception as error:
         print(error)
 
+
+async def mark_session_paid(session_id: str) -> TableSessionDocument | None:
+    """Mark the session as paid and set the end time."""
+    session = await session_model.get(session_id)
+    if not session:
+        return None
+
+    updated = await session_model.update(
+        session_id,
+        {"status": TableSessionStatus.PAID, "endTime": now_in_luanda()},
+    )
+
+    if updated and updated.invoice_id:
+        await invoice_service.mark_invoice_paid(updated.invoice_id)
+
+    return updated
+
+
+async def mark_session_needs_bill(session_id: str) -> TableSessionDocument | None:
+    """Mark the session status as needing the bill."""
+    session = await session_model.get(session_id)
+    if not session:
+        return None
+
+    return await session_model.update(
+        session_id,
+        {"status": TableSessionStatus.NEED_BILL},
+    )
+
 async def list_sessions_for_table(table_id: str):
     filters = {"tableId": table_id}
     return await session_model.get_by_fields(filters)
