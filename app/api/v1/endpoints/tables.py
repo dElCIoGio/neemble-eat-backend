@@ -100,3 +100,11 @@ async def reset_single_table_endpoint(table_id: str):
     if not table:
         raise HTTPException(status_code=404, detail="Table not found")
     return table.to_response()
+
+
+@router.post("/{table_id}/clean")
+async def clean_table_endpoint(table_id: str):
+    table = await table_service.clean_table(table_id)
+    if not table:
+        raise HTTPException(status_code=404, detail="Table not found")
+    return table.to_response()

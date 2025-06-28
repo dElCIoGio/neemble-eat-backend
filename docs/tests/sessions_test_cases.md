@@ -56,9 +56,14 @@ This document outlines the basic requirements and comprehensive test cases for t
 - **TC7.1** Deleting an existing session returns `True`.
 - **TC7.2** Deleting a non‑existent session returns `False`.
 
-### 8. General Edge Cases
-- **TC8.1** Ensure all endpoints require authentication where applicable.
-- **TC8.2** Stress test by rapidly opening and closing sessions to verify that invoices and new sessions are created correctly each time.
-- **TC8.3** Validate websocket broadcasts for order additions and session closures reach all connected clients.
+### 8. Clean Table `/api/v1/tables/{table_id}/clean`
+- **TC8.1** Cancels all orders for the active session and marks the session `cancelled`.
+- **TC8.2** A new empty session is created and linked to the table.
+- **TC8.3** Invalid table IDs return HTTP 404 without modifying data.
+
+### 9. General Edge Cases
+- **TC9.1** Ensure all endpoints require authentication where applicable.
+- **TC9.2** Stress test by rapidly opening and closing sessions to verify that invoices and new sessions are created correctly each time.
+- **TC9.3** Validate websocket broadcasts for order additions and session closures reach all connected clients.
 
 These test cases cover typical and edge scenarios for the table session workflow and can be implemented using a testing framework such as `pytest` along with FastAPI's test client to simulate requests.
