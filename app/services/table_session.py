@@ -236,9 +236,17 @@ async def list_sessions_for_table(table_id: str):
 async def list_active_sessions_for_restaurant(
     restaurant_id: str,
 ) -> List[TableSessionDocument]:
-    """Return all active sessions for the given restaurant."""
-    filters = {"restaurantId": restaurant_id, "status": TableSessionStatus.ACTIVE}
-    return await session_model.get_by_fields(filters)
+    """Return active sessions that are currently referenced by a table."""
+    # Fetch all tables for the restaurant to get their current session ids
+    tables = await table_model.get_by_fields({"restaurantId": restaurant_id})
+    session_ids = [t.current_session_id for t in tables if t.current_session_id]
+
+    if not session_ids:
+        return []
+
+    # Retrieve sessions by ids and ensure they are still marked as active
+    sessions = await session_model.get_many(session_ids)
+    return [s for s in sessions if s.status == TableSessionStatus.ACTIVE]
 
 
 async def delete_session(session_id: str) -> bool:
