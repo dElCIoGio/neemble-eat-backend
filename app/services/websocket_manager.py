@@ -1,4 +1,3 @@
-from functools import lru_cache
 from typing import Dict, List
 from fastapi import WebSocket
 from threading import Lock
@@ -42,7 +41,7 @@ class WebsocketConnectionManager:
                     else:
                         self.active_connections[key].remove(connection)
 
-@lru_cache
+
 def get_websocket_manger():
     manager = WebsocketConnectionManager()
     return manager

@@ -33,6 +33,7 @@ async def create_orders(
         orders = await order_service.place_orders(payloads, session_id)
         return [o.to_response() for o in orders]
     except Exception as error:
+        print(str(error))
         raise HTTPException(status_code=500, detail=str(error))
 
 

@@ -83,7 +83,10 @@ async def websocket_endpoint(
             data = await websocket.receive_text()
             data_json = json.loads(data)  # Deserialize JSON string to Python dict
             response_json = json.dumps({"message": category, "data": data_json})
+            print("sending:")
+            print(response_json)
             await websocket_manager.broadcast(response_json, key)
+            print("DATA SENT")
     except WebSocketDisconnect as close:
         logger.info(f"WebSocket disconnected: {restaurant_id} to the websocket {category}")
         logger.info(f"Reason: {close.reason} ({close.code})")

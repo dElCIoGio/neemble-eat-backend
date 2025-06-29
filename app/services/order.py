@@ -1,11 +1,14 @@
+import json
 from datetime import datetime, timedelta
 
 from beanie.operators import And, Eq, GTE
+from fastapi import HTTPException
 
 from app.models.order import OrderModel
 from app.schema import order as order_schema
 from app.schema.order import OrderDocument
 from app.services import table_session as table_session_service
+from app.services.websocket_manager import get_websocket_manger
 from app.utils.time import now_in_luanda
 
 order_model = OrderModel()
@@ -36,6 +39,18 @@ async def place_order(data: dict) -> order_schema.OrderDocument:
 
     if session_id:
         await table_session_service.add_order_to_session(session_id, str(order.id))
+
+    try:
+        print("SENDING ORDER MESSAGE")
+        websocket_manager = get_websocket_manger()
+        json_data = json.dumps(order.to_response().model_dump(by_alias=True))
+        await websocket_manager.broadcast(json_data, f"{str(restaurant_id)}/order")
+    except Exception as error:
+        print(str(error))
+        # raise HTTPException(
+        #     status_code=500,
+        #     detail=str(error)
+        # )
 
     return order
 
