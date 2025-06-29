@@ -1,8 +1,9 @@
 from typing import Dict, Optional, Any
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Depends
 from app.services import table_session as session_service
 from app.services.table_session import session_model
+from app.utils.auth import admin_required
 
 router = APIRouter()
 
@@ -122,3 +123,15 @@ async def cancel_session_checkout_endpoint(session_id: str):
     except Exception as error:
         print(str(error))
         raise HTTPException(status_code=500, detail=str(error))
+
+
+@router.delete(
+    "/restaurant/{restaurant_id}/cleanup",
+    dependencies=[Depends(admin_required)],
+)
+async def delete_unlinked_sessions_endpoint(restaurant_id: str):
+    """Remove sessions not linked to any table for a restaurant."""
+    count = await session_service.delete_unlinked_sessions_for_restaurant(
+        restaurant_id
+    )
+    return {"deleted": count}

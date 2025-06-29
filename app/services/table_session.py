@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-from typing import List
+from typing import List, Any
 
 from beanie.odm.operators.find.comparison import In
 from beanie.odm.operators.find.logical import Or
@@ -259,6 +259,22 @@ async def list_active_sessions_for_restaurant(
 
 async def delete_session(session_id: str) -> bool:
     return await session_model.delete(session_id)
+
+
+async def delete_unlinked_sessions_for_restaurant(restaurant_id: str) -> int:
+    """Delete sessions for a restaurant that are not linked to any table."""
+    tables = await table_model.get_by_fields({"restaurantId": restaurant_id})
+    linked_ids = {t.current_session_id for t in tables if t.current_session_id}
+
+    coll = TableSessionDocument.get_motor_collection()
+    query: dict[str, Any] = {"restaurantId": restaurant_id}
+    if linked_ids:
+        from bson import ObjectId
+        object_ids = [ObjectId(sid) for sid in linked_ids]
+        query["_id"] = {"$nin": object_ids}
+
+    result = await coll.delete_many(query)
+    return result.deleted_count
 
 
 async def calculate_session_time_length(session_id: str) -> float:
