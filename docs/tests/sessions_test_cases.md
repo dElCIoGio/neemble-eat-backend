@@ -59,24 +59,28 @@ This document outlines the basic requirements and comprehensive test cases for t
 ### 8. Mark Session Needs Bill `/api/v1/sessions/{session_id}/needs-bill`
 - **TC8.1** Updates the session status to `needs bill`.
 - **TC8.2** Unknown session IDs return HTTP 404.
+### 9. Cancel Checkout `/api/v1/sessions/{session_id}/cancel-checkout`
+- **TC9.1** Reverts the session status back to `active` when currently `needs bill`.
+- **TC9.2** Unknown session IDs return HTTP 404.
 
-### 9. Add Order to Session (Service)
-- **TC9.1** Adding a new order ID appends it to the session and broadcasts the update.
-- **TC9.2** Adding an order that already exists leaves the list unchanged.
-- **TC9.3** Providing an unknown session ID returns `None`.
 
-### 10. Delete Session (Service)
-- **TC10.1** Deleting an existing session returns `True`.
-- **TC10.2** Deleting a non‑existent session returns `False`.
+### 10. Add Order to Session (Service)
+- **TC10.1** Adding a new order ID appends it to the session and broadcasts the update.
+- **TC10.2** Adding an order that already exists leaves the list unchanged.
+- **TC10.3** Providing an unknown session ID returns `None`.
 
-### 11. Clean Table `/api/v1/tables/{table_id}/clean`
-- **TC11.1** Cancels all orders for the active session and marks the session `cancelled`.
-- **TC11.2** A new empty session is created and linked to the table.
-- **TC11.3** Invalid table IDs return HTTP 404 without modifying data.
+### 11. Delete Session (Service)
+- **TC11.1** Deleting an existing session returns `True`.
+- **TC11.2** Deleting a non‑existent session returns `False`.
 
-### 12. General Edge Cases
-- **TC12.1** Ensure all endpoints require authentication where applicable.
-- **TC12.2** Stress test by rapidly opening and closing sessions to verify that invoices and new sessions are created correctly each time.
-- **TC12.3** Validate websocket broadcasts for order additions and session closures reach all connected clients.
+### 12. Clean Table `/api/v1/tables/{table_id}/clean`
+- **TC12.1** Cancels all orders for the active session and marks the session `cancelled`.
+- **TC12.2** A new empty session is created and linked to the table.
+- **TC12.3** Invalid table IDs return HTTP 404 without modifying data.
+
+### 13. General Edge Cases
+- **TC13.1** Ensure all endpoints require authentication where applicable.
+- **TC13.2** Stress test by rapidly opening and closing sessions to verify that invoices and new sessions are created correctly each time.
+- **TC13.3** Validate websocket broadcasts for order additions and session closures reach all connected clients.
 
 These test cases cover typical and edge scenarios for the table session workflow and can be implemented using a testing framework such as `pytest` along with FastAPI's test client to simulate requests.
