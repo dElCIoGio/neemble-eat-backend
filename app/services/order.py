@@ -1,13 +1,13 @@
 import json
 from datetime import datetime, timedelta
 
-from beanie.operators import And, Eq, GTE
+from beanie.operators import And, Eq, GTE, In
 from fastapi import HTTPException
 
 from app.models.order import OrderModel
 from app.schema import order as order_schema
 from app.schema.order import OrderDocument
-from app.services import table_session as table_session_service
+from app.services import table_session as table_session_service, table as table_service
 from app.services.websocket_manager import get_websocket_manger
 from app.utils.time import now_in_luanda
 
@@ -105,11 +105,21 @@ async def list_orders_for_restaurant(restaurant_id: str) -> list[order_schema.Or
 async def list_recent_orders_for_restaurant(
     restaurant_id: str, hours: int = 24
 ) -> list[order_schema.OrderDocument]:
-    """List orders placed within the last ``hours`` for a restaurant."""
+    """List orders placed within the last ``hours`` that belong to current table sessions."""
+
     cutoff = now_in_luanda() - timedelta(hours=hours)
+
+    # Fetch all tables for the restaurant to determine their current sessions
+    tables = await table_service.list_tables_for_restaurant(restaurant_id)
+    session_ids = [t.current_session_id for t in tables if t.current_session_id]
+
+    if not session_ids:
+        return []
+
     return await OrderDocument.find(
         And(
             Eq(OrderDocument.restaurant_id, restaurant_id),
+            In(OrderDocument.session_id, session_ids),
             GTE(OrderDocument.order_time, cutoff),
         )
     ).sort("-order_time").to_list()
