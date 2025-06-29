@@ -1,4 +1,3 @@
-import json
 from typing import Dict, Optional, Any
 
 from fastapi import APIRouter, HTTPException, Query
@@ -25,20 +24,34 @@ async def paginate_sessions(
 
 @router.get("/active/{restaurant_id}/{table_number}")
 async def get_active_session_by_number(restaurant_id: str, table_number: str):
-    session = await session_service.get_active_session_for_restaurant_table(
-        restaurant_id, int(table_number)
-    )
-    if not session:
-        raise HTTPException(status_code=404, detail="Active session not found")
-    return session.to_response()
+    try:
+        session = await session_service.get_active_session_for_restaurant_table(
+            restaurant_id, int(table_number)
+        )
+        if not session:
+            raise HTTPException(status_code=404, detail="Active session not found")
+        return session.to_response()
+    except Exception as error:
+        print(str(error))
+        raise HTTPException(
+            status_code=500,
+            detail=str(error)
+        )
 
 
 @router.get("/active/{table_id}")
 async def get_active_session(table_id: str):
-    session = await session_service.get_active_session_for_table(table_id)
-    if not session:
-        raise HTTPException(status_code=404, detail="Active session not found")
-    return session.to_response()
+    try:
+        session = await session_service.get_active_session_for_table(table_id)
+        if not session:
+            raise HTTPException(status_code=404, detail="Active session not found")
+        return session.to_response()
+    except Exception as error:
+        print(str(error))
+        raise HTTPException(
+            detail=str(error),
+            status_code=500
+        )
 
 
 @router.get("/table/{table_id}")

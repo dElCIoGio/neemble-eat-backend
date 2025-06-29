@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 from typing import List
 
+from app.models.table import TableModel
 from app.models.table_session import TableSessionModel
 from app.schema.table_session import TableSessionStatus, TableSessionDocument
 from app.schema.order import OrderDocument
@@ -11,6 +12,7 @@ from app.services.websocket_manager import get_websocket_manger
 from app.utils.time import now_in_luanda
 
 session_model = TableSessionModel()
+table_model = TableModel()
 
 
 async def start_session(data: dict) -> TableSessionDocument:
@@ -183,6 +185,13 @@ async def mark_session_paid(session_id: str) -> TableSessionDocument | None:
         session.table_id, session.restaurant_id
     )
 
+    await table_model.update(
+        session.table_id,
+        {
+            "currentSessionId": str(new_session.id)
+        }
+    )
+
     websocket_manager = get_websocket_manger()
     orders = await order_model.get_many(session.orders)
     json_data = json.dumps(
@@ -190,7 +199,7 @@ async def mark_session_paid(session_id: str) -> TableSessionDocument | None:
     )
     await websocket_manager.broadcast(json_data, f"{str(session.restaurant_id)}/billed")
 
-    json_data = json.dumps(new_session.to_response().model_dump())
+    json_data = json.dumps(new_session.to_response().model_dump(by_alias=True))
     await websocket_manager.broadcast(json_data, f"{session.restaurant_id}/closed_session")
 
     return new_session

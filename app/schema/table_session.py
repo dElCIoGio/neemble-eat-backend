@@ -38,6 +38,13 @@ class TableSessionBase(BaseModel):
         return value.isoformat()
 
 
+    @field_serializer('end_time')
+    def serialize_end_time(self, value: datetime, _info):
+        if value is not None:
+            return value.isoformat()
+        return value
+
+
 class TableSessionCreate(TableSessionBase):
     pass
 
