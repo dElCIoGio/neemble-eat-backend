@@ -9147,3 +9147,31 @@
 2025-06-29 16:29:46,717 - main - INFO - Initializing Mongo DB client
 2025-06-29 16:30:05,909 - main - INFO - Closing Mongo DB client connection
 2025-06-29 16:30:05,932 - main - INFO - Shutting down
+2025-06-29 16:30:09,478 - main - INFO - App started in development mode
+2025-06-29 16:30:09,513 - main - INFO - Initializing Firebase
+2025-06-29 16:30:09,513 - main - INFO - Initializing Mongo DB client
+2025-06-29 16:30:15,061 - main - INFO - App started in development mode
+2025-06-29 16:30:15,093 - main - INFO - Initializing Firebase
+2025-06-29 16:30:15,094 - main - INFO - Initializing Mongo DB client
+2025-06-29 20:24:13,162 - main - INFO - App started in development mode
+2025-06-29 20:24:13,396 - main - INFO - Initializing Firebase
+2025-06-29 20:24:13,397 - main - INFO - Initializing Mongo DB client
+2025-06-29 20:29:40,530 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 20:29:40,535 - main - INFO - Reason:  (1005)
+2025-06-29 20:53:45,949 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 20:53:45,950 - main - INFO - Reason:  (1001)
+2025-06-29 21:34:05,421 - main - INFO - Closing Mongo DB client connection
+2025-06-29 21:34:05,528 - main - INFO - Shutting down
+2025-06-29 21:34:14,070 - main - INFO - App started in development mode
+2025-06-29 21:34:14,127 - main - INFO - Initializing Firebase
+2025-06-29 21:34:14,128 - main - INFO - Initializing Mongo DB client
+2025-06-29 21:34:53,590 - main - INFO - Closing Mongo DB client connection
+2025-06-29 21:34:53,619 - main - INFO - Shutting down
+2025-06-29 21:34:57,789 - main - INFO - App started in development mode
+2025-06-29 21:34:57,834 - main - INFO - Initializing Firebase
+2025-06-29 21:34:57,835 - main - INFO - Initializing Mongo DB client
+2025-06-29 21:35:35,910 - main - INFO - Closing Mongo DB client connection
+2025-06-29 21:35:35,939 - main - INFO - Shutting down
+2025-06-29 21:35:41,407 - main - INFO - App started in development mode
+2025-06-29 21:35:41,469 - main - INFO - Initializing Firebase
+2025-06-29 21:35:41,470 - main - INFO - Initializing Mongo DB client

@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from beanie import Document
 from bson import ObjectId
-from pydantic import Field, BaseModel, EmailStr, ConfigDict
+from pydantic import Field, BaseModel, EmailStr, ConfigDict, field_serializer
 from pymongo import IndexModel
 
 from app.schema.collection_id.document_id import DocumentId
@@ -27,7 +27,7 @@ class UserBase(BaseModel):
     email: EmailStr
     phone_number: str = Field(..., alias="phoneNumber")
     firebase_uuid: str = Field(..., alias="firebaseUUID")
-    last_logged: str = Field(alias="lastLogged", default_factory=now_in_luanda)
+    last_logged: datetime = Field(alias="lastLogged", default_factory=now_in_luanda)
 
     # Optional Fields
     current_restaurant_id: Optional[str] = Field(alias="currentRestaurantId", default=None)
@@ -42,6 +42,10 @@ class UserBase(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True
     )
+
+    @field_serializer('last_logged')
+    def serialize_last_logged(self, value: datetime, _info):
+        return value.isoformat()
 
 
 class UserCreate(BaseModel):
