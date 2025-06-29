@@ -14,6 +14,7 @@ class TableSessionModel(MongoCrud[table_session_schema.TableSessionDocument]):
         updated = await super().update(_id, data)
         if updated and ("orders" in data or "status" in data):
             websocket_manager = get_websocket_manger()
-            session_data = json.dumps(updated.to_response().model_dump())
-            await websocket_manager.broadcast(session_data, f"{updated.restaurant_id}/session-status")
+            json_session = updated.to_response().model_dump(by_alias=True)
+            session_data = json.dumps(json_session)
+            await websocket_manager.broadcast(session_data, f"{str(updated.restaurant_id)}/session-status")
         return updated

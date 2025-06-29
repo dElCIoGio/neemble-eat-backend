@@ -4,7 +4,7 @@ from typing import Optional, List
 
 from beanie import Document
 from bson import ObjectId
-from pydantic import Field, BaseModel, conint
+from pydantic import Field, BaseModel, conint, field_serializer
 from pymongo import IndexModel, ASCENDING
 
 from app.schema.collection_id.document_id import DocumentId
@@ -32,6 +32,10 @@ class TableSessionBase(BaseModel):
     status: TableSessionStatus = Field(default=TableSessionStatus.ACTIVE)
     total: Optional[float] = None
     review: Optional[TableSessionReview] = None
+
+    @field_serializer('start_time')
+    def serialize_start_time(self, value: datetime, _info):
+        return value.isoformat()
 
 
 class TableSessionCreate(TableSessionBase):

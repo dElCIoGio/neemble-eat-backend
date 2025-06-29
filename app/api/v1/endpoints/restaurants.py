@@ -360,7 +360,8 @@ async def update_restaurant_logo(restaurant_id: str, logo_file: UploadFile = Fil
 
 
 @router.put("/{restaurant_id}/current-menu/{menu_id}")
-async def change_current_menu(restaurant_id: str, menu_id: str):
+async def change_current_menu_endpoint(restaurant_id: str, menu_id: str):
+
     return await change_current_menu(restaurant_id, menu_id)
 
 

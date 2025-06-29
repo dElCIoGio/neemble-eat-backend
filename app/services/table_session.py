@@ -177,7 +177,7 @@ async def mark_session_needs_bill(session_id: str) -> TableSessionDocument | Non
 
     return await session_model.update(
         session_id,
-        {"status": TableSessionStatus.NEED_BILL},
+        {"status": TableSessionStatus.NEED_BILL.value},
     )
 
 async def list_sessions_for_table(table_id: str):

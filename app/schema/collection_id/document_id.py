@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field, ConfigDict
+from bson import ObjectId
+from pydantic import BaseModel, Field, ConfigDict, field_serializer
 from datetime import datetime
 
 from app.schema.collection_id.object_id import PyObjectId
@@ -13,3 +14,20 @@ class DocumentId(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True
     )
+
+    @field_serializer('created_at', 'updated_at')
+    def serialize_date(self, value: datetime, _info):
+        return value.isoformat()
+
+
+    @field_serializer('id')
+    def serialize_id(self, value: PyObjectId, _info):
+        return str(value)
+
+    # @field_serializer(datetime, check_fields=False)
+    # def serialize_datetime(self, value: datetime, _info):
+    #     return value.isoformat()
+    #
+    # @field_serializer(ObjectId, check_fields=False)
+    # def serialize_object_id(self, value: PyObjectId, _info):
+    #     return str(value)
