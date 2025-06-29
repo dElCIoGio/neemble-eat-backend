@@ -166,6 +166,12 @@ async def mark_session_paid(session_id: str) -> TableSessionDocument | None:
     if updated and updated.invoice_id:
         await invoice_service.mark_invoice_paid(updated.invoice_id)
 
+
+    websocket_manager = get_websocket_manger()
+    orders = await order_model.get_many(session.orders)
+    json_data = json.dumps([order.to_response().model_dump(by_alias=True) for order in orders])
+    await websocket_manager.broadcast(json_data, f"{str(session.restaurant_id)}/billed")
+
     return updated
 
 

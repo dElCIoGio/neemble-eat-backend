@@ -66,7 +66,6 @@ class MongoCrud(Generic[T]):
             documents = await collection.find(
                 {"_id": {"$in": object_ids}}
             ).to_list()
-            print(documents)
             return [self._validate(doc) for doc in documents]
         except Exception as error:
             print("Error trying to fetch it all")
