@@ -2,6 +2,9 @@ import json
 from datetime import datetime
 from typing import List
 
+from beanie.odm.operators.find.comparison import In
+from beanie.odm.operators.find.logical import Or
+
 from app.models.table import TableModel
 from app.models.table_session import TableSessionModel
 from app.schema.table_session import TableSessionStatus, TableSessionDocument
@@ -47,7 +50,12 @@ async def get_active_session_for_table(
     If ``create_if_missing`` is True and no active session exists, a new one will
     be created and linked to the table.
     """
-    filters = {"tableId": table_id, "status": "active"}
+
+    filters = {"tableId": table_id, "status": {
+        "$in": [
+            TableSessionStatus.ACTIVE,
+            TableSessionStatus.NEED_BILL]
+    }}
     sessions = await session_model.get_by_fields(filters, limit=1)
 
     if sessions:
@@ -246,7 +254,7 @@ async def list_active_sessions_for_restaurant(
 
     # Retrieve sessions by ids and ensure they are still marked as active
     sessions = await session_model.get_many(session_ids)
-    return [s for s in sessions if s.status == TableSessionStatus.ACTIVE]
+    return [s for s in sessions if s.status == TableSessionStatus.ACTIVE or s.status == TableSessionStatus.NEED_BILL]
 
 
 async def delete_session(session_id: str) -> bool:

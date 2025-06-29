@@ -4,7 +4,7 @@ from typing import Optional, List
 
 from beanie import Document
 from bson import ObjectId
-from pydantic import Field, BaseModel, conint, field_serializer
+from pydantic import Field, BaseModel, conint, field_serializer, field_validator
 from pymongo import IndexModel, ASCENDING
 
 from app.schema.collection_id.document_id import DocumentId
@@ -46,7 +46,12 @@ class TableSessionBase(BaseModel):
 
 
 class TableSessionCreate(TableSessionBase):
-    pass
+
+    @field_validator('start_time', mode='before')
+    def parse_end_time(cls, value: datetime):
+        if isinstance(value, datetime):
+            return now_in_luanda()
+        return value
 
 TableSessionUpdate = make_optional_model(TableSessionBase)
 

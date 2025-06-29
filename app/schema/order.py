@@ -4,7 +4,7 @@ from typing import List, Optional
 
 from beanie import Document
 from bson import ObjectId
-from pydantic import BaseModel, Field, field_serializer
+from pydantic import BaseModel, Field, field_serializer, field_validator
 from pymongo import IndexModel, ASCENDING
 
 from app.schema.collection_id.document_id import DocumentId
@@ -51,6 +51,8 @@ class OrderBase(OrderCreate):
     @field_serializer('order_time')
     def serialize_order_time(self, value: datetime, _info):
         return value.isoformat()
+
+
 
 
 OrderUpdate = make_optional_model(OrderBase)
