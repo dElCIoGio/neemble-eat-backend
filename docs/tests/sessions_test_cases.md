@@ -78,9 +78,14 @@ This document outlines the basic requirements and comprehensive test cases for t
 - **TC12.2** A new empty session is created and linked to the table.
 - **TC12.3** Invalid table IDs return HTTP 404 without modifying data.
 
-### 13. General Edge Cases
-- **TC13.1** Ensure all endpoints require authentication where applicable.
-- **TC13.2** Stress test by rapidly opening and closing sessions to verify that invoices and new sessions are created correctly each time.
-- **TC13.3** Validate websocket broadcasts for order additions and session closures reach all connected clients.
+### 13. Delete Unlinked Sessions `/api/v1/sessions/restaurant/{restaurant_id}/cleanup`
+- **TC13.1** Returns the number of sessions removed that were not linked to any table.
+- **TC13.2** When all sessions are linked, the endpoint returns `0`.
+- **TC13.3** Unknown restaurant IDs result in `0` deletions.
+
+### 14. General Edge Cases
+- **TC14.1** Ensure all endpoints require authentication where applicable.
+- **TC14.2** Stress test by rapidly opening and closing sessions to verify that invoices and new sessions are created correctly each time.
+- **TC14.3** Validate websocket broadcasts for order additions and session closures reach all connected clients.
 
 These test cases cover typical and edge scenarios for the table session workflow and can be implemented using a testing framework such as `pytest` along with FastAPI's test client to simulate requests.
