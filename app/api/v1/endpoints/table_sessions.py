@@ -15,17 +15,23 @@ async def paginate_sessions(
 ):
     try:
         filters: Dict[str, Any] = {}
-        result = await session_model.paginate(filters=filters, limit=limit, cursor=cursor)
+        result = await session_model.paginate(
+            filters=filters, limit=limit, cursor=cursor
+        )
         return result
     except Exception as error:
         print(error)
 
+
 @router.get("/active/{restaurant_id}/{table_number}")
 async def get_active_session_by_number(restaurant_id: str, table_number: str):
-    session = await session_service.get_active_session_for_restaurant_table(restaurant_id, int(table_number))
+    session = await session_service.get_active_session_for_restaurant_table(
+        restaurant_id, int(table_number)
+    )
     if not session:
         raise HTTPException(status_code=404, detail="Active session not found")
     return session.to_response()
+
 
 @router.get("/active/{table_id}")
 async def get_active_session(table_id: str):
@@ -33,6 +39,7 @@ async def get_active_session(table_id: str):
     if not session:
         raise HTTPException(status_code=404, detail="Active session not found")
     return session.to_response()
+
 
 @router.get("/table/{table_id}")
 async def list_sessions(table_id: str):
@@ -45,6 +52,7 @@ async def list_active_sessions(restaurant_id: str):
     sessions = await session_service.list_active_sessions_for_restaurant(restaurant_id)
     return [s.to_response() for s in sessions]
 
+
 @router.post("/{session_id}/close")
 async def close_session(session_id: str):
     try:
@@ -53,6 +61,7 @@ async def close_session(session_id: str):
         return new_session.to_response()
     except Exception as error:
         raise HTTPException(status_code=400, detail=str(error))
+
 
 @router.post("/{session_id}/cancel")
 async def cancel_session(session_id: str):
@@ -80,7 +89,16 @@ async def mark_session_needs_bill_endpoint(session_id: str):
         return session.to_response()
     except Exception as error:
         print(str(error))
-        raise HTTPException(
-            status_code=500,
-            detail=str(error)
-        )
+        raise HTTPException(status_code=500, detail=str(error))
+
+
+@router.post("/{session_id}/cancel-checkout")
+async def cancel_session_checkout_endpoint(session_id: str):
+    try:
+        session = await session_service.cancel_session_checkout(session_id)
+        if not session:
+            raise HTTPException(status_code=404, detail="Session not found")
+        return session.to_response()
+    except Exception as error:
+        print(str(error))
+        raise HTTPException(status_code=500, detail=str(error))
