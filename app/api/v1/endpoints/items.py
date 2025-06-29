@@ -113,7 +113,11 @@ async def update_item_image(item_id: str, image_file: UploadFile = File(..., ali
         if not item:
             raise HTTPException(status_code=404, detail="Item not found")
 
+        print(item)
+
         upload = await save_item_image(image_file, item.restaurant_id, item_id)
+
+        print(upload)
         if not upload.success:
             raise HTTPException(status_code=500, detail="Failed to upload item image")
 
@@ -122,9 +126,11 @@ async def update_item_image(item_id: str, image_file: UploadFile = File(..., ali
 
         updated = await item_service.update_item(item_id, {"imageUrl": upload.public_url})
         return updated.to_response()
-    except HTTPException:
+    except HTTPException as http_error:
+        print(str(http_error))
         raise
     except Exception as error:
+        print(str(error))
         raise HTTPException(status_code=500, detail=str(error))
 
 

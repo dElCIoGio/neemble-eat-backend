@@ -1,4 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, Body
+
+from app.services.user import user_model
 from app.utils.auth import get_current_user
 from app.schema import role as role_schema
 from app.services import roles as role_service
@@ -47,7 +49,8 @@ async def deactivate_role(role_id: str):
 @router.delete("/hard/{role_id}")
 async def delete_role(role_id: str, uid: str = Depends(get_current_user)):
     try:
-        deleted = await role_service.delete_role(role_id, uid)
+        user = await user_model.get_user_by_firebase_uid(uid)
+        deleted = await role_service.delete_role(role_id, str(user.id))
         if not deleted:
             raise HTTPException(status_code=404, detail="Role not found")
         return True
