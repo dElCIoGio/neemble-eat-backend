@@ -74,10 +74,17 @@ async def cancel_session(session_id: str):
 
 @router.post("/{session_id}/pay")
 async def pay_session(session_id: str):
-    session = await session_service.mark_session_paid(session_id)
-    if not session:
-        raise HTTPException(status_code=404, detail="Session not found")
-    return session.to_response()
+    try:
+        session = await session_service.mark_session_paid(session_id)
+        if not session:
+            raise HTTPException(status_code=404, detail="Session not found")
+        return session.to_response()
+    except Exception as error:
+        print(str(error))
+        raise HTTPException(
+            status_code=500,
+            detail=str(error)
+        )
 
 
 @router.post("/{session_id}/needs-bill")

@@ -13,21 +13,15 @@ async def generate_invoice_for_session(session_id: str):
     if not session:
         raise Exception("Session not found")
 
-    print(session)
-
     # if session.status != "closed":
     #     raise Exception("Session must be closed before generating invoice")
 
     orders = await OrderDocument.find(OrderDocument.session_id == session_id).to_list()
 
-    print("ORDERS:", orders)
-
     if orders is None:
         raise Exception("No orders found for this session")
 
     total = sum(order.total for order in orders if order)
-
-    print("TOTAL:", total)
 
     invoice_data = {
         "restaurantId": session.restaurant_id,
@@ -39,11 +33,7 @@ async def generate_invoice_for_session(session_id: str):
         "isActive": True
     }
 
-    print("INVOICE DATA:", invoice_data)
-
     invoice = await invoice_model.create(invoice_data)
-
-    print("NEW INVOICE:",  invoice)
 
     await session_model.update(str(session.id), {
         "invoiceId": str(invoice.id)

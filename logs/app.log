@@ -8382,3 +8382,495 @@
 2025-06-29 03:47:55,150 - main - INFO - App started in development mode
 2025-06-29 03:47:55,187 - main - INFO - Initializing Firebase
 2025-06-29 03:47:55,188 - main - INFO - Initializing Mongo DB client
+2025-06-29 04:23:07,610 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 04:23:07,623 - main - INFO - Reason:  (1012)
+2025-06-29 04:23:07,633 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 04:23:07,634 - main - INFO - Reason:  (1012)
+2025-06-29 04:23:07,636 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 04:23:07,636 - main - INFO - Reason:  (1012)
+2025-06-29 04:23:07,725 - main - INFO - Closing Mongo DB client connection
+2025-06-29 04:23:07,809 - main - INFO - Shutting down
+2025-06-29 04:23:15,912 - main - INFO - App started in development mode
+2025-06-29 04:23:15,972 - main - INFO - Initializing Firebase
+2025-06-29 04:23:15,972 - main - INFO - Initializing Mongo DB client
+2025-06-29 04:35:59,701 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 04:35:59,720 - main - INFO - Reason:  (1005)
+2025-06-29 04:36:09,573 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 04:36:09,574 - main - INFO - Reason:  (1005)
+2025-06-29 04:36:12,763 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 04:36:12,763 - main - INFO - Reason:  (1005)
+2025-06-29 04:36:13,278 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 04:36:13,279 - main - INFO - Reason:  (1005)
+2025-06-29 04:36:13,280 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 04:36:13,281 - main - INFO - Reason:  (1005)
+2025-06-29 04:36:14,391 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 04:36:14,391 - main - INFO - Reason:  (1005)
+2025-06-29 04:36:14,392 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 04:36:14,393 - main - INFO - Reason:  (1005)
+2025-06-29 04:36:20,666 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 04:36:20,667 - main - INFO - Reason:  (1005)
+2025-06-29 04:36:21,140 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 04:36:21,141 - main - INFO - Reason:  (1005)
+2025-06-29 04:36:21,145 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 04:36:21,145 - main - INFO - Reason:  (1005)
+2025-06-29 04:36:22,114 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 04:36:22,116 - main - INFO - Reason:  (1005)
+2025-06-29 04:36:22,117 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 04:36:22,118 - main - INFO - Reason:  (1005)
+2025-06-29 04:36:24,475 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 04:36:24,476 - main - INFO - Reason:  (1001)
+2025-06-29 04:36:28,630 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 04:36:28,631 - main - INFO - Reason:  (1005)
+2025-06-29 04:36:28,633 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 04:36:28,634 - main - INFO - Reason:  (1005)
+2025-06-29 04:38:28,204 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 04:38:28,206 - main - INFO - Reason:  (1005)
+2025-06-29 04:38:29,127 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 04:38:29,127 - main - INFO - Reason:  (1005)
+2025-06-29 04:38:29,129 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 04:38:29,129 - main - INFO - Reason:  (1005)
+2025-06-29 04:38:29,516 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 04:38:29,516 - main - INFO - Reason:  (1005)
+2025-06-29 04:38:29,518 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 04:38:29,526 - main - INFO - Reason:  (1005)
+2025-06-29 04:38:30,304 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 04:38:30,305 - main - INFO - Reason:  (1005)
+2025-06-29 04:46:06,944 - main - INFO - App started in development mode
+2025-06-29 04:46:07,006 - main - INFO - Initializing Firebase
+2025-06-29 04:46:07,006 - main - INFO - Initializing Mongo DB client
+2025-06-29 05:03:29,358 - main - INFO - Closing Mongo DB client connection
+2025-06-29 05:03:29,460 - main - INFO - Shutting down
+2025-06-29 05:03:41,095 - main - INFO - App started in development mode
+2025-06-29 05:03:41,165 - main - INFO - Initializing Firebase
+2025-06-29 05:03:41,166 - main - INFO - Initializing Mongo DB client
+2025-06-29 05:27:05,910 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 05:27:05,914 - main - INFO - Reason:  (1005)
+2025-06-29 05:27:51,011 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:27:51,013 - main - INFO - Reason:  (1005)
+2025-06-29 05:27:51,014 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:27:51,015 - main - INFO - Reason:  (1005)
+2025-06-29 05:29:12,572 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:29:12,574 - main - INFO - Reason:  (1005)
+2025-06-29 05:29:12,576 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:29:12,576 - main - INFO - Reason:  (1005)
+2025-06-29 05:29:12,985 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:29:12,986 - main - INFO - Reason:  (1005)
+2025-06-29 05:29:12,987 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:29:12,988 - main - INFO - Reason:  (1005)
+2025-06-29 05:29:14,931 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:29:14,932 - main - INFO - Reason:  (1005)
+2025-06-29 05:29:14,933 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:29:14,935 - main - INFO - Reason:  (1005)
+2025-06-29 05:30:12,827 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:30:12,829 - main - INFO - Reason:  (1005)
+2025-06-29 05:30:12,829 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:30:12,830 - main - INFO - Reason:  (1005)
+2025-06-29 05:30:16,429 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:30:16,431 - main - INFO - Reason:  (1005)
+2025-06-29 05:30:16,432 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:30:16,433 - main - INFO - Reason:  (1005)
+2025-06-29 05:33:38,990 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:33:38,991 - main - INFO - Reason:  (1005)
+2025-06-29 05:33:39,001 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:33:39,001 - main - INFO - Reason:  (1005)
+2025-06-29 05:33:41,116 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:33:41,117 - main - INFO - Reason:  (1005)
+2025-06-29 05:33:41,119 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:33:41,119 - main - INFO - Reason:  (1005)
+2025-06-29 05:33:43,884 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 05:33:43,885 - main - INFO - Reason:  (1005)
+2025-06-29 05:33:59,358 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:33:59,359 - main - INFO - Reason:  (1005)
+2025-06-29 05:33:59,369 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:33:59,370 - main - INFO - Reason:  (1005)
+2025-06-29 05:40:31,934 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:40:31,935 - main - INFO - Reason:  (1005)
+2025-06-29 05:40:31,936 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:40:31,937 - main - INFO - Reason:  (1005)
+2025-06-29 05:40:33,788 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:40:33,789 - main - INFO - Reason:  (1005)
+2025-06-29 05:40:33,791 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:40:33,791 - main - INFO - Reason:  (1005)
+2025-06-29 05:42:30,838 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:42:30,838 - main - INFO - Reason:  (1005)
+2025-06-29 05:42:30,840 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:42:30,840 - main - INFO - Reason:  (1005)
+2025-06-29 05:42:31,247 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:42:31,247 - main - INFO - Reason:  (1005)
+2025-06-29 05:42:31,249 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:42:31,250 - main - INFO - Reason:  (1005)
+2025-06-29 05:43:21,519 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:43:21,521 - main - INFO - Reason:  (1005)
+2025-06-29 05:43:21,524 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:43:21,525 - main - INFO - Reason:  (1005)
+2025-06-29 05:43:22,562 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:43:22,563 - main - INFO - Reason:  (1005)
+2025-06-29 05:43:22,564 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:43:22,564 - main - INFO - Reason:  (1005)
+2025-06-29 05:43:24,545 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:43:24,546 - main - INFO - Reason:  (1005)
+2025-06-29 05:43:24,547 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:43:24,548 - main - INFO - Reason:  (1005)
+2025-06-29 05:43:25,406 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:43:25,407 - main - INFO - Reason:  (1005)
+2025-06-29 05:43:25,409 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:43:25,410 - main - INFO - Reason:  (1005)
+2025-06-29 05:43:26,305 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:43:26,307 - main - INFO - Reason:  (1005)
+2025-06-29 05:43:26,308 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:43:26,309 - main - INFO - Reason:  (1005)
+2025-06-29 05:43:27,160 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:43:27,161 - main - INFO - Reason:  (1005)
+2025-06-29 05:43:27,163 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:43:27,164 - main - INFO - Reason:  (1005)
+2025-06-29 05:43:28,051 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:43:28,053 - main - INFO - Reason:  (1005)
+2025-06-29 05:43:28,055 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:43:28,057 - main - INFO - Reason:  (1005)
+2025-06-29 05:43:29,199 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:43:29,200 - main - INFO - Reason:  (1005)
+2025-06-29 05:43:29,203 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:43:29,204 - main - INFO - Reason:  (1005)
+2025-06-29 05:43:31,749 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:43:31,751 - main - INFO - Reason:  (1005)
+2025-06-29 05:43:31,753 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:43:31,754 - main - INFO - Reason:  (1005)
+2025-06-29 05:45:21,867 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:45:21,867 - main - INFO - Reason:  (1005)
+2025-06-29 05:45:21,869 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:45:21,869 - main - INFO - Reason:  (1005)
+2025-06-29 05:45:22,293 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:45:22,294 - main - INFO - Reason:  (1005)
+2025-06-29 05:45:22,304 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:45:22,305 - main - INFO - Reason:  (1001)
+2025-06-29 05:45:23,960 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:45:23,961 - main - INFO - Reason:  (1005)
+2025-06-29 05:45:23,962 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:45:23,965 - main - INFO - Reason:  (1005)
+2025-06-29 05:45:24,858 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:45:24,859 - main - INFO - Reason:  (1005)
+2025-06-29 05:45:24,861 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:45:24,864 - main - INFO - Reason:  (1005)
+2025-06-29 05:45:25,568 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:45:25,569 - main - INFO - Reason:  (1005)
+2025-06-29 05:45:25,570 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:45:25,572 - main - INFO - Reason:  (1005)
+2025-06-29 05:45:26,097 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:45:26,098 - main - INFO - Reason:  (1005)
+2025-06-29 05:45:26,099 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:45:26,100 - main - INFO - Reason:  (1005)
+2025-06-29 05:45:26,826 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:45:26,827 - main - INFO - Reason:  (1005)
+2025-06-29 05:45:26,830 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:45:26,831 - main - INFO - Reason:  (1005)
+2025-06-29 05:45:27,549 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:45:27,551 - main - INFO - Reason:  (1005)
+2025-06-29 05:45:27,553 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:45:27,554 - main - INFO - Reason:  (1005)
+2025-06-29 05:45:29,125 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:45:29,126 - main - INFO - Reason:  (1005)
+2025-06-29 05:45:29,127 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:45:29,127 - main - INFO - Reason:  (1005)
+2025-06-29 05:45:30,086 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:45:30,087 - main - INFO - Reason:  (1005)
+2025-06-29 05:45:30,088 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:45:30,090 - main - INFO - Reason:  (1005)
+2025-06-29 05:45:32,518 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:45:32,519 - main - INFO - Reason:  (1005)
+2025-06-29 05:45:32,521 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:45:32,521 - main - INFO - Reason:  (1005)
+2025-06-29 05:46:48,899 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:46:48,899 - main - INFO - Reason:  (1005)
+2025-06-29 05:46:48,901 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:46:48,902 - main - INFO - Reason:  (1005)
+2025-06-29 05:46:49,395 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:46:49,395 - main - INFO - Reason:  (1005)
+2025-06-29 05:46:49,396 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:46:49,397 - main - INFO - Reason:  (1005)
+2025-06-29 05:46:52,295 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:46:52,296 - main - INFO - Reason:  (1001)
+2025-06-29 05:46:52,695 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:46:52,697 - main - INFO - Reason:  (1005)
+2025-06-29 05:46:52,700 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:46:52,701 - main - INFO - Reason:  (1005)
+2025-06-29 05:46:54,682 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:46:54,682 - main - INFO - Reason:  (1005)
+2025-06-29 05:46:54,683 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:46:54,684 - main - INFO - Reason:  (1005)
+2025-06-29 05:46:57,331 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:46:57,332 - main - INFO - Reason:  (1005)
+2025-06-29 05:46:57,334 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:46:57,334 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:04,182 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:47:04,183 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:04,184 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:47:04,185 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:05,842 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:47:05,844 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:05,846 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:47:05,847 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:06,565 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:47:06,566 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:06,567 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:47:06,568 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:07,502 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:47:07,504 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:07,506 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:47:07,507 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:08,060 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:47:08,061 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:08,063 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:47:08,063 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:08,796 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:47:08,798 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:08,800 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:47:08,802 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:09,424 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:47:09,425 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:09,426 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:47:09,427 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:20,540 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:47:20,540 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:20,542 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:47:20,543 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:25,162 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:47:25,163 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:25,164 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:47:25,164 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:40,813 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 05:47:40,814 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:41,295 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:47:41,296 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:41,297 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:47:41,299 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:49,372 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:47:49,374 - main - INFO - Reason:  (1005)
+2025-06-29 05:47:49,376 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:47:49,377 - main - INFO - Reason:  (1005)
+2025-06-29 05:53:11,016 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 05:53:11,017 - main - INFO - Reason:  (1005)
+2025-06-29 05:53:45,670 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 05:53:45,671 - main - INFO - Reason:  (1005)
+2025-06-29 05:53:46,504 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:53:46,504 - main - INFO - Reason:  (1005)
+2025-06-29 05:53:46,506 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:53:46,507 - main - INFO - Reason:  (1005)
+2025-06-29 05:53:49,280 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:53:49,282 - main - INFO - Reason:  (1005)
+2025-06-29 05:53:49,283 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:53:49,284 - main - INFO - Reason:  (1005)
+2025-06-29 05:53:50,096 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 05:53:50,096 - main - INFO - Reason:  (1005)
+2025-06-29 05:54:16,308 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:54:16,332 - main - INFO - Reason:  (1005)
+2025-06-29 05:54:16,363 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:54:16,384 - main - INFO - Reason:  (1005)
+2025-06-29 05:54:17,242 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 05:54:17,251 - main - INFO - Reason:  (1005)
+2025-06-29 05:54:21,071 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 05:54:21,082 - main - INFO - Reason:  (1005)
+2025-06-29 05:54:21,105 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 05:54:21,139 - main - INFO - Reason:  (1005)
+2025-06-29 06:02:20,022 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 06:02:20,024 - main - INFO - Reason:  (1005)
+2025-06-29 06:03:32,807 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 06:03:32,808 - main - INFO - Reason:  (1005)
+2025-06-29 06:03:33,315 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:03:33,317 - main - INFO - Reason:  (1005)
+2025-06-29 06:03:33,318 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:03:33,318 - main - INFO - Reason:  (1005)
+2025-06-29 06:03:37,800 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:03:37,801 - main - INFO - Reason:  (1005)
+2025-06-29 06:03:37,802 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:03:37,802 - main - INFO - Reason:  (1005)
+2025-06-29 06:03:38,818 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 06:03:38,819 - main - INFO - Reason:  (1005)
+2025-06-29 06:03:43,307 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 06:03:43,309 - main - INFO - Reason:  (1005)
+2025-06-29 06:03:44,244 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:03:44,245 - main - INFO - Reason:  (1005)
+2025-06-29 06:03:44,247 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:03:44,248 - main - INFO - Reason:  (1005)
+2025-06-29 06:03:45,213 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:03:45,214 - main - INFO - Reason:  (1005)
+2025-06-29 06:03:45,215 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:03:45,215 - main - INFO - Reason:  (1005)
+2025-06-29 06:04:51,210 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:04:51,210 - main - INFO - Reason:  (1005)
+2025-06-29 06:04:51,213 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:04:51,213 - main - INFO - Reason:  (1005)
+2025-06-29 06:04:52,016 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 06:04:52,017 - main - INFO - Reason:  (1005)
+2025-06-29 06:04:56,359 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 06:04:56,360 - main - INFO - Reason:  (1005)
+2025-06-29 06:04:59,148 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:04:59,148 - main - INFO - Reason:  (1005)
+2025-06-29 06:04:59,150 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:04:59,151 - main - INFO - Reason:  (1005)
+2025-06-29 06:05:00,164 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 06:05:00,164 - main - INFO - Reason:  (1005)
+2025-06-29 06:05:01,824 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:05:01,824 - main - INFO - Reason:  (1005)
+2025-06-29 06:05:01,826 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:05:01,827 - main - INFO - Reason:  (1005)
+2025-06-29 06:05:07,305 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:05:07,305 - main - INFO - Reason:  (1005)
+2025-06-29 06:05:07,306 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:05:07,307 - main - INFO - Reason:  (1005)
+2025-06-29 06:11:15,305 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,307 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,309 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,310 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,311 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 06:11:15,312 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,313 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,314 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,316 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,317 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,319 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,319 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,321 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 06:11:15,322 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,323 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,324 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,325 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,326 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,328 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,328 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,329 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,330 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,332 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,332 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,334 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,334 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,335 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,336 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,337 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 06:11:15,338 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,339 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,340 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,341 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,342 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,343 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 06:11:15,344 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,345 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 06:11:15,346 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,348 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,348 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,350 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,351 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,352 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,353 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,354 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,354 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,356 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,356 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,358 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 06:11:15,359 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,360 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,361 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,362 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,362 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,364 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,364 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,366 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,366 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,368 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,369 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,370 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,371 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,372 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,373 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,374 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,375 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,376 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,377 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,378 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,379 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,380 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,380 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,381 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,382 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,383 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,384 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,385 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 06:11:15,386 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,387 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,387 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,389 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,389 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,390 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 06:11:15,390 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,391 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,391 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,391 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,392 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,393 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,393 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,394 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,395 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,396 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,396 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,397 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,397 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,398 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,399 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,399 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 06:11:15,400 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,401 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,401 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,402 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,403 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,403 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,404 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,405 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,405 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,406 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,407 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,407 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,408 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,408 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,410 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,411 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,411 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,412 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,413 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,414 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,414 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,415 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,415 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,415 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,416 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,416 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,416 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,417 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,417 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,418 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,418 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,418 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,419 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,420 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,421 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,422 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,422 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,422 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,423 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,424 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,424 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,425 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,425 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,426 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-06-29 06:11:15,427 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,428 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-06-29 06:11:15,428 - main - INFO - Reason:  (1012)
+2025-06-29 06:11:15,449 - main - INFO - Closing Mongo DB client connection
+2025-06-29 06:11:15,522 - main - INFO - Shutting down
+2025-06-29 06:11:24,136 - main - INFO - App started in development mode
+2025-06-29 06:11:24,179 - main - INFO - Initializing Firebase
+2025-06-29 06:11:24,180 - main - INFO - Initializing Mongo DB client
+2025-06-29 06:12:15,392 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 06:12:15,393 - main - INFO - Reason:  (1012)
+2025-06-29 06:12:15,394 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket session-status
+2025-06-29 06:12:15,395 - main - INFO - Reason:  (1012)
+2025-06-29 06:12:15,483 - main - INFO - Closing Mongo DB client connection
+2025-06-29 06:12:15,514 - main - INFO - Shutting down
