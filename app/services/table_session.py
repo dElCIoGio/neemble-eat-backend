@@ -166,7 +166,7 @@ async def close_table_session(
 
 
 async def mark_session_paid(session_id: str) -> TableSessionDocument | None:
-    """Mark the session as paid and set the end time."""
+    """Mark the session as paid, then create and broadcast a new session."""
     session = await session_model.get(session_id)
     if not session:
         return None
@@ -179,6 +179,10 @@ async def mark_session_paid(session_id: str) -> TableSessionDocument | None:
     if updated and updated.invoice_id:
         await invoice_service.mark_invoice_paid(updated.invoice_id)
 
+    new_session = await create_session_for_table(
+        session.table_id, session.restaurant_id
+    )
+
     websocket_manager = get_websocket_manger()
     orders = await order_model.get_many(session.orders)
     json_data = json.dumps(
@@ -186,7 +190,10 @@ async def mark_session_paid(session_id: str) -> TableSessionDocument | None:
     )
     await websocket_manager.broadcast(json_data, f"{str(session.restaurant_id)}/billed")
 
-    return updated
+    json_data = json.dumps(new_session.to_response().model_dump())
+    await websocket_manager.broadcast(json_data, f"{session.restaurant_id}/closed_session")
+
+    return new_session
 
 
 async def mark_session_needs_bill(session_id: str) -> TableSessionDocument | None:
