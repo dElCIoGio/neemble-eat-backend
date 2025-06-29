@@ -1,6 +1,13 @@
 
 from app.models.role import RoleModel
-from app.schema.role import RoleDocument, SectionPermission, Permissions, RoleCreate, RoleUpdate
+from app.schema.role import (
+    RoleDocument,
+    SectionPermission,
+    Permissions,
+    RoleCreate,
+    RoleUpdate,
+    Sections,
+)
 from app.models.user import UserModel
 from app.schema import user as user_schema
 
@@ -16,12 +23,12 @@ def get_default_roles(restaurant_id: str) -> dict[str, RoleCreate]:
             description="Full access to restaurant operations",
             restaurantId=restaurant_id,
             permissions=[
-                SectionPermission(section="orders", permissions=Permissions(canView=True, canEdit=True, canDelete=True)),
-                SectionPermission(section="menu", permissions=Permissions(canView=True, canEdit=True, canDelete=True)),
-                SectionPermission(section="tables", permissions=Permissions(canView=True, canEdit=True, canDelete=True)),
-                SectionPermission(section="invoices", permissions=Permissions(canView=True, canEdit=True, canDelete=True)),
-                SectionPermission(section="staff", permissions=Permissions(canView=True, canEdit=True, canDelete=True)),
-                SectionPermission(section="analytics", permissions=Permissions(canView=True, canEdit=True, canDelete=True)),
+                SectionPermission(section=Sections.ORDERS.value, permissions=Permissions(can_view=True, can_edit=True, can_delete=True)),
+                SectionPermission(section=Sections.MENUS.value, permissions=Permissions(can_view=True, can_edit=True, can_delete=True)),
+                SectionPermission(section=Sections.TABLES.value, permissions=Permissions(can_view=True, can_edit=True, can_delete=True)),
+                SectionPermission(section=Sections.INVOICES.value, permissions=Permissions(can_view=True, can_edit=True, can_delete=True)),
+                SectionPermission(section=Sections.USERS.value, permissions=Permissions(can_view=True, can_edit=True, can_delete=True)),
+                SectionPermission(section=Sections.PERFORMANCE_INSIGHTS.value, permissions=Permissions(can_view=True, can_edit=True, can_delete=True)),
             ]
         ),
         "chef": RoleCreate(
@@ -30,7 +37,9 @@ def get_default_roles(restaurant_id: str) -> dict[str, RoleCreate]:
             description="Manages food orders in the kitchen",
             restaurantId=restaurant_id,
             permissions=[
-                SectionPermission(section="orders", permissions=Permissions(canView=True, canEdit=True, canDelete=False)),
+                SectionPermission(section=Sections.ORDERS.value, permissions=Permissions(can_view=True, can_edit=True, can_delete=False)),
+                SectionPermission(section=Sections.KITCHEN_VIEW.value, permissions=Permissions(can_view=True, can_edit=False, can_delete=False)),
+                SectionPermission(section=Sections.ORDER_QUEUE.value, permissions=Permissions(can_view=True, can_edit=True, can_delete=False)),
             ]
         ),
         "waiter": RoleCreate(
@@ -39,9 +48,10 @@ def get_default_roles(restaurant_id: str) -> dict[str, RoleCreate]:
             description="Handles tables and takes orders",
             restaurantId=restaurant_id,
             permissions=[
-                SectionPermission(section="orders", permissions=Permissions(canView=True, canEdit=True, canDelete=False)),
-                SectionPermission(section="tables", permissions=Permissions(canView=True, canEdit=True, canDelete=False)),
-                SectionPermission(section="invoices", permissions=Permissions(canView=True, canEdit=False, canDelete=False)),
+                SectionPermission(section=Sections.ORDERS.value, permissions=Permissions(can_view=True, can_edit=True, can_delete=False)),
+                SectionPermission(section=Sections.TABLES.value, permissions=Permissions(can_view=True, can_edit=True, can_delete=False)),
+                SectionPermission(section=Sections.INVOICES.value, permissions=Permissions(can_view=True, can_edit=False, can_delete=False)),
+                SectionPermission(section=Sections.ORDER_QUEUE.value, permissions=Permissions(can_view=True, can_edit=False, can_delete=False)),
             ]
         ),
         "bartender": RoleCreate(
@@ -50,7 +60,8 @@ def get_default_roles(restaurant_id: str) -> dict[str, RoleCreate]:
             description="Prepares and serves drinks",
             restaurantId=restaurant_id,
             permissions=[
-                SectionPermission(section="orders", permissions=Permissions(canView=True, canEdit=True, canDelete=False)),
+                SectionPermission(section=Sections.ORDERS.value, permissions=Permissions(can_view=True, can_edit=True, can_delete=False)),
+                SectionPermission(section=Sections.BAR_VIEW.value, permissions=Permissions(can_view=True, can_edit=False, can_delete=False)),
             ]
         ),
         "accountant": RoleCreate(
@@ -59,8 +70,9 @@ def get_default_roles(restaurant_id: str) -> dict[str, RoleCreate]:
             description="Manages invoices and analytics",
             restaurantId=restaurant_id,
             permissions=[
-                SectionPermission(section="invoices", permissions=Permissions(canView=True, canEdit=True, canDelete=True)),
-                SectionPermission(section="analytics", permissions=Permissions(canView=True, canEdit=False, canDelete=False)),
+                SectionPermission(section=Sections.INVOICES.value, permissions=Permissions(can_view=True, can_edit=True, can_delete=True)),
+                SectionPermission(section=Sections.PERFORMANCE_INSIGHTS.value, permissions=Permissions(can_view=True, can_edit=False, can_delete=False)),
+                SectionPermission(section=Sections.PAYMENTS.value, permissions=Permissions(can_view=True, can_edit=True, can_delete=False)),
             ]
         )
     }
