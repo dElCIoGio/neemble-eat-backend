@@ -6,10 +6,12 @@ from bson import ObjectId
 from app.models.restaurant import RestaurantModel
 from app.models.role import RoleModel
 from app.models.user import UserModel
+from app.schema import user as user_schema
 from app.utils.auth import get_current_user
 from app.schema.restaurant import RestaurantDocument
 from app.utils.user import is_member
 from app.services import roles as role_service
+from app.services import user as user_service
 
 router = APIRouter()
 user_model = UserModel()
@@ -130,4 +132,23 @@ async def get_current_role(uid: str = Depends(get_current_user)):
     if role:
         return role.to_response()
     return None
+
+
+@router.put("/preferences")
+async def update_preferences(
+    preferences: user_schema.UserPreferences,
+    uid: str = Depends(get_current_user),
+):
+    """Update the current user's preference settings."""
+    user = await user_model.get_user_by_firebase_uid(uid)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    updated = await user_service.update_user_preferences(
+        str(user.id), preferences
+    )
+    if not updated:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return updated.to_response()
 
