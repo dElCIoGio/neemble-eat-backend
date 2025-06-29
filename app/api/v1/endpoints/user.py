@@ -1,6 +1,6 @@
 from typing import Optional, Dict, Any
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Body
 from bson import ObjectId
 
 from app.models.restaurant import RestaurantModel
@@ -136,7 +136,7 @@ async def get_current_role(uid: str = Depends(get_current_user)):
 
 @router.put("/preferences")
 async def update_preferences(
-    preferences: user_schema.UserPreferences,
+    preferences: user_schema.UserPreferences = Body(...),
     uid: str = Depends(get_current_user),
 ):
     """Update the current user's preference settings."""

@@ -9175,3 +9175,10 @@
 2025-06-29 21:35:41,407 - main - INFO - App started in development mode
 2025-06-29 21:35:41,469 - main - INFO - Initializing Firebase
 2025-06-29 21:35:41,470 - main - INFO - Initializing Mongo DB client
+2025-06-29 22:27:01,850 - main - INFO - Closing Mongo DB client connection
+2025-06-29 22:27:01,903 - main - INFO - Shutting down
+2025-06-29 22:27:10,763 - main - INFO - App started in development mode
+2025-06-29 22:27:10,813 - main - INFO - Initializing Firebase
+2025-06-29 22:27:10,814 - main - INFO - Initializing Mongo DB client
+2025-06-29 22:29:49,323 - main - INFO - Closing Mongo DB client connection
+2025-06-29 22:29:49,374 - main - INFO - Shutting down
