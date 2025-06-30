@@ -24,6 +24,7 @@ from app.schema import (
     movement,
     subscription_plan,
     user_subscription,
+    notification
 
 
 )
@@ -96,5 +97,6 @@ def get_mongo():
             movement.MovementDocument,
             subscription_plan.SubscriptionPlanDocument,
             user_subscription.UserSubscriptionDocument,
+            notification.NotificationDocument
         ]
     )
