@@ -17,6 +17,7 @@ class TableSessionStatus(str, Enum):
     PAID = "paid"
     NEED_BILL = "needs bill"
     CANCELLED = "cancelled"
+    CLOSED = "closed"
 
 class TableSessionReview(BaseModel):
     stars: conint(ge=1, le=5) = Field(..., description="Rating from 1 to 5 stars")

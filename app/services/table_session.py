@@ -127,7 +127,7 @@ async def add_order_to_session(
 
 
 async def close_table_session(
-    session_id: str, cancelled: bool = False
+    session_id: str, cancelled: bool = True
 ) -> TableSessionDocument:
     """Close or cancel a session and create the next one."""
     try:
@@ -139,9 +139,7 @@ async def close_table_session(
         if session.status != TableSessionStatus.ACTIVE:
             raise Exception("Session is not active")
 
-        orders: List[OrderDocument] = await OrderDocument.find(
-            OrderDocument.session_id == session_id
-        ).to_list()
+        orders = await order_model.get_by_fields({"sessionId": session_id})
 
         if cancelled:
             if any(o.prep_status != "cancelled" for o in orders):

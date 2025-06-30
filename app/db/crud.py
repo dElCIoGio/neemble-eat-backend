@@ -57,7 +57,8 @@ class MongoCrud(Generic[T]):
         return await document.insert()
 
     async def get_all(self) -> List[T]:
-        return await self.model.find().to_list()
+        documents = await self._get_collection().find().to_list()
+        return [self._validate(doc) for doc in documents]
 
     async def get_many(self, ids: List[str]) -> List[T]:
         try:
@@ -73,7 +74,7 @@ class MongoCrud(Generic[T]):
 
     async def get(self, _id: str) -> Optional[T]:
         try:
-            raw = await self.model.get_motor_collection().find_one({"_id": ObjectId(_id)})
+            raw = await self._get_collection().find_one({"_id": ObjectId(_id)})
             if not raw:
                 return None
             document = self._validate(raw)
@@ -95,11 +96,11 @@ class MongoCrud(Generic[T]):
     async def get_by_fields(
             self, filters: Dict[str, Any] | LogicalOperatorForListOfExpressions, skip: int = 0, limit: int = 10
     ) -> List[T]:
-        documents = await self.model.get_motor_collection().find(filters).skip(skip).limit(limit).to_list()
+        documents = await self._get_collection().find(filters).skip(skip).limit(limit).to_list()
         return [self._validate(doc) for doc in documents]
 
     async def update(self, _id: str, data: Dict[str, Any]) -> Optional[T]:
-        collection = self.model.get_motor_collection()
+        collection = self._get_collection()
 
         # Optional: ensure updated_at is applied
         if "updated_at" in self.model.model_fields:
@@ -121,7 +122,7 @@ class MongoCrud(Generic[T]):
     async def delete(self, _id: str) -> bool:
         document = await self.get(_id)
         if document:
-            await self.model.get_motor_collection().delete_one({"_id": ObjectId(_id)})
+            await self._get_collection().delete_one({"_id": ObjectId(_id)})
             return True
         return False
 
@@ -135,7 +136,7 @@ class MongoCrud(Generic[T]):
         if cursor:
             query["_id"] = {'$gt': ObjectId(cursor)}
 
-        raw = await self.model.get_motor_collection().find(query).sort("_id").limit(limit + 1).to_list()
+        raw = await self._get_collection().find(query).sort("_id").limit(limit + 1).to_list()
 
         documents = [self._validate(doc) for doc in raw]
 

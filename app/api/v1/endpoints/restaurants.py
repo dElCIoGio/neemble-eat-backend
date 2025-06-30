@@ -416,11 +416,18 @@ async def delete_existing_restaurant(restaurant_id: str):
     return await delete_restaurant(restaurant_id)
 
 
-@router.get("/", response_model_by_alias=True)
+@router.get("/")
 async def list_all_restaurants(admin=Depends(admin_required)):
-    documents: List[restaurant_schema.RestaurantDocument] = await get_restaurants()
-    restaurants = list(map(lambda restaurant: restaurant.to_response, documents))
-    return restaurants
+    try:
+        documents: List[restaurant_schema.RestaurantDocument] = await get_restaurants()
+        restaurants = list(map(lambda restaurant: restaurant.to_response, documents))
+        return restaurants
+    except Exception as error:
+        print(str(error))
+        raise HTTPException(
+            status_code=400,
+            detail=str(error)
+        )
 
 
 @router.get("/active", response_model_by_alias=True)

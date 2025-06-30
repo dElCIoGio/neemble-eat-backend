@@ -127,7 +127,6 @@ async def cancel_session_checkout_endpoint(session_id: str):
 
 @router.delete(
     "/restaurant/{restaurant_id}/cleanup",
-    dependencies=[Depends(admin_required)],
 )
 async def delete_unlinked_sessions_endpoint(restaurant_id: str):
     """Remove sessions not linked to any table for a restaurant."""
