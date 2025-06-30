@@ -57,7 +57,12 @@ async def update_table_status(table_id: str, is_active: bool) -> Optional[table_
 
 
 async def update_table_session(table_id: str, session_id: Optional[str]) -> Optional[table_schema.TableDocument]:
-    return await table_model.update(table_id, {"currentSessionId": session_id})
+    table = await table_model.get(table_id)
+    print("table: ", table)
+    print("SESSION ID:", session_id)
+    session = await table_model.update(table_id, {"currentSessionId": session_id})
+    print("UPDATED SESSION:", session)
+    return session
 
 
 async def get_table_by_restaurant_and_number(restaurant_id: str, number: int) -> Optional[table_schema.TableDocument]:
@@ -111,6 +116,7 @@ async def reset_table(table_id: str) -> Optional[table_schema.TableDocument]:
 async def clean_table(table_id: str) -> Optional[table_schema.TableDocument]:
     """Cancel all orders, cancel the session and start a new one."""
     table = await table_model.get(table_id)
+
     if not table:
         return None
 

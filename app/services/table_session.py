@@ -53,8 +53,8 @@ async def get_active_session_for_table(
 
     filters = {"tableId": table_id, "status": {
         "$in": [
-            TableSessionStatus.ACTIVE,
-            TableSessionStatus.NEED_BILL]
+            TableSessionStatus.ACTIVE.value,
+            TableSessionStatus.NEED_BILL.value]
     }}
     sessions = await session_model.get_by_fields(filters, limit=1)
 
@@ -133,26 +133,28 @@ async def close_table_session(
     try:
         session = await session_model.get(session_id)
 
+        print("Session:", session)
+
         if not session:
             raise Exception("Session not found")
 
-        if session.status != TableSessionStatus.ACTIVE:
+        if session.status != TableSessionStatus.ACTIVE.value and session.status != TableSessionStatus.NEED_BILL.value:
             raise Exception("Session is not active")
 
         orders = await order_model.get_by_fields({"sessionId": session_id})
 
         if cancelled:
-            if any(o.prep_status != "cancelled" for o in orders):
+            if any(o.prep_status != TableSessionStatus.CANCELLED.value for o in orders):
                 raise Exception("All orders must be cancelled to cancel session")
-            new_status = TableSessionStatus.CANCELLED
+            new_status = TableSessionStatus.CANCELLED.value
         else:
-            new_status = TableSessionStatus.CLOSED
+            new_status = TableSessionStatus.CLOSED.value
 
         await session_model.update(
             session_id, {"status": new_status, "endTime": now_in_luanda()}
         )
 
-        if not cancelled and any(o.prep_status != "cancelled" for o in orders):
+        if not cancelled and any(o.prep_status != TableSessionStatus.CANCELLED.value for o in orders):
             await invoice_service.generate_invoice_for_session(session_id)
 
         new_session = await create_session_for_table(
