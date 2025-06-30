@@ -2,8 +2,8 @@ import json
 from datetime import datetime
 from typing import List, Any
 
-from beanie.odm.operators.find.comparison import In
-from beanie.odm.operators.find.logical import Or
+from beanie.odm.operators.find.comparison import In, Eq, GTE, LTE, NE
+from beanie.odm.operators.find.logical import Or, And
 
 from app.models.table import TableModel
 from app.models.table_session import TableSessionModel
@@ -239,6 +239,21 @@ async def cancel_session_checkout(session_id: str) -> TableSessionDocument | Non
 async def list_sessions_for_table(table_id: str):
     filters = {"tableId": table_id}
     return await session_model.get_by_fields(filters)
+
+
+async def list_today_sessions_with_orders_for_table(table_id: str) -> List[TableSessionDocument]:
+    """Return today's sessions for a table that have at least one order."""
+    now = now_in_luanda()
+    start_day = now.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    return await TableSessionDocument.find(
+        And(
+            Eq(TableSessionDocument.table_id, table_id),
+            GTE(TableSessionDocument.start_time, start_day),
+            LTE(TableSessionDocument.start_time, now),
+            NE(TableSessionDocument.orders, []),
+        )
+    ).sort("start_time").to_list()
 
 
 async def list_active_sessions_for_restaurant(

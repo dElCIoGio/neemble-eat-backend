@@ -61,6 +61,13 @@ async def list_sessions(table_id: str):
     return [s.to_response() for s in sessions]
 
 
+@router.get("/table/{table_id}/today")
+async def list_today_sessions_with_orders(table_id: str):
+    """Return today's sessions for the table that include at least one order."""
+    sessions = await session_service.list_today_sessions_with_orders_for_table(table_id)
+    return [s.to_response() for s in sessions]
+
+
 @router.get("/restaurant/{restaurant_id}/active")
 async def list_active_sessions(restaurant_id: str):
     sessions = await session_service.list_active_sessions_for_restaurant(restaurant_id)

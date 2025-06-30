@@ -37,55 +37,60 @@ This document outlines the basic requirements and comprehensive test cases for t
 - **TC3.2** Table with no sessions returns an empty list.
 - **TC3.3** Invalid table ID yields an empty list.
 
-### 4. List Active Sessions for Restaurant `/api/v1/sessions/restaurant/{restaurant_id}/active`
-- **TC4.1** Returns a list of sessions with status `active` for the restaurant.
-- **TC4.2** If no tables have active sessions, the endpoint returns an empty list.
-- **TC4.3** Invalid restaurant ID results in an empty list.
+### 4. List Today's Sessions With Orders `/api/v1/sessions/table/{table_id}/today`
+- **TC4.1** Returns sessions from midnight to now that have at least one order.
+- **TC4.2** Sessions without orders are omitted from the results.
+- **TC4.3** Invalid table ID returns an empty list.
 
-### 5. Close Session `/api/v1/sessions/{session_id}/close`
-- **TC5.1** Closing an active session with valid orders generates an invoice, sets the status to `closed` and creates a new session.
-- **TC5.2** Closing a session whose orders are all cancelled ends the session without creating an invoice and still creates a new session.
-- **TC5.3** Attempting to close a non‑existent or non‑active session returns HTTP 400.
+### 5. List Active Sessions for Restaurant `/api/v1/sessions/restaurant/{restaurant_id}/active`
+- **TC5.1** Returns a list of sessions with status `active` for the restaurant.
+- **TC5.2** If no tables have active sessions, the endpoint returns an empty list.
+- **TC5.3** Invalid restaurant ID results in an empty list.
 
-### 6. Cancel Session `/api/v1/sessions/{session_id}/cancel`
-- **TC6.1** Cancelling an active session where all orders are already cancelled marks it `cancelled` and starts a new session.
-- **TC6.2** Cancelling with any non‑cancelled order returns HTTP 400.
-- **TC6.3** Non‑existent or inactive session returns HTTP 400.
+### 6. Close Session `/api/v1/sessions/{session_id}/close`
+- **TC6.1** Closing an active session with valid orders generates an invoice, sets the status to `closed` and creates a new session.
+- **TC6.2** Closing a session whose orders are all cancelled ends the session without creating an invoice and still creates a new session.
+- **TC6.3** Attempting to close a non‑existent or non‑active session returns HTTP 400.
 
-### 7. Mark Session Paid `/api/v1/sessions/{session_id}/paid`
-- **TC7.1** Updates the session status to `paid` and sets the `endTime`.
-- **TC7.2** Unknown session IDs return HTTP 404 without modifying data.
+### 7. Cancel Session `/api/v1/sessions/{session_id}/cancel`
+- **TC7.1** Cancelling an active session where all orders are already cancelled marks it `cancelled` and starts a new session.
+- **TC7.2** Cancelling with any non‑cancelled order returns HTTP 400.
+- **TC7.3** Non‑existent or inactive session returns HTTP 400.
 
-### 8. Mark Session Needs Bill `/api/v1/sessions/{session_id}/needs-bill`
-- **TC8.1** Updates the session status to `needs bill`.
-- **TC8.2** Unknown session IDs return HTTP 404.
-### 9. Cancel Checkout `/api/v1/sessions/{session_id}/cancel-checkout`
-- **TC9.1** Reverts the session status back to `active` when currently `needs bill`.
+### 8. Mark Session Paid `/api/v1/sessions/{session_id}/paid`
+- **TC8.1** Updates the session status to `paid` and sets the `endTime`.
+- **TC8.2** Unknown session IDs return HTTP 404 without modifying data.
+
+### 9. Mark Session Needs Bill `/api/v1/sessions/{session_id}/needs-bill`
+- **TC9.1** Updates the session status to `needs bill`.
 - **TC9.2** Unknown session IDs return HTTP 404.
+### 10. Cancel Checkout `/api/v1/sessions/{session_id}/cancel-checkout`
+- **TC10.1** Reverts the session status back to `active` when currently `needs bill`.
+- **TC10.2** Unknown session IDs return HTTP 404.
 
 
-### 10. Add Order to Session (Service)
-- **TC10.1** Adding a new order ID appends it to the session and broadcasts the update.
-- **TC10.2** Adding an order that already exists leaves the list unchanged.
-- **TC10.3** Providing an unknown session ID returns `None`.
+### 11. Add Order to Session (Service)
+- **TC11.1** Adding a new order ID appends it to the session and broadcasts the update.
+- **TC11.2** Adding an order that already exists leaves the list unchanged.
+- **TC11.3** Providing an unknown session ID returns `None`.
 
-### 11. Delete Session (Service)
-- **TC11.1** Deleting an existing session returns `True`.
-- **TC11.2** Deleting a non‑existent session returns `False`.
+### 12. Delete Session (Service)
+- **TC12.1** Deleting an existing session returns `True`.
+- **TC12.2** Deleting a non‑existent session returns `False`.
 
-### 12. Clean Table `/api/v1/tables/{table_id}/clean`
-- **TC12.1** Cancels all orders for the active session and marks the session `cancelled`.
-- **TC12.2** A new empty session is created and linked to the table.
-- **TC12.3** Invalid table IDs return HTTP 404 without modifying data.
+### 13. Clean Table `/api/v1/tables/{table_id}/clean`
+- **TC13.1** Cancels all orders for the active session and marks the session `cancelled`.
+- **TC13.2** A new empty session is created and linked to the table.
+- **TC13.3** Invalid table IDs return HTTP 404 without modifying data.
 
-### 13. Delete Unlinked Sessions `/api/v1/sessions/restaurant/{restaurant_id}/cleanup`
-- **TC13.1** Returns the number of sessions removed that were not linked to any table.
-- **TC13.2** When all sessions are linked, the endpoint returns `0`.
-- **TC13.3** Unknown restaurant IDs result in `0` deletions.
+### 14. Delete Unlinked Sessions `/api/v1/sessions/restaurant/{restaurant_id}/cleanup`
+- **TC14.1** Returns the number of sessions removed that were not linked to any table.
+- **TC14.2** When all sessions are linked, the endpoint returns `0`.
+- **TC14.3** Unknown restaurant IDs result in `0` deletions.
 
-### 14. General Edge Cases
-- **TC14.1** Ensure all endpoints require authentication where applicable.
-- **TC14.2** Stress test by rapidly opening and closing sessions to verify that invoices and new sessions are created correctly each time.
-- **TC14.3** Validate websocket broadcasts for order additions and session closures reach all connected clients.
+### 15. General Edge Cases
+- **TC15.1** Ensure all endpoints require authentication where applicable.
+- **TC15.2** Stress test by rapidly opening and closing sessions to verify that invoices and new sessions are created correctly each time.
+- **TC15.3** Validate websocket broadcasts for order additions and session closures reach all connected clients.
 
 These test cases cover typical and edge scenarios for the table session workflow and can be implemented using a testing framework such as `pytest` along with FastAPI's test client to simulate requests.
