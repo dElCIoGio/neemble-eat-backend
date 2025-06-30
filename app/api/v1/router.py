@@ -22,6 +22,7 @@ from app.api.v1.endpoints.roles import router as roles_router
 from app.api.v1.endpoints.memberships import router as memberships_router
 from app.api.v1.endpoints.orders import router as orders_router
 from app.api.v1.endpoints.subscriptions import router as subscriptions_router
+from app.api.v1.endpoints.notifications import router as notifications_router
 
 
 router = APIRouter()
@@ -49,3 +50,4 @@ router.include_router(sales_router, prefix="/sales", tags=["Sales"])
 router.include_router(suppliers_router, prefix="/suppliers", tags=["Suppliers"])
 router.include_router(orders_router, prefix="/orders", tags=["Orders"])
 router.include_router(subscriptions_router, prefix="/subscriptions", tags=["Subscriptions"])
+router.include_router(notifications_router, prefix="/notifications", tags=["Notifications"])
