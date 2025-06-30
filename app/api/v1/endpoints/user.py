@@ -51,6 +51,18 @@ async def get_user(user_id: str):
     return user.to_response()
 
 
+@router.put("/user/{user_id}")
+async def update_user(
+    user_id: str,
+    data: user_schema.UserUpdate = Body(...),
+):
+    """Update a user by applying the provided fields."""
+    updated = await user_service.update_user(user_id, data)
+    if not updated:
+        raise HTTPException(status_code=404, detail="User not found")
+    return updated.to_response()
+
+
 @router.get("/restaurant")
 async def get_current_restaurant(
         uid: str = Depends(get_current_user)
