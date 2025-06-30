@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Body
 
 from app.models.user import UserModel
 from app.schema import notification as notification_schema
@@ -12,15 +12,15 @@ user_model = UserModel()
 
 
 @router.post("/")
-async def create_notification(data: notification_schema.NotificationCreate):
+async def create_notification(data: notification_schema.NotificationCreate = Body(...)):
     notification = await notification_service.create_notification(data)
     return notification.to_response()
 
 
 @router.get("/")
 async def list_notifications(
-    n_type: Optional[notification_schema.NotificationType] = Query(None, alias="type"),
-    is_read: Optional[bool] = Query(None, alias="is_read"),
+    n_type: Optional[notification_schema.NotificationType] = Query(None, alias="notificationType"),
+    is_read: Optional[bool] = Query(None, alias="isRead"),
     search: Optional[str] = Query(None),
     page: int = Query(1, ge=1),
     firebase_uid: str = Depends(get_current_user),
@@ -42,7 +42,7 @@ async def unread_count(firebase_uid: str = Depends(get_current_user)):
         raise HTTPException(status_code=404, detail="User not found")
 
     count = await notification_service.count_unread_notifications(str(user.id))
-    return {"unread": count}
+    return count
 
 
 @router.get("/{notification_id}")

@@ -102,6 +102,9 @@ class MongoCrud(Generic[T]):
     async def update(self, _id: str, data: Dict[str, Any]) -> Optional[T]:
         collection = self._get_collection()
 
+        print("updating")
+        print(data)
+
         # Optional: ensure updated_at is applied
         if "updated_at" in self.model.model_fields:
             data["updatedAt"] = now_in_luanda()

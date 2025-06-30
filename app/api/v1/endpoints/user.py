@@ -56,11 +56,18 @@ async def update_user(
     user_id: str,
     data: user_schema.UserUpdate = Body(...),
 ):
-    """Update a user by applying the provided fields."""
-    updated = await user_service.update_user(user_id, data)
-    if not updated:
-        raise HTTPException(status_code=404, detail="User not found")
-    return updated.to_response()
+    try:
+        """Update a user by applying the provided fields."""
+        updated = await user_service.update_user(user_id, data)
+        if not updated:
+            raise HTTPException(status_code=404, detail="User not found")
+        return updated.to_response()
+    except Exception as error:
+        print(str(error))
+        raise HTTPException(
+            detail=str(error),
+            status_code=500
+        )
 
 
 @router.get("/restaurant")
