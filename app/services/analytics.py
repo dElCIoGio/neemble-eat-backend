@@ -256,23 +256,31 @@ async def last_seven_days_order_count(
 
     try:
         for i in range(7):
-            day = now_in_luanda() - timedelta(days=i + 1)
-            day_midnight = day.replace(hour=0, minute=0, second=0, microsecond=0)
-            weekday = day_midnight.strftime("%A")
+            now = now_in_luanda()
 
-            documents = await order_model.get_by_fields(
-                And(
-                    Eq(OrderDocument.restaurant_id, restaurant_id),
-                    GTE(OrderDocument.order_time, day_midnight),
-                )
-            )
+            day = now - timedelta(days=i + 1)
+
+            day_start = day.replace(hour=0, minute=0, second=0, microsecond=0)
+            day_end = day.replace(hour=23, minute=59, second=59, microsecond=0)
+            weekday = day_start.strftime("%A")
+
+
+            documents = await order_model.get_by_fields({
+                    "restaurantId": restaurant_id,
+                    "createdAt": {"$gte": day_start, "$lte": day_end}
+                })
+
+            # print("Day:", weekday)
+            # print(f"from: {day_start} | to: {day_end}")
+            # print(documents)
+            # print("\n\n")
 
             count = len(documents)
 
             data = TotalOrdersCount(
                 day=weekday,
                 sales=count,
-                date=str(day_midnight.isoformat())
+                date=str(day_start.isoformat())
             )
 
             days.append(data)
