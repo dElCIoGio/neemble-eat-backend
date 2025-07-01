@@ -58,7 +58,7 @@ This document outlines the basic requirements and comprehensive test cases for t
 - **TC7.3** Non‑existent or inactive session returns HTTP 400.
 
 ### 8. Mark Session Paid `/api/v1/sessions/{session_id}/paid`
-- **TC8.1** Updates the session status to `paid` and sets the `endTime`.
+- **TC8.1** Creates a new invoice marked `paid`, updates the session status and sets the `endTime`.
 - **TC8.2** Unknown session IDs return HTTP 404 without modifying data.
 
 ### 9. Mark Session Needs Bill `/api/v1/sessions/{session_id}/needs-bill`

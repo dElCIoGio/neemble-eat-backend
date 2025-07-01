@@ -176,18 +176,18 @@ async def close_table_session(
 
 
 async def mark_session_paid(session_id: str) -> TableSessionDocument | None:
-    """Mark the session as paid, then create and broadcast a new session."""
+    """Create a paid invoice for the session and start a new one."""
     session = await session_model.get(session_id)
     if not session:
         return None
+
+    invoice = await invoice_service.generate_invoice_for_session(session_id)
+    await invoice_service.mark_invoice_paid(str(invoice.id))
 
     updated = await session_model.update(
         session_id,
         {"status": TableSessionStatus.PAID, "endTime": now_in_luanda()},
     )
-
-    if updated and updated.invoice_id:
-        await invoice_service.mark_invoice_paid(updated.invoice_id)
 
     new_session = await create_session_for_table(
         session.table_id, session.restaurant_id
