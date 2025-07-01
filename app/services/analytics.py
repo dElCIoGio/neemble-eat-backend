@@ -31,6 +31,12 @@ async def get_sales_summary(
     from_date: datetime,
     to_date: datetime
 ) -> SalesSummary:
+    """Return aggregated sales metrics for a date range.
+
+    Metrics include total sales, invoice counts and revenue per table. It
+    also calculates the growth for the same duration immediately preceding
+    the provided range.
+    """
 
     def _compute_metrics(inv_list: List[InvoiceDocument]):
         total_sales = sum(inv.total or 0.0 for inv in inv_list)
@@ -58,7 +64,7 @@ async def get_sales_summary(
     # current period invoices
     filters = {
         "restaurantId": restaurant_id,
-        "createdAt": {"$gte": from_date},
+        "createdAt": {"$gte": from_date, "$lte": to_date},
     }
     invoices = await invoice_model.get_by_fields(filters)
 
@@ -67,9 +73,10 @@ async def get_sales_summary(
     # previous period invoices
     period_delta = to_date - from_date
     prev_from = from_date - period_delta
+    prev_to = prev_from + period_delta
     prev_filters = {
         "restaurantId": restaurant_id,
-        "createdAt": {"$gte": prev_from},
+        "createdAt": {"$gte": prev_from, "$lte": prev_to},
     }
     previous_invoices = await invoice_model.get_by_fields(prev_filters)
     previous_metrics = _compute_metrics(previous_invoices or [])
@@ -97,18 +104,18 @@ async def count_invoices(
     restaurant_id: str,
     from_date: datetime,
     to_date: datetime,
-    status_filter: str
+    status_filter: str,
 ) -> InvoiceCount:
+    """Count invoices for a restaurant in a specific period."""
 
-    # {"$and": [{"price": {"$lt": 10}}, {"category": "Sweets"}]}
+    filters = {
+        "restaurantId": restaurant_id,
+        "createdAt": {"$gte": from_date, "$lte": to_date},
+        "status": status_filter,
+    }
 
-    invoices = await invoice_model.get_by_fields(And(
-            Eq(InvoiceDocument.restaurant_id, restaurant_id),
-            GTE(InvoiceDocument.created_at, from_date),
-            LTE(InvoiceDocument.created_at, to_date)
-        ))
+    invoices = await invoice_model.get_by_fields(filters)
     count = len(invoices)
-
 
     return InvoiceCount(invoice_count=count)
 
@@ -116,27 +123,22 @@ async def count_invoices(
 async def count_orders(
     restaurant_id: str,
     from_date: datetime,
-    to_date: datetime
+    to_date: datetime,
 ) -> OrderCount:
+    """Count all orders within a date range for a restaurant."""
 
     try:
-
-        documents = await order_model.get_by_fields(
-            And(
-                Eq(OrderDocument.restaurant_id, restaurant_id),
-                GTE(OrderDocument.order_time, from_date),
-                LTE(OrderDocument.order_time, to_date)
-            )
-        )
+        filters = {
+            "restaurantId": restaurant_id,
+            "orderTime": {"$gte": from_date, "$lte": to_date},
+        }
+        documents = await order_model.get_by_fields(filters)
 
         count = len(documents)
         return OrderCount(order_count=count)
 
     except Exception as e:
-        raise HTTPException(
-            detail=str(e),
-            status_code=400
-        )
+        raise HTTPException(detail=str(e), status_code=400)
 
 
 
@@ -148,19 +150,17 @@ async def get_top_items(
     top_n: int = 5
 ) -> List[ItemOrderQuantity]:
 
+    """Return the most frequently ordered items within a period."""
+
     # 1. Filter orders
     orders = await order_model.get_by_fields(
-        And(
-            Eq(OrderDocument.restaurant_id, restaurant_id),
-            GTE(OrderDocument.order_time, from_date),
-            LTE(OrderDocument.order_time, to_date),
-            Or(
-                Eq(OrderDocument.prep_status, "queued"),
-                Eq(OrderDocument.prep_status, "in_progress"),
-                Eq(OrderDocument.prep_status, "ready"),
-                Eq(OrderDocument.prep_status, "delivered")
-            )
-        )
+        {
+            "restaurantId": restaurant_id,
+            "orderTime": {"$gte": from_date, "$lte": to_date},
+            "prepStatus": {
+                "$in": ["queued", "in_progress", "ready", "delivered"]
+            },
+        }
     )
 
     if not orders:
@@ -172,13 +172,12 @@ async def get_top_items(
     for order in orders:
         key = order.item_id
         if key not in counter:
-            if order.ordered_item_name:
-                item = ItemOrderQuantity(
-                    item_id=key,
-                    item_name=order.ordered_item_name if hasattr(order, "ordered_item_name") else None,
-                    quantity=0
-                )
-                counter[key] = item
+            item = ItemOrderQuantity(
+                item_id=key,
+                item_name=getattr(order, "ordered_item_name", None),
+                quantity=0,
+            )
+            counter[key] = item
         counter[key].quantity += order.quantity
 
     # 3. Sort and return top N
@@ -192,14 +191,14 @@ async def count_cancelled_orders(
     to_date: datetime
 ) -> CancelledCount:
 
+    """Count the number of cancelled orders in the period."""
 
     documents = await order_model.get_by_fields(
-        And(
-            Eq(OrderDocument.restaurant_id, restaurant_id),
-            Eq(OrderDocument.prep_status, "cancelled"),
-            GTE(OrderDocument.order_time, from_date),
-            LTE(OrderDocument.order_time, to_date)
-        )
+        {
+            "restaurantId": restaurant_id,
+            "prepStatus": "cancelled",
+            "orderTime": {"$gte": from_date, "$lte": to_date},
+        }
     )
     count = len(documents)
 
@@ -212,13 +211,15 @@ async def average_session_duration(
     to_date: datetime
 ) -> AverageSessionDuration:
 
+    """Compute the average duration of closed sessions for a period."""
+
     sessions = await session_model.get_by_fields(
-        And(
-            Eq(TableSessionDocument.restaurant_id, restaurant_id),
-            Eq(TableSessionDocument.status, "closed"),
-            GTE(TableSessionDocument.start_time, from_date),
-            LTE(TableSessionDocument.end_time, to_date)
-        )
+        {
+            "restaurantId": restaurant_id,
+            "status": "closed",
+            "startTime": {"$gte": from_date},
+            "endTime": {"$lte": to_date},
+        }
     )
 
     if not sessions:
@@ -238,13 +239,15 @@ async def average_session_duration(
 async def active_sessions_count(
         restaurant_id: str
 ) -> ActiveSessionCount:
+    """Return the number of active sessions with at least one order."""
+
     sessions = await session_model.get_by_fields(
-        And(
-            Eq(TableSessionDocument.restaurant_id, restaurant_id),
-            Eq(TableSessionDocument.status, "active")
-        )
+        {
+            "restaurantId": restaurant_id,
+            "status": "active",
+            "orders": {"$ne": []},
+        }
     )
-    sessions = [session for session in sessions if len(session.orders) > 0]
     count = len(sessions)
     return ActiveSessionCount(active_sessions=count)
 
