@@ -23,6 +23,7 @@ from app.api.v1.endpoints.memberships import router as memberships_router
 from app.api.v1.endpoints.orders import router as orders_router
 from app.api.v1.endpoints.subscriptions import router as subscriptions_router
 from app.api.v1.endpoints.notifications import router as notifications_router
+from app.api.v1.endpoints.diagnostics import router as diagnostics_router
 
 
 router = APIRouter()
@@ -40,7 +41,9 @@ router.include_router(items_router, prefix="/items", tags=["Items"])
 router.include_router(menus_router, prefix="/menus", tags=["Menus"])
 router.include_router(categories_router, prefix="/categories", tags=["Categories"])
 router.include_router(tables_router, prefix="/tables", tags=["Tables"])
-router.include_router(table_sessions_router, prefix="/sessions", tags=["Table Sessions"])
+router.include_router(
+    table_sessions_router, prefix="/sessions", tags=["Table Sessions"]
+)
 router.include_router(roles_router, prefix="/roles", tags=["Roles"])
 router.include_router(memberships_router, prefix="/memberships", tags=["Memberships"])
 router.include_router(stock_router, prefix="/stock", tags=["Stock"])
@@ -49,5 +52,10 @@ router.include_router(recipes_router, prefix="/recipes", tags=["Recipes"])
 router.include_router(sales_router, prefix="/sales", tags=["Sales"])
 router.include_router(suppliers_router, prefix="/suppliers", tags=["Suppliers"])
 router.include_router(orders_router, prefix="/orders", tags=["Orders"])
-router.include_router(subscriptions_router, prefix="/subscriptions", tags=["Subscriptions"])
-router.include_router(notifications_router, prefix="/notifications", tags=["Notifications"])
+router.include_router(
+    subscriptions_router, prefix="/subscriptions", tags=["Subscriptions"]
+)
+router.include_router(
+    notifications_router, prefix="/notifications", tags=["Notifications"]
+)
+router.include_router(diagnostics_router, prefix="/diagnostics", tags=["Diagnostics"])
