@@ -249,26 +249,38 @@ async def active_sessions_count(
     return ActiveSessionCount(active_sessions=count)
 
 
+
 async def last_seven_days_order_count(
-        restaurant_id: str
+        restaurant_id: str,
 ):
-    days = []
+    """Return the number of orders for each of the last seven days.
+
+    The count is based on the ``orderTime`` field so that orders are grouped
+    strictly by the day they were placed. ``createdAt`` was previously used
+    which could include documents created on a different day from when the
+    order was placed. Using ``orderTime`` ensures each day's window is
+    correctly respected.
+    """
+
+    days: List[TotalOrdersCount] = []
 
     try:
-        for i in range(7):
-            now = now_in_luanda()
+        now = now_in_luanda()
 
+        for i in range(7):
             day = now - timedelta(days=i + 1)
 
             day_start = day.replace(hour=0, minute=0, second=0, microsecond=0)
             day_end = day.replace(hour=23, minute=59, second=59, microsecond=0)
             weekday = day_start.strftime("%A")
 
-
-            documents = await order_model.get_by_fields({
+            documents = await order_model.get_by_fields(
+                {
                     "restaurantId": restaurant_id,
-                    "createdAt": {"$gte": day_start, "$lte": day_end}
-                })
+                    "orderTime": {"$gte": day_start, "$lte": day_end},
+                },
+                limit=0,
+            )
 
             # print("Day:", weekday)
             # print(f"from: {day_start} | to: {day_end}")
