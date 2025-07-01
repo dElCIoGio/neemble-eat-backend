@@ -82,3 +82,19 @@ async def list_current_menu_items_by_slug(slug: str):
     return items
 
 
+async def update_opening_hours(
+    restaurant_id: str, opening_hours: restaurant_schema.OpeningHours
+) -> restaurant_schema.RestaurantDocument:
+    """Update a restaurant's opening hours settings."""
+    restaurant = await restaurant_model.get(restaurant_id)
+    if not restaurant:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+
+    update_data = {
+        "settings.openingHours": opening_hours.model_dump(by_alias=True)
+    }
+
+    updated = await restaurant_model.update(restaurant_id, update_data)
+    return updated
+
+

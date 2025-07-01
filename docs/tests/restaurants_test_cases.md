@@ -11,6 +11,11 @@ This document lists basic requirements and test cases for the restaurants module
    - Given a restaurant slug, return all items in its current menu.
    - If the slug does not exist, the endpoint should return HTTP 404.
    - If the restaurant has no current menu, an empty list should be returned.
+3. **Opening Hours Update**
+   - Restaurants should be able to update their opening hours through a
+     dedicated endpoint.
+   - The endpoint accepts the ``OpeningHours`` schema and returns the updated
+     restaurant document.
 
 These scenarios can be automated with a testing framework such as `pytest` and FastAPI's test client.
 

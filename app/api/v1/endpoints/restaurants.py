@@ -21,6 +21,7 @@ from app.services.restaurant import (
     get_restaurant,
     get_by_slug,
     update_restaurant,
+    update_opening_hours,
     delete_restaurant,
     get_restaurants,
     get_active_restaurants,
@@ -331,6 +332,15 @@ async def update_existing_restaurant(
     restaurant_id: str, data: restaurant_schema.RestaurantUpdate
 ):
     return await update_restaurant(restaurant_id, data)
+
+
+@router.put("/{restaurant_id}/opening-hours")
+async def update_restaurant_opening_hours(
+    restaurant_id: str, opening_hours: restaurant_schema.OpeningHours
+):
+    """Update only the opening hours for a restaurant."""
+    updated = await update_opening_hours(restaurant_id, opening_hours)
+    return updated.to_response()
 
 
 @router.put("/{restaurant_id}/banner")
