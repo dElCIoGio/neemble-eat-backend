@@ -98,3 +98,17 @@ async def update_opening_hours(
     return updated
 
 
+async def update_automatic_stock_adjustments(
+    restaurant_id: str, enable: bool
+) -> restaurant_schema.RestaurantDocument:
+    """Toggle automatic stock adjustments for a restaurant."""
+    restaurant = await restaurant_model.get(restaurant_id)
+    if not restaurant:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+
+    update_data = {"settings.automaticStockAdjustments": enable}
+
+    updated = await restaurant_model.update(restaurant_id, update_data)
+    return updated
+
+
