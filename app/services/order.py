@@ -7,8 +7,15 @@ from fastapi import HTTPException
 from app.models.order import OrderModel
 from app.schema import order as order_schema
 from app.schema.order import OrderDocument
-from app.services import table_session as table_session_service, table as table_service
+from app.services import (
+    table_session as table_session_service,
+    table as table_service,
+    recipe as recipe_service,
+    stock_item as stock_item_service,
+    restaurant as restaurant_service,
+)
 from app.services.websocket_manager import get_websocket_manger
+from app.schema import recipe as recipe_schema
 from app.utils.time import now_in_luanda
 
 order_model = OrderModel()
@@ -51,6 +58,54 @@ async def place_order(data: dict) -> order_schema.OrderDocument:
         #     status_code=500,
         #     detail=str(error)
         # )
+
+    # Adjust stock levels based on recipe if automatic adjustments are enabled
+    if restaurant_id:
+        restaurant = await restaurant_service.get_restaurant(restaurant_id)
+        if (
+            restaurant
+            and restaurant.settings
+            and restaurant.settings.automatic_stock_adjustments
+        ):
+            recipe = await recipe_service.get_recipe_by_menu_item(
+                data.get("itemId"), restaurant_id
+            )
+            if recipe:
+                ingredients_updated = False
+                stock_cache = None
+                for ingredient in recipe.ingredients:
+                    stock_item = await stock_item_service.get_stock_item(
+                        ingredient.product_id
+                    )
+                    if not stock_item:
+                        if stock_cache is None:
+                            stock_cache = await stock_item_service.list_stock_items_for_restaurant(
+                                restaurant_id
+                            )
+                        match = next(
+                            (
+                                s
+                                for s in stock_cache
+                                if s.name.lower() == ingredient.product_name.lower()
+                            ),
+                            None,
+                        )
+                        if match:
+                            ingredient.product_id = str(match.id)
+                            stock_item = match
+                            ingredients_updated = True
+                    if stock_item:
+                        await stock_item_service.remove_stock(
+                            str(stock_item.id),
+                            ingredient.quantity * order.quantity,
+                            reason=f"Order {order.id}",
+                        )
+
+                if ingredients_updated:
+                    await recipe_service.update_recipe(
+                        str(recipe.id),
+                        recipe_schema.RecipeUpdate(ingredients=recipe.ingredients),
+                    )
 
     return order
 
