@@ -16,6 +16,11 @@ This document lists basic requirements and test cases for the restaurants module
      dedicated endpoint.
    - The endpoint accepts the ``OpeningHours`` schema and returns the updated
      restaurant document.
+4. **Automatic Stock Adjustments**
+   - Restaurants can toggle automatic stock adjustments using a dedicated
+     endpoint.
+   - The endpoint accepts a boolean ``automaticStockAdjustments`` and returns
+     the updated restaurant document.
 
 These scenarios can be automated with a testing framework such as `pytest` and FastAPI's test client.
 
