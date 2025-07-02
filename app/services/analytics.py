@@ -68,6 +68,8 @@ async def get_sales_summary(
     }
     invoices = await invoice_model.get_by_fields(filters)
 
+    print(invoices)
+
     current_metrics = _compute_metrics(invoices or [])
 
     # previous period invoices
@@ -284,11 +286,6 @@ async def last_seven_days_order_count(
                 },
                 limit=0,
             )
-
-            # print("Day:", weekday)
-            # print(f"from: {day_start} | to: {day_end}")
-            # print(documents)
-            # print("\n\n")
 
             count = len(documents)
 

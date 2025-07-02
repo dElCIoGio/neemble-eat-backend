@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Body
 
 from app.schema import menu as menu_schema
 from app.services import menu as menu_service
@@ -29,7 +29,7 @@ async def delete_menu(menu_id: str):
     return True
 
 @router.put("/{menu_id}")
-async def update_menu(menu_id: str, data: menu_schema.MenuUpdate):
+async def update_menu(menu_id: str, data: menu_schema.MenuUpdate = Body(...)):
     updated = await menu_service.update_menu(menu_id, data)
     if not updated:
         raise HTTPException(status_code=404, detail="Menu not found")

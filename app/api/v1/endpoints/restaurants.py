@@ -9,7 +9,7 @@ from fastapi import (
     File,
     Request,
     HTTPException,
-    Query,
+    Query, Body,
 )
 from pymongo.errors import DuplicateKeyError
 
@@ -336,7 +336,7 @@ async def update_existing_restaurant(
 
 @router.put("/{restaurant_id}/opening-hours")
 async def update_restaurant_opening_hours(
-    restaurant_id: str, opening_hours: restaurant_schema.OpeningHours
+    restaurant_id: str, opening_hours: restaurant_schema.OpeningHours = Body(..., alias="openingHours")
 ):
     """Update only the opening hours for a restaurant."""
     updated = await update_opening_hours(restaurant_id, opening_hours)

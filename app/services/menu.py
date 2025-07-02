@@ -32,7 +32,12 @@ async def create_menu(data: menu_schema.MenuCreate):
     return menu
 
 async def update_menu(menu_id: str, data: menu_schema.MenuUpdate):
-    return await menu_model.update(menu_id, data)
+    update_data = data.model_dump(
+        by_alias=True,
+        exclude_none=True,
+        exclude_unset=True,
+    )
+    return await menu_model.update(menu_id, update_data)
 
 async def delete_menu(menu_id: str):
     try:
