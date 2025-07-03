@@ -16,9 +16,24 @@ user_model = UserModel()
 
 def get_default_roles(restaurant_id: str) -> dict[str, RoleCreate]:
     default_roles: dict[str, RoleCreate] = {
+        "admin": RoleCreate(
+            name="Admin",
+            level=0,
+            description="Acesso completo a todas as funcionalidades",
+            restaurantId=restaurant_id,
+            permissions=[
+                SectionPermission(
+                    section=section.value,
+                    permissions=Permissions(
+                        can_view=True, can_edit=True, can_delete=True
+                    ),
+                )
+                for section in Sections
+            ],
+        ),
         "gerente": RoleCreate(
             name="Gerente",
-            level=0,
+            level=1,
             description="Acesso total às operações do restaurante",
             restaurantId=restaurant_id,
             permissions=[
@@ -62,7 +77,7 @@ def get_default_roles(restaurant_id: str) -> dict[str, RoleCreate]:
         ),
         "cozinheiro": RoleCreate(
             name="Cozinheiro",
-            level=1,
+            level=2,
             description="Gerencia pedidos de comida na cozinha",
             restaurantId=restaurant_id,
             permissions=[
@@ -88,7 +103,7 @@ def get_default_roles(restaurant_id: str) -> dict[str, RoleCreate]:
         ),
         "garcom": RoleCreate(
             name="Garçom",
-            level=2,
+            level=3,
             description="Atende mesas e recebe pedidos",
             restaurantId=restaurant_id,
             permissions=[
@@ -120,7 +135,7 @@ def get_default_roles(restaurant_id: str) -> dict[str, RoleCreate]:
         ),
         "barman": RoleCreate(
             name="Barman",
-            level=2,
+            level=3,
             description="Prepara e serve bebidas",
             restaurantId=restaurant_id,
             permissions=[
@@ -140,7 +155,7 @@ def get_default_roles(restaurant_id: str) -> dict[str, RoleCreate]:
         ),
         "contador": RoleCreate(
             name="Cgontador",
-            level=1,
+            level=2,
             description="Gerencia faturas e análises",
             restaurantId=restaurant_id,
             permissions=[
