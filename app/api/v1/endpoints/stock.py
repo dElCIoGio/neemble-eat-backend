@@ -1,9 +1,13 @@
-from fastapi import APIRouter, HTTPException, Body
+from fastapi import APIRouter, HTTPException, Body, Depends
+
+from app.utils.auth import get_current_user
+from app.models.user import UserModel
 
 from app.schema import stock_item as stock_schema
 from app.services import stock_item as stock_service
 
 router = APIRouter()
+user_model = UserModel()
 
 
 @router.get("/restaurant/{restaurant_id}")
@@ -13,11 +17,22 @@ async def list_stock_items(restaurant_id: str):
 
 
 @router.post("/restaurant/{restaurant_id}")
-async def create_stock_item(restaurant_id: str, data: stock_schema.StockItemCreate):
+async def create_stock_item(
+    restaurant_id: str,
+    data: stock_schema.StockItemCreate,
+    firebase_uid: str = Depends(get_current_user),
+):
     try:
         if data.restaurant_id != restaurant_id:
             raise HTTPException(status_code=400, detail="Mismatched restaurant id")
-        item = await stock_service.create_stock_item(data)
+        user = await user_model.get_user_by_firebase_uid(firebase_uid)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        item = await stock_service.create_stock_item(
+            data,
+            user=f"{user.first_name} {user.last_name}",
+        )
         return item.to_response()
     except Exception as error:
         print(error)
@@ -36,25 +51,60 @@ async def get_stock_item(item_id: str):
 
 
 @router.put("/{item_id}")
-async def update_stock_item(item_id: str, data: stock_schema.StockItemUpdate):
-    updated = await stock_service.update_stock_item(item_id, data)
+async def update_stock_item(
+    item_id: str,
+    data: stock_schema.StockItemUpdate,
+    firebase_uid: str = Depends(get_current_user),
+):
+    user = await user_model.get_user_by_firebase_uid(firebase_uid)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    updated = await stock_service.update_stock_item(
+        item_id,
+        data,
+        user=f"{user.first_name} {user.last_name}",
+    )
     if not updated:
         raise HTTPException(status_code=404, detail="Item not found")
     return updated.to_response()
 
 
 @router.delete("/{item_id}")
-async def delete_stock_item(item_id: str):
-    deleted = await stock_service.delete_stock_item(item_id)
+async def delete_stock_item(
+    item_id: str,
+    firebase_uid: str = Depends(get_current_user),
+):
+    user = await user_model.get_user_by_firebase_uid(firebase_uid)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    deleted = await stock_service.delete_stock_item(
+        item_id,
+        user=f"{user.first_name} {user.last_name}",
+    )
     if not deleted:
         raise HTTPException(status_code=404, detail="Item not found")
     return True
 
 
 @router.post("/{item_id}/add")
-async def add_stock(item_id: str, quantity: float = Body(...), reason: str = Body("", embed=True)):
+async def add_stock(
+    item_id: str,
+    quantity: float = Body(...),
+    reason: str = Body("", embed=True),
+    firebase_uid: str = Depends(get_current_user),
+):
+    user = await user_model.get_user_by_firebase_uid(firebase_uid)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
     try:
-        updated = await stock_service.add_stock(item_id, quantity, reason)
+        updated = await stock_service.add_stock(
+            item_id,
+            quantity,
+            reason,
+            user=f"{user.first_name} {user.last_name}",
+        )
         if not updated:
             raise HTTPException(status_code=404, detail="Item not found")
         return updated.to_response()
@@ -66,8 +116,22 @@ async def add_stock(item_id: str, quantity: float = Body(...), reason: str = Bod
 
 
 @router.post("/{item_id}/remove")
-async def remove_stock(item_id: str, quantity: float = Body(...), reason: str = Body("", embed=True)):
-    updated = await stock_service.remove_stock(item_id, quantity, reason)
+async def remove_stock(
+    item_id: str,
+    quantity: float = Body(...),
+    reason: str = Body("", embed=True),
+    firebase_uid: str = Depends(get_current_user),
+):
+    user = await user_model.get_user_by_firebase_uid(firebase_uid)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    updated = await stock_service.remove_stock(
+        item_id,
+        quantity,
+        reason,
+        user=f"{user.first_name} {user.last_name}",
+    )
     if not updated:
         raise HTTPException(status_code=404, detail="Item not found")
     return updated.to_response()
