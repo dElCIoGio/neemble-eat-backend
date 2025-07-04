@@ -28,7 +28,11 @@ async def sales_summary(
         from_date = today
         to_date = today + timedelta(days=1)
 
-    return await get_sales_summary(restaurant_id, from_date, to_date)
+    summary = await get_sales_summary(restaurant_id, from_date, to_date)
+
+    print(summary)
+
+    return summary
 
 @router.get("/invoices")
 async def invoices_summary(

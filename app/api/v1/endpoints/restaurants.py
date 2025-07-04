@@ -350,6 +350,7 @@ async def update_restaurant_automatic_stock(
     automatic_stock_adjustments: bool = Body(..., alias="automaticStockAdjustments"),
 ):
     """Enable or disable automatic stock adjustments for a restaurant."""
+
     updated = await update_automatic_stock_adjustments(
         restaurant_id, automatic_stock_adjustments
     )

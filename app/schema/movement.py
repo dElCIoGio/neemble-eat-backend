@@ -30,6 +30,7 @@ class MovementCreate(BaseModel):
     cost: Optional[float] = None
 
 
+
 class MovementBase(MovementCreate):
     pass
 

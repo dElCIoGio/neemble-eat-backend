@@ -68,8 +68,6 @@ async def get_sales_summary(
     }
     invoices = await invoice_model.get_by_fields(filters)
 
-    print(invoices)
-
     current_metrics = _compute_metrics(invoices or [])
 
     # previous period invoices
