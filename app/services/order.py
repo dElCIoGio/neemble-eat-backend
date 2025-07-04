@@ -98,7 +98,7 @@ async def place_order(data: dict) -> order_schema.OrderDocument:
                         await stock_item_service.remove_stock(
                             str(stock_item.id),
                             ingredient.quantity * order.quantity,
-                            reason=f"Venda de {order.id}",
+                            reason=f"Venda de {order.ordered_item_name}",
                         )
 
                 if ingredients_updated:
