@@ -62,3 +62,9 @@ async def remove_item_from_category(category_id: str, item_id: str):
 
 async def get_category_by_slug(slug: str):
     return await category_model.get_by_slug(slug)
+
+
+async def count_categories_for_menu(menu_id: str) -> int:
+    """Return the number of categories linked to a menu."""
+    filters = {"menuId": menu_id}
+    return await category_schema.CategoryDocument.find(filters).count()

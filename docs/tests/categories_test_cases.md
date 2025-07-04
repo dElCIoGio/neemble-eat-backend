@@ -70,6 +70,10 @@ This document describes the basic requirements and a comprehensive list of test 
 - **TC11.1** Existing slug returns categories for the menu.
 - **TC11.2** Unknown slug returns HTTP 400 "The menu was not found".
 
+### 11b. Count Categories by Menu Slug `/api/v1/categories/menu/slug/{menu_slug}/count`
+- **TC11b.1** Existing slug returns the number of categories for the menu.
+- **TC11b.2** Unknown slug returns HTTP 400 "The menu was not found".
+
 ### 12. List Categories for Restaurant `/api/v1/categories/restaurant/{restaurant_id}`
 - **TC12.1** Valid ID returns categories for that restaurant.
 - **TC12.2** Restaurant with no categories returns an empty list.
