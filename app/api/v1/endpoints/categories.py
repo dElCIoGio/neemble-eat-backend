@@ -114,6 +114,25 @@ async def list_menu_categories_by_slug(menu_slug: str):
             status_code=400
         )
 
+
+@router.get("/menu/slug/{menu_slug}/count")
+async def count_menu_categories(menu_slug: str):
+    """Return how many categories belong to the menu with the given slug."""
+    try:
+        menu = await menu_model.get_by_slug(menu_slug)
+        if not menu:
+            raise HTTPException(
+                detail="The menu was not found",
+                status_code=400,
+            )
+
+        count = await category_service.count_categories_for_menu(str(menu.id))
+        return count
+    except HTTPException:
+        raise
+    except Exception as error:
+        raise HTTPException(detail=str(error), status_code=400)
+
 @router.get("/restaurant/{restaurant_id}")
 async def list_restaurant_categories(restaurant_id: str):
     categories = await category_service.list_categories_for_restaurant(restaurant_id)
