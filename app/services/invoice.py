@@ -1,5 +1,6 @@
 from app.models.invoice import InvoiceModel
 from app.models.table_session import TableSessionModel
+from app.schema.invoice import InvoiceStatus
 from app.schema.order import OrderDocument
 from datetime import datetime
 
@@ -50,7 +51,7 @@ async def get_invoice_by_session(session_id: str):
     return None
 
 async def mark_invoice_paid(invoice_id: str):
-    return await invoice_model.update(invoice_id, {"status": "paid"})
+    return await invoice_model.update(invoice_id, {"status": InvoiceStatus.PAID})
 
 async def cancel_invoice(invoice_id: str):
     return await invoice_model.update(invoice_id, {"status": "cancelled", "isActive": False})

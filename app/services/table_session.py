@@ -184,7 +184,7 @@ async def mark_session_paid(session_id: str) -> TableSessionDocument | None:
     invoice = await invoice_service.generate_invoice_for_session(session_id)
     await invoice_service.mark_invoice_paid(str(invoice.id))
 
-    updated = await session_model.update(
+    await session_model.update(
         session_id,
         {"status": TableSessionStatus.PAID, "endTime": now_in_luanda()},
     )

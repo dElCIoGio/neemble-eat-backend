@@ -16,7 +16,7 @@ from app.schema.analytics import (
     ActiveSessionCount,
     TotalOrdersCount,
 )
-from app.schema.invoice import InvoiceDocument
+from app.schema.invoice import InvoiceDocument, InvoiceStatus
 from app.schema.order import OrderDocument
 from app.schema.table_session import TableSessionDocument
 from app.utils.time import now_in_luanda
@@ -111,7 +111,7 @@ async def count_invoices(
     filters = {
         "restaurantId": restaurant_id,
         "createdAt": {"$gte": from_date, "$lte": to_date},
-        "status": status_filter,
+        "status": InvoiceStatus.PAID,
     }
 
     invoices = await invoice_model.get_by_fields(filters)
