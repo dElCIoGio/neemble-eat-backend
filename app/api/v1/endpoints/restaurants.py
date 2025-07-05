@@ -245,7 +245,7 @@ async def create(
         roles = await create_default_roles_for_restaurant(str(restaurant.id))
 
         # Find manager role and create membership
-        manager_role = next((role for role in roles if role.name == "gerente"), None)
+        manager_role = next((role for role in roles if role.name == "Administrador"), None)
         if not manager_role:
             raise Exception("Manager role not found")
 
@@ -255,14 +255,18 @@ async def create(
         )
 
         # Initialize memberships list if it doesn't exist
-        if not user.memberships:
-            user.memberships = []
+        # if len(user.memberships) == 0:
+        #     user.memberships = []
+
+        memberships = user.memberships
+        memberships.append(membership)
+        memberships = [m.model_dump(by_alias=True) for m in memberships]
 
         # Update user with new membership
         await user_model.update(
             _id=str(user.id),
             data={
-                "memberships": [membership.model_dump(by_alias=True)],
+                "memberships": memberships,
                 "currentRestaurantId": str(restaurant.id),
             },
         )
@@ -270,13 +274,14 @@ async def create(
         return restaurant.to_response()
 
     except DuplicateKeyError as e:
+        print(str(e))
         return HTTPException(
             status_code=500,
             detail="The number is already being used by another restaurant",
         )
 
     except Exception as e:
-        print(e)
+        print(str(e))
         # Clean up any uploaded images if restaurant creation fails
         if "banner_result" in locals() and banner_result.success:
             await cleanup_restaurant_images(

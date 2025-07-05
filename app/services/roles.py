@@ -17,7 +17,7 @@ user_model = UserModel()
 def get_default_roles(restaurant_id: str) -> dict[str, RoleCreate]:
     default_roles: dict[str, RoleCreate] = {
         "admin": RoleCreate(
-            name="Admin",
+            name="Administrador",
             level=0,
             description="Acesso completo a todas as funcionalidades",
             restaurantId=restaurant_id,
@@ -154,7 +154,7 @@ def get_default_roles(restaurant_id: str) -> dict[str, RoleCreate]:
             ],
         ),
         "contador": RoleCreate(
-            name="Cgontador",
+            name="Contador",
             level=2,
             description="Gerencia faturas e análises",
             restaurantId=restaurant_id,
