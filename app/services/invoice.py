@@ -5,6 +5,10 @@ from app.schema.order import OrderDocument
 from datetime import datetime
 
 from app.utils.time import now_in_luanda
+from app.schema.invoice_data import InvoiceData, InvoiceItem
+from app.services import restaurant as restaurant_service
+from app.services import table as table_service
+from app.services.order import order_model
 
 session_model = TableSessionModel()
 invoice_model = InvoiceModel()
@@ -59,3 +63,48 @@ async def cancel_invoice(invoice_id: str):
 async def list_invoices_for_restaurant(restaurant_id: str):
     filters = {"restaurantId": restaurant_id, "isActive": True}
     return await invoice_model.get_many(filters)
+
+
+async def get_invoice_data(invoice_id: str) -> InvoiceData | None:
+    """Return an ``InvoiceData`` structure for the given invoice id."""
+
+    invoice = await invoice_model.get(invoice_id)
+    if not invoice:
+        return None
+
+    restaurant = await restaurant_service.get_restaurant(invoice.restaurant_id)
+    session = await session_model.get(invoice.session_id)
+
+    table_number = 0
+    if session:
+        table = await table_service.get_table(session.table_id)
+        if table:
+            table_number = table.number
+
+    orders = []
+    if invoice.orders:
+        orders = await order_model.get_many(invoice.orders)
+
+    items = [
+        InvoiceItem(
+            id=str(o.id),
+            name=o.ordered_item_name or "",
+            unitPrice=o.unit_price,
+            quantity=o.quantity,
+            total=o.total,
+        )
+        for o in orders
+    ]
+
+    return InvoiceData(
+        restaurantName=restaurant.name if restaurant else "",
+        restaurantAddress=restaurant.address if restaurant else "",
+        restaurantPhoneNumber=restaurant.phone_number if restaurant else "",
+        tableNumber=table_number,
+        invoiceNumber=str(invoice.id),
+        invoiceDate=invoice.generated_time.isoformat(),
+        items=items,
+        tax=invoice.tax,
+        discount=invoice.discount,
+        total=invoice.total or 0.0,
+    )

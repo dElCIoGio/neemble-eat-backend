@@ -78,6 +78,14 @@ async def get_invoice(invoice_id: str):
     return invoice.to_response()
 
 
+@router.get("/{invoice_id}/data")
+async def get_invoice_data(invoice_id: str):
+    data = await invoice_service.get_invoice_data(invoice_id)
+    if not data:
+        raise HTTPException(status_code=404, detail="Invoice not found")
+    return data
+
+
 @router.put("/{invoice_id}")
 async def update_invoice(invoice_id: str, data: invoice_schema.InvoiceUpdate = Body(...)):
     updated = await invoice_model.update(
