@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional, Dict, Any
 
 from fastapi import APIRouter, HTTPException, Body, Query
@@ -28,9 +29,18 @@ async def generate_invoice(session_id: str):
 async def paginate_invoices(
     limit: int = Query(10, gt=0),
     cursor: Optional[str] = Query(None),
+    restaurant_id: str = Query(..., alias="restaurantId"),
+    from_date: datetime = Query(..., alias="fromDate"),
+    to_date: datetime = Query(..., alias="toDate")
 ):
     try:
-        filters: Dict[str, Any] = {}
+        filters: Dict[str, Any] = {
+            "restaurantId": restaurant_id,
+            "createdAt": {
+                "$gte": from_date,
+                "$lt": to_date
+            }
+        }
         result = await invoice_model.paginate(filters=filters, limit=limit, cursor=cursor)
         return result
     except Exception as error:
