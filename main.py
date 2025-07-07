@@ -1,8 +1,9 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+
+import requests
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Response, Request
 from starlette.middleware.cors import CORSMiddleware
-from datetime import datetime
 import json
 
 from app.auth.firebase import initialize_firebase
@@ -68,6 +69,31 @@ async def health_check():
         "timestamp": now_in_luanda().isoformat(),
         "version": app.version
     }
+
+
+@app.post("/compile-latex")
+async def compile_latex(request: Request):
+    body = await request.json()
+    latex_code = body["inputs"]["main.tex"]
+
+    files = {
+        'file': ('main.tex', latex_code, 'application/x-tex')
+    }
+
+    try:
+        response = requests.post("https://latexonline.cc/data", files=files)
+
+        if response.headers.get("Content-Type") != "application/pdf":
+            # fallback: latexonline returned an error PDF or text
+            return Response(content=response.content, media_type=response.headers.get("Content-Type", "text/plain"))
+
+        return Response(
+            content=response.content,
+            media_type="application/pdf"
+        )
+    except Exception as e:
+        return Response(content=str(e), status_code=500)
+
 
 
 @app.websocket("/ws/{restaurant_id}/{category}")

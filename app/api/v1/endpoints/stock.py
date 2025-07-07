@@ -1,5 +1,8 @@
-from fastapi import APIRouter, HTTPException, Body, Depends
+from typing import Optional, Dict, Any
 
+from fastapi import APIRouter, HTTPException, Body, Depends, Query
+
+from app.services.stock_item import stock_item_model
 from app.utils.auth import get_current_user
 from app.models.user import UserModel
 
@@ -15,6 +18,41 @@ async def list_stock_items(restaurant_id: str):
     items = await stock_service.list_stock_items_for_restaurant(restaurant_id)
     return [i.to_response() for i in items]
 
+
+@router.get("/restaurant/{restaurant_id}/paginate")
+async def paginate_stock_item(
+    restaurant_id: str,
+    limit: int = Query(10, gt=0),
+    cursor: Optional[str] = Query(None),
+    category: Optional[str] = Query(default=""),
+    status: Optional[str] = Query(default=""),
+    search: Optional[str] = Query(default="")
+):
+    try:
+        filters: Dict[str, Any] = {
+            "restaurantId": restaurant_id,
+            "name": {
+                "$regex": search,
+                "$options": "i"  # case-insensitive
+            }
+        }
+
+        if category not in ["", "Todas"]:
+            filters["category"] = category
+
+        if status not in ["", "Todos"]:
+            filters["status"] = status
+
+        result = await stock_item_model.paginate(
+            filters=filters,
+            limit=limit,
+            cursor=cursor
+        )
+        return result
+
+    except Exception as error:
+        print(error)
+        raise HTTPException(status_code=400, detail=str(error))
 
 @router.post("/restaurant/{restaurant_id}")
 async def create_stock_item(

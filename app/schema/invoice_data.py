@@ -18,8 +18,8 @@ class InvoiceData(BaseModel):
     invoice_number: str = Field(alias="invoiceNumber")
     invoice_date: str = Field(alias="invoiceDate")
     items: List[InvoiceItem]
-    tax: Optional[float] = None
-    discount: Optional[float] = None
+    tax: Optional[float] = Field(default=0)
+    discount: Optional[float] = Field(default=0)
     total: float
 
     model_config = ConfigDict(populate_by_name=True)

@@ -108,3 +108,4 @@ async def clean_table_endpoint(table_id: str):
     if not table:
         raise HTTPException(status_code=404, detail="Table not found")
     return table.to_response()
+

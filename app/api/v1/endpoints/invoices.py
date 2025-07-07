@@ -10,6 +10,19 @@ from app.services.invoice import invoice_model
 router = APIRouter()
 
 
+
+
+@router.get("/{invoice_id}/data")
+async def get_invoice_data(invoice_id: str):
+    try:
+        data = await invoice_service.get_invoice_data(invoice_id)
+        if not data:
+            raise HTTPException(status_code=404, detail="Invoice not found")
+        return data
+    except Exception as error:
+        print(error)
+        raise HTTPException(status_code=400, detail=str(error))
+
 @router.post("/")
 async def create_invoice(data: invoice_schema.InvoiceCreate):
     invoice = await invoice_model.create(data.model_dump(by_alias=True))
@@ -118,13 +131,4 @@ async def list_invoices():
     return [i.to_response() for i in invoices]
 
 
-@router.get("/{invoice_id}/data")
-async def get_invoice_data(invoice_id: str):
-    try:
-        data = await invoice_service.get_invoice_data(invoice_id)
-        if not data:
-            raise HTTPException(status_code=404, detail="Invoice not found")
-        return data
-    except Exception as error:
-        print(error)
-        raise HTTPException(status_code=400, detail=str(error))
+
