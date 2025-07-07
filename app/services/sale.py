@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from typing import List, Optional
 
 from app.models.sale import SaleModel
@@ -38,3 +39,18 @@ async def create_sale(recipe_id: str, quantity: int) -> Optional[sale_schema.Sal
 
 async def list_sales() -> List[sale_schema.SaleDocument]:
     return await sale_model.get_all()
+
+
+async def list_sales_for_day(
+    restaurant_id: str, day: datetime
+) -> List[sale_schema.SaleDocument]:
+    """Return all sales for a restaurant on a specific day."""
+
+    start = day.replace(hour=0, minute=0, second=0, microsecond=0)
+    end = start + timedelta(days=1)
+    filters = {
+        "restaurantId": restaurant_id,
+        "date": {"$gte": start, "$lt": end},
+    }
+    return await sale_model.get_by_fields(filters)
+
