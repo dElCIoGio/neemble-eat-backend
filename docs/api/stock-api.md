@@ -58,6 +58,7 @@ endpoints and the data shapes used.
 
 ### List sales
 - **GET /api/v1/sales** – Returns array of `Sale`.
+- **GET /api/v1/sales/restaurant/{restaurant_id}/day/{date}** – Returns all sales for a restaurant on a specific day. The `date` should be in `YYYY-MM-DD` format.
 
 ### Register sale
 - **POST /api/v1/sales/restaurant/{restaurant_id}** – Body: `{ recipeId: string, quantity: number }`.
