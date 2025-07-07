@@ -51,11 +51,13 @@ async def update_membership_role(user_id: str, restaurant_id: str, new_role_id: 
     updated = False
     for membership in user.memberships:
         m_role = role_map.get(membership.role_id)
-        if m_role and m_role.restaurant_id == restaurant_id and membership.is_active:
+        if m_role and m_role.restaurant_id == restaurant_id:
             membership.role_id = new_role_id
+            membership.is_active = True
             updated = True
+            break
     if not updated:
-        raise Exception("Membership not found for restaurant")
+        user.memberships.append(user_schema.UserRestaurantMembership(roleId=new_role_id, isActive=True))
 
     await user_model.update(str(user.id), {"memberships": [m.model_dump(by_alias=True) for m in user.memberships]})
     return await user_model.get(user_id)
