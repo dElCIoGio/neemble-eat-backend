@@ -201,6 +201,26 @@ async def count_cancelled_orders(
     return CancelledCount(cancelled_count=count)
 
 
+async def count_cancelled_sessions(
+    restaurant_id: str,
+    from_date: datetime,
+    to_date: datetime
+) -> CancelledCount:
+    """Count the number of cancelled sessions in the period."""
+
+    documents = await session_model.get_by_fields(
+        {
+            "restaurantId": restaurant_id,
+            "status": "cancelled",
+            "startTime": {"$gte": from_date},
+            "endTime": {"$lte": to_date},
+        }
+    )
+    count = len(documents)
+
+    return CancelledCount(cancelled_count=count)
+
+
 async def average_session_duration(
     restaurant_id: str,
     from_date: datetime,

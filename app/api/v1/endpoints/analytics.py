@@ -8,6 +8,7 @@ from app.services.analytics import (
     count_orders,
     get_top_items,
     count_cancelled_orders,
+    count_cancelled_sessions,
     average_session_duration,
     active_sessions_count, last_seven_days_order_count
 )
@@ -120,6 +121,26 @@ async def cancelled_orders_summary(
 
 
     return await count_cancelled_orders(restaurant_id, from_date, to_date)
+
+
+@router.get("/cancelled-sessions")
+async def cancelled_sessions_summary(
+    restaurant_id: str = Query(..., alias="restaurantId"),
+    from_date: Optional[datetime] = Query(None, alias="fromDate"),
+    to_date: Optional[datetime] = Query(None, alias="toDate"),
+):
+    today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
+
+    if not from_date:
+        from_date = today
+    if not to_date:
+        to_date = today + timedelta(days=1)
+    else:
+        to_date = to_date.replace(hour=23, minute=59, second=59, microsecond=0)
+
+    from_date = from_date.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    return await count_cancelled_sessions(restaurant_id, from_date, to_date)
 
 @router.get("/session-duration")
 async def session_duration_summary(
