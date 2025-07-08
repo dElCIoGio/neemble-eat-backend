@@ -23,14 +23,17 @@ async def sales_summary(
     to_date: Optional[datetime] = Query(None, alias="toDate"),
 ):
 
-    if not from_date or not to_date:
-        today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
+    today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
+
+    if not from_date:
         from_date = today
+    if not to_date:
         to_date = today + timedelta(days=1)
+    else:
+        to_date = to_date.replace(hour=23, minute=59, second=59, microsecond=0)
+    from_date = from_date.replace(hour=0, minute=0, second=0, microsecond=0)
 
     summary = await get_sales_summary(restaurant_id, from_date, to_date)
-
-    print(summary)
 
     return summary
 
@@ -42,10 +45,16 @@ async def invoices_summary(
     status: str = Query("paid")
 ):
     try:
-        if not from_date or not to_date:
-            today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
+        today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
+
+        if not from_date:
             from_date = today
+        if not to_date:
             to_date = today + timedelta(days=1)
+        else:
+            to_date = to_date.replace(hour=23, minute=59, second=59, microsecond=0)
+
+        from_date = from_date.replace(hour=0, minute=0, second=0, microsecond=0)
 
         return await count_invoices(restaurant_id, from_date, to_date, status_filter=status)
     except Exception as error:
@@ -57,10 +66,15 @@ async def orders_summary(
     from_date: Optional[datetime] = Query(None, alias="fromDate"),
     to_date: Optional[datetime] = Query(None, alias="toDate"),
 ):
-    if not from_date or not to_date:
-        today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
+    today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
+
+    if not from_date:
         from_date = today
+    if not to_date:
         to_date = today + timedelta(days=1)
+    else:
+        to_date = to_date.replace(hour=23, minute=59, second=59, microsecond=0)
+
     return await count_orders(restaurant_id, from_date, to_date)
 
 # Add menu filtering
@@ -72,10 +86,16 @@ async def top_items_summary(
     top_n: int = Query(5, ge=1, le=20, alias="topN")
 ):
     try:
-        if not from_date or not to_date:
-            today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
+        today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
+
+        if not from_date:
             from_date = today
+        if not to_date:
             to_date = today + timedelta(days=1)
+        else:
+            to_date = to_date.replace(hour=23, minute=59, second=59, microsecond=0)
+
+        from_date = from_date.replace(hour=0, minute=0, second=0, microsecond=0)
 
         return await get_top_items(restaurant_id, from_date, to_date, top_n=top_n)
     except Exception as error:
@@ -87,10 +107,17 @@ async def cancelled_orders_summary(
     from_date: Optional[datetime] = Query(None, alias="fromDate"),
     to_date: Optional[datetime] = Query(None, alias="toDate"),
 ):
-    if not from_date or not to_date:
-        today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
+    today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
+
+    if not from_date:
         from_date = today
+    if not to_date:
         to_date = today + timedelta(days=1)
+    else:
+        to_date = to_date.replace(hour=23, minute=59, second=59, microsecond=0)
+
+    from_date = from_date.replace(hour=0, minute=0, second=0, microsecond=0)
+
 
     return await count_cancelled_orders(restaurant_id, from_date, to_date)
 

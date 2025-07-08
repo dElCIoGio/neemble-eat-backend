@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 from typing import Dict, List
-from beanie.operators import And, GTE, LTE, Eq, Or
 from starlette.exceptions import HTTPException
 
 from app.models.invoice import InvoiceModel
@@ -17,8 +16,6 @@ from app.schema.analytics import (
     TotalOrdersCount,
 )
 from app.schema.invoice import InvoiceDocument, InvoiceStatus
-from app.schema.order import OrderDocument
-from app.schema.table_session import TableSessionDocument
 from app.utils.time import now_in_luanda
 
 
@@ -37,7 +34,6 @@ async def get_sales_summary(
     also calculates the growth for the same duration immediately preceding
     the provided range.
     """
-
     def _compute_metrics(inv_list: List[InvoiceDocument]):
         total_sales = sum(inv.total or 0.0 for inv in inv_list)
         invoice_count = len(inv_list)
@@ -130,7 +126,7 @@ async def count_orders(
     try:
         filters = {
             "restaurantId": restaurant_id,
-            "orderTime": {"$gte": from_date, "$lte": to_date},
+            "createdAt": {"$gte": from_date, "$lte": to_date},
         }
         documents = await order_model.get_by_fields(filters)
 
@@ -156,7 +152,7 @@ async def get_top_items(
     orders = await order_model.get_by_fields(
         {
             "restaurantId": restaurant_id,
-            "orderTime": {"$gte": from_date, "$lte": to_date},
+            "createdAt": {"$gte": from_date, "$lte": to_date},
             "prepStatus": {
                 "$in": ["queued", "in_progress", "ready", "delivered"]
             },
@@ -197,7 +193,7 @@ async def count_cancelled_orders(
         {
             "restaurantId": restaurant_id,
             "prepStatus": "cancelled",
-            "orderTime": {"$gte": from_date, "$lte": to_date},
+            "createdAt": {"$gte": from_date, "$lte": to_date},
         }
     )
     count = len(documents)
@@ -258,10 +254,10 @@ async def last_seven_days_order_count(
 ):
     """Return the number of orders for each of the last seven days.
 
-    The count is based on the ``orderTime`` field so that orders are grouped
+    The count is based on the ``createdAt`` field so that orders are grouped
     strictly by the day they were placed. ``createdAt`` was previously used
     which could include documents created on a different day from when the
-    order was placed. Using ``orderTime`` ensures each day's window is
+    order was placed. Using ``createdAt`` ensures each day's window is
     correctly respected.
     """
 
@@ -280,7 +276,7 @@ async def last_seven_days_order_count(
             documents = await order_model.get_by_fields(
                 {
                     "restaurantId": restaurant_id,
-                    "orderTime": {"$gte": day_start, "$lte": day_end},
+                    "createdAt": {"$gte": day_start, "$lte": day_end},
                 },
                 limit=0,
             )

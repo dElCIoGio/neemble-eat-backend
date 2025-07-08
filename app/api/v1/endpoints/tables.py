@@ -49,7 +49,6 @@ async def get_table(table_id: str):
 @router.get("/restaurant/{restaurant_id}")
 async def list_tables(restaurant_id: str):
     tables = await table_service.list_tables_for_restaurant(restaurant_id)
-
     return [t.to_response() for t in tables]
 
 

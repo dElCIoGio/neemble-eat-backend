@@ -15,7 +15,8 @@ restaurant_model = RestaurantModel()
 
 async def organize_table_numbers(restaurant_id: str) -> List[table_schema.TableDocument]:
     """Ensure tables for a restaurant have sequential numbers starting at 1."""
-    tables = await table_model.get_by_fields({"restaurantId": restaurant_id})
+    tables = await table_model.get_by_fields(filters={"restaurantId": restaurant_id}, limit=400)
+    print(tables)
     tables_sorted = sorted(tables, key=lambda t: t.number)
 
     expected = 1
@@ -99,6 +100,7 @@ async def get_table_by_restaurant_and_number(restaurant_id: str, number: int) ->
     await organize_table_numbers(restaurant_id)
     filters = {"restaurantId": restaurant_id, "number": number}
     tables = await table_model.get_by_fields(filters, limit=1)
+    print(tables)
     if tables:
         return tables[0]
     return None
