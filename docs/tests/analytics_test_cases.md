@@ -46,21 +46,25 @@ This document outlines the basic requirements and a comprehensive list of test c
 - **TC5.1** Valid request should return the count of orders with status `cancelled` in the range.
 - **TC5.2** Requests with no cancelled orders should return `0`.
 
-### 6. Session Duration Endpoint `/api/v1/analytics/session-duration`
-- **TC6.1** Ensure the average session duration is calculated using closed table sessions from today.
-- **TC6.2** If there are no closed sessions, the endpoint should return `0` minutes.
+### 6. Cancelled Sessions Endpoint `/api/v1/analytics/cancelled-sessions`
+- **TC6.1** Valid request returns the number of sessions marked `cancelled` within the date range.
+- **TC6.2** If there are no cancelled sessions, the endpoint returns `0`.
 
-### 7. Active Sessions Endpoint `/api/v1/analytics/active-sessions`
-- **TC7.1** When active sessions exist, verify the count matches table sessions with status `active` and at least one order.
-- **TC7.2** No active sessions should return count `0`.
+### 7. Session Duration Endpoint `/api/v1/analytics/session-duration`
+- **TC7.1** Ensure the average session duration is calculated using closed table sessions from today.
+- **TC7.2** If there are no closed sessions, the endpoint should return `0` minutes.
 
-### 8. Recent Orders Endpoint `/api/v1/analytics/recent-orders`
-- **TC8.1** Should return a list with seven entries representing each of the last seven days.
-- **TC8.2** Each entry should include the ISO date string, weekday name and order count for that day.
+### 8. Active Sessions Endpoint `/api/v1/analytics/active-sessions`
+- **TC8.1** When active sessions exist, verify the count matches table sessions with status `active` and at least one order.
+- **TC8.2** No active sessions should return count `0`.
 
-### 9. General Edge Cases
-- **TC9.1** Verify all endpoints require authentication and deny access otherwise.
-- **TC9.2** Ensure that invalid restaurant IDs or dates return meaningful errors without exposing internals.
-- **TC9.3** Stress test with a large volume of orders and invoices to validate performance and correct aggregation.
+### 9. Recent Orders Endpoint `/api/v1/analytics/recent-orders`
+- **TC9.1** Should return a list with seven entries representing each of the last seven days.
+- **TC9.2** Each entry should include the ISO date string, weekday name and order count for that day.
+
+### 10. General Edge Cases
+- **TC10.1** Verify all endpoints require authentication and deny access otherwise.
+- **TC10.2** Ensure that invalid restaurant IDs or dates return meaningful errors without exposing internals.
+- **TC10.3** Stress test with a large volume of orders and invoices to validate performance and correct aggregation.
 
 These test cases cover the typical and edge scenarios for the analytics workflows and can be implemented using a testing framework such as `pytest` along with HTTP client libraries to simulate requests.
