@@ -13,14 +13,42 @@ table_model = TableModel()
 restaurant_model = RestaurantModel()
 
 
+async def organize_table_numbers(restaurant_id: str) -> List[table_schema.TableDocument]:
+    """Ensure tables for a restaurant have sequential numbers starting at 1."""
+    tables = await table_model.get_by_fields({"restaurantId": restaurant_id})
+    tables_sorted = sorted(tables, key=lambda t: t.number)
+
+    expected = 1
+    for t in tables_sorted:
+        if t.number != expected:
+            await table_model.update(str(t.id), {"number": expected})
+            t.number = expected
+        expected += 1
+
+    return tables_sorted
+
+
 async def create_table(data: table_schema.TableCreate) -> table_schema.TableDocument:
+    # Ensure numbers are sequential before creating a new one
+    await organize_table_numbers(data.restaurant_id)
+
+    # Prevent duplicate table numbers
+    existing = await get_table_by_restaurant_and_number(data.restaurant_id, data.number)
+    if existing:
+        raise ValueError("Table number already exists")
+
     payload = data.model_dump(by_alias=False)
     table = await table_model.create(payload)
+
     restaurant = await restaurant_model.get(data.restaurant_id)
     if restaurant:
         table_ids = restaurant.table_ids or []
         table_ids.append(str(table.id))
         await restaurant_model.update(str(restaurant.id), {"tableIds": table_ids})
+
+    # Reorganize numbers after insertion
+    await organize_table_numbers(data.restaurant_id)
+
     session = await session_service.create_session_for_table(str(table.id), data.restaurant_id)
     return await table_model.update(str(table.id), {"currentSessionId": str(session.id)})
 
@@ -30,7 +58,8 @@ async def get_table(table_id: str) -> Optional[table_schema.TableDocument]:
 
 
 async def list_tables_for_restaurant(restaurant_id: str) -> List[table_schema.TableDocument]:
-    return await table_model.get_by_fields({"restaurantId": restaurant_id})
+    tables = await organize_table_numbers(restaurant_id)
+    return tables
 
 
 async def update_table(table_id: str, data: table_schema.TableUpdate) -> Optional[table_schema.TableDocument]:
@@ -67,6 +96,7 @@ async def update_table_session(table_id: str, session_id: Optional[str]) -> Opti
 
 async def get_table_by_restaurant_and_number(restaurant_id: str, number: int) -> Optional[table_schema.TableDocument]:
     """Retrieve a table by restaurant id and table number."""
+    await organize_table_numbers(restaurant_id)
     filters = {"restaurantId": restaurant_id, "number": number}
     tables = await table_model.get_by_fields(filters, limit=1)
     if tables:
