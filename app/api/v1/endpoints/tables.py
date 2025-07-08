@@ -32,6 +32,7 @@ async def create_table(data: table_schema.TableCreate):
         table = await table_service.create_table(data)
         return table.to_response()
     except Exception as error:
+        print(error)
         raise HTTPException(status_code=500, detail=str(error))
 
 
