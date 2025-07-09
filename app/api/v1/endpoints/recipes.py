@@ -1,10 +1,30 @@
-from fastapi import APIRouter, HTTPException
+from typing import Dict, Optional, Any
+
+from fastapi import APIRouter, HTTPException, Query
 
 from app.schema import recipe as recipe_schema
 from app.services import recipe as recipe_service
 
 router = APIRouter()
 
+
+
+@router.get("/paginate")
+async def paginate_recipes(
+    limit: int = Query(10, gt=0),
+    cursor: Optional[str] = Query(None),
+    restaurant_id: str = Query(..., alias="restaurantId")
+):
+    try:
+        filters: Dict[str, Any] = {
+            "restaurantId": restaurant_id
+        }
+
+        result = await recipe_service.recipe_model.paginate(filters=filters, limit=limit, cursor=cursor)
+
+        return result
+    except Exception as error:
+        print(error)
 
 @router.get("/restaurant/{restaurant_id}")
 async def list_recipes(restaurant_id: str):

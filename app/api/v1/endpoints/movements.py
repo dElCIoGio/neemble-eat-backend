@@ -1,13 +1,31 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Dict, Any
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 
 from app.schema import movement as movement_schema
 from app.services import movement as movement_service
+from app.services.movement import movement_model
 
 router = APIRouter()
 
+
+@router.get("/paginate")
+async def paginate_movements(
+    limit: int = Query(10, gt=0),
+    cursor: Optional[str] = Query(None),
+    restaurant_id: str = Query(..., alias="restaurantId")
+):
+    try:
+        filters: Dict[str, Any] = {
+            "restaurantId": restaurant_id
+        }
+
+        result = await movement_service.movement_model.paginate(filters=filters, limit=limit, cursor=cursor)
+
+        return result
+    except Exception as error:
+        print(error)
 
 @router.get("/restaurant/{restaurant_id}")
 async def list_movements(
