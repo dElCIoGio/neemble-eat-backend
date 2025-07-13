@@ -10,7 +10,7 @@ class Settings(BaseSettings):
 
     # App settings
     PROJECT_NAME: str = "Neemble Eat"
-    PROJECT_VERSION: str = "1.0.0"
+    PROJECT_VERSION: str = "2.0.0"
     API_BASE_ROUTE: str = "/api"
 
 

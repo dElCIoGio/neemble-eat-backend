@@ -1,3 +1,4 @@
+from http.client import HTTPException
 from typing import Any, Dict, List
 
 from bson import ObjectId
@@ -50,16 +51,17 @@ async def mismatched_current_sessions() -> List[Dict[str, Any]]:
     tables = await table_model.get_all()
     mismatches: List[Dict[str, Any]] = []
     for t in tables:
-        sessions = await TableSessionDocument.find(
-            (
-                (TableSessionDocument.table_id == str(t.id))
-                & (
-                    TableSessionDocument.status.in_(
-                        [TableSessionStatus.ACTIVE, TableSessionStatus.NEED_BILL]
-                    )
-                )
-            )
-        ).to_list()
+        filter = {
+            "$and": [
+                {
+                    "tableId": str(t.id)
+                }, {
+                    "status": {"$in": [TableSessionStatus.ACTIVE, TableSessionStatus.NEED_BILL]}
+                }
+            ]
+        }
+        sessions = await session_model.get_by_fields(filter)
+
         active_ids = [str(s.id) for s in sessions]
         if t.current_session_id not in active_ids:
             mismatches.append(
@@ -95,8 +97,21 @@ async def orphan_sessions() -> List[Dict[str, Any]]:
 
 
 async def run_all() -> Dict[str, Any]:
-    return {
-        "duplicateActiveSessions": await duplicate_active_sessions(),
-        "currentSessionMismatches": await mismatched_current_sessions(),
-        "orphanSessions": await orphan_sessions(),
-    }
+
+    r1 = await duplicate_active_sessions()
+    print(r1)
+
+
+    try:
+        r2 = await mismatched_current_sessions()
+        print(r2)
+        r3 = await orphan_sessions()
+        print(r3)
+        return {
+            "duplicateActiveSessions": r1,
+            "currentSessionMismatches": r2,
+            "orphanSessions": r3,
+        }
+    except Exception as error:
+        print(str(error))
+        raise str(error)
