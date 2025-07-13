@@ -27,3 +27,10 @@ async def get_orphan_sessions():
 async def run_all_diagnostics():
     """Execute all diagnostic checks and return their results."""
     return await diag_service.run_all()
+
+
+@router.delete("/images/orphans")
+async def delete_orphan_images():
+    """Remove images in cloud storage not linked to any item or restaurant."""
+    deleted = await diag_service.cleanup_unlinked_images()
+    return {"deleted": deleted}

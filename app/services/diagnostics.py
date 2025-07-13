@@ -6,10 +6,16 @@ from bson import ObjectId
 from app.models.table import TableModel
 from app.models.table_session import TableSessionModel
 from app.schema.table_session import TableSessionStatus, TableSessionDocument
+from app.models.item import ItemModel
+from app.models.restaurant import RestaurantModel
+from app.utils.images import RESTAURANT_BANNER, RESTAURANT_LOGO
+from app.services.google_bucket import get_google_bucket_manager
 
 
 table_model = TableModel()
 session_model = TableSessionModel()
+item_model = ItemModel()
+restaurant_model = RestaurantModel()
 
 
 async def duplicate_active_sessions() -> List[Dict[str, Any]]:
@@ -94,6 +100,47 @@ async def orphan_sessions() -> List[Dict[str, Any]]:
         }
         for d in docs
     ]
+
+
+async def cleanup_unlinked_images() -> List[str]:
+    """Delete images in cloud storage not linked to any item or restaurant."""
+    manager = get_google_bucket_manager()
+    deleted: List[str] = []
+
+    # Iterate over all uploaded images
+    for blob in manager.client.list_blobs(manager.bucket, prefix="uploads/"):
+        blob.reload()
+        metadata = blob.metadata or {}
+
+        item_id = metadata.get("item_id")
+        restaurant_id = metadata.get("restaurant_id")
+        image_type = metadata.get("image_type")
+        blob_url = f"https://storage.googleapis.com/{manager.bucket.name}/{blob.name}"
+
+        unlink = False
+
+        if item_id:
+            item = await item_model.get(item_id)
+            if not item or item.image_url != blob_url:
+                unlink = True
+        elif restaurant_id:
+            restaurant = await restaurant_model.get(restaurant_id)
+            expected_url = None
+            if restaurant:
+                if image_type == RESTAURANT_BANNER:
+                    expected_url = restaurant.banner_url
+                elif image_type == RESTAURANT_LOGO:
+                    expected_url = restaurant.logo_url
+            if not restaurant or expected_url != blob_url:
+                unlink = True
+        else:
+            unlink = True
+
+        if unlink:
+            if manager.delete_image(blob.name):
+                deleted.append(blob.name)
+
+    return deleted
 
 
 async def run_all() -> Dict[str, Any]:
