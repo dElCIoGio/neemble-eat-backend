@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Optional, Type, TypeVar, Generic, Union, Map
 from motor.motor_asyncio import AsyncIOMotorCollection
 from openai import BaseModel
 from pydantic import Field
+from pymongo import DESCENDING
 
 from app.schema.collection_id.object_id import PyObjectId
 from app.utils.time import now_in_luanda
@@ -43,11 +44,17 @@ class MongoCrud(Generic[T]):
             raise ValueError("model must be a Beanie Document")
         self.model = model
 
+    def _sort_by_created_at(self, documents: List[T], descending: bool = True) -> List[T]:
+        return sorted(documents, key=lambda doc: doc.created_at, reverse=descending)
+
     def _validate(self, raw:  Mapping[str, Any]) -> T:
         return self.model.model_validate(raw)
 
     def _get_collection(self) -> AsyncIOMotorCollection:
         return self.model.get_motor_collection()
+
+    async def get_document_count(self) -> int:
+        return await self._get_collection().count_documents({})
 
     async def create(self, data: Dict[str, Any]) -> T:
         data["created_at"] = now_in_luanda()
@@ -94,7 +101,7 @@ class MongoCrud(Generic[T]):
             return None
 
     async def get_by_fields(
-            self, filters: Dict[str, Any] | LogicalOperatorForListOfExpressions, skip: int = 0, limit: int = 10
+            self, filters: Dict[str, Any] | LogicalOperatorForListOfExpressions, skip: int = 0, limit: int = 100
     ) -> List[T]:
         documents = await self._get_collection().find(filters).skip(skip).limit(limit).to_list()
         return [self._validate(doc) for doc in documents]
@@ -129,14 +136,19 @@ class MongoCrud(Generic[T]):
     async def paginate(self,
                        filters: Dict[str, Any],
                        limit: int = 10,
-                       cursor: Optional[str] = None) -> PaginationResult[T]:
+                       cursor: Optional[str] = None,
+                       descending: bool = False) -> PaginationResult[T]:
 
         query = filters.copy()
 
-        if cursor:
-            query["_id"] = {'$gt': ObjectId(cursor)}
+        sort_direction = -1 if descending else 1
 
-        raw = await self._get_collection().find(query).sort("_id").limit(limit + 1).to_list()
+        if cursor:
+            query["_id"] = {'$lt' if descending else '$gt': ObjectId(cursor)}
+
+        collection = self._get_collection()
+
+        raw = await collection.find(query).sort({"_id": sort_direction}).limit(limit + 1).to_list()
 
         documents = [self._validate(doc) for doc in raw]
 
@@ -154,6 +166,3 @@ class MongoCrud(Generic[T]):
             totalCount=total_count,
             hasMore=has_more
         )
-
-
-

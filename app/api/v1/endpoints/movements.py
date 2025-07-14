@@ -21,7 +21,7 @@ async def paginate_movements(
             "restaurantId": restaurant_id
         }
 
-        result = await movement_service.movement_model.paginate(filters=filters, limit=limit, cursor=cursor)
+        result = await movement_service.movement_model.paginate(filters=filters, limit=limit, cursor=cursor, descending=True)
 
         return result
     except Exception as error:

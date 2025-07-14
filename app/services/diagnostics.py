@@ -1,4 +1,5 @@
 from http.client import HTTPException
+from idlelib.run import manage_socket
 from typing import Any, Dict, List
 
 from bson import ObjectId
@@ -106,9 +107,11 @@ async def cleanup_unlinked_images() -> List[str]:
     """Delete images in cloud storage not linked to any item or restaurant."""
     manager = get_google_bucket_manager()
     deleted: List[str] = []
+    images = manager.list_images(folder="neemble-eat-storage")
 
     # Iterate over all uploaded images
     for blob in manager.client.list_blobs(manager.bucket, prefix="uploads/"):
+        print(blob)
         blob.reload()
         metadata = blob.metadata or {}
 

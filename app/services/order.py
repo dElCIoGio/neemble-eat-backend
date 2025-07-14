@@ -48,7 +48,6 @@ async def place_order(data: dict) -> order_schema.OrderDocument:
         await table_session_service.add_order_to_session(session_id, str(order.id))
 
     try:
-        print("SENDING ORDER MESSAGE")
         websocket_manager = get_websocket_manger()
         json_data = json.dumps(order.to_response().model_dump(by_alias=True))
         await websocket_manager.broadcast(json_data, f"{str(restaurant_id)}/order")

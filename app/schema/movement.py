@@ -4,11 +4,12 @@ from typing import Optional
 
 from beanie import Document
 from bson import ObjectId
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_serializer
 from pymongo import IndexModel, ASCENDING
 
 from app.schema.collection_id.document_id import DocumentId
 from app.utils.make_optional_model import make_optional_model
+from app.utils.time import now_in_luanda
 
 
 class MovementType(str, Enum):
@@ -29,6 +30,9 @@ class MovementCreate(BaseModel):
     user: str
     cost: Optional[float] = None
 
+    @field_serializer('date')
+    def serialize_start_time(self, value: datetime, _info):
+        return now_in_luanda()
 
 
 class MovementBase(MovementCreate):

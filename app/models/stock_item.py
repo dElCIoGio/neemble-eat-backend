@@ -23,7 +23,7 @@ class StockItemModel(MongoCrud[stock_item_schema.StockItemDocument]):
             return StockStatus.BAIXO
         return StockStatus.OK
 
-    async def create(self, data: Dict[str, Any], *, user: str = "system", reason: str = "") -> stock_item_schema.StockItemDocument:
+    async def create(self, data: Dict[str, Any], *, user: str = "Ajuste Automático", reason: str = "") -> stock_item_schema.StockItemDocument:
         quantity = data.get("currentQuantity", 0)
         min_q = data.get("minQuantity", 1)
         data["status"] = self._calculate_status(quantity, min_q)
@@ -39,13 +39,13 @@ class StockItemModel(MongoCrud[stock_item_schema.StockItemDocument]):
                 "unit": new_stock_item.unit,
                 "date": now_in_luanda(),
                 "reason": reason or "Item created",
-                "user": user,
+                "user": "Ajuste automático",
                 "cost": new_stock_item.cost,
             })
 
         return new_stock_item
 
-    async def update(self, _id: str, data: Dict[str, Any], *, user: str = "system", reason: str = "") -> Optional[stock_item_schema.StockItemDocument]:
+    async def update(self, _id: str, data: Dict[str, Any], *, user: str = "Ajuste Automático", reason: str = "") -> Optional[stock_item_schema.StockItemDocument]:
         item = await self.get(_id)
         if not item:
             return None
@@ -65,13 +65,13 @@ class StockItemModel(MongoCrud[stock_item_schema.StockItemDocument]):
                 "unit": item.unit,
                 "date": now_in_luanda(),
                 "reason": reason,
-                "user": user,
+                "user": "Ajuste automático",
                 "cost": item.cost,
             })
 
         return updated
 
-    async def delete(self, _id: str, *, user: str = "system", reason: str = "") -> bool:
+    async def delete(self, _id: str, *, user: str = "Ajuste Automático", reason: str = "") -> bool:
         item = await self.get(_id)
         if not item:
             return False
@@ -88,7 +88,7 @@ class StockItemModel(MongoCrud[stock_item_schema.StockItemDocument]):
                 "unit": item.unit,
                 "date": now_in_luanda(),
                 "reason": reason or "Item deleted",
-                "user": user,
+                "user": "Ajuste automático",
                 "cost": item.cost,
             })
 
