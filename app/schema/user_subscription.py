@@ -13,29 +13,19 @@ from app.utils.time import now_in_luanda
 
 
 class SubscriptionStatus(str, Enum):
-    ACTIVE = "active"
-    CANCELLED = "cancelled"
-    PAST_DUE = "past_due"
-    ENDED = "ended"
-
-
-class PaymentMethod(str, Enum):
-    CREDIT_CARD = "credit_card"
-    PAYPAL = "paypal"
-    OTHER = "other"
+    ATIVA = "ativa"
+    PENDENTE = "pendente"
+    SUSPENSA = "suspensa"
+    CANCELADA = "cancelada"
 
 
 class UserSubscriptionCreate(BaseModel):
     user_id: str = Field(..., alias="userId")
-    plan_id: str = Field(..., alias="planId")
-    status: SubscriptionStatus = SubscriptionStatus.ACTIVE
+    plan_id: Optional[str] = Field(default=None, alias="planId")
     start_date: datetime = Field(default_factory=now_in_luanda, alias="startDate")
     end_date: Optional[datetime] = Field(default=None, alias="endDate")
-    payment_method: Optional[PaymentMethod] = Field(default=None, alias="paymentMethod")
-    last_payment: Optional[datetime] = Field(default=None, alias="lastPayment")
-    next_payment_due: Optional[datetime] = Field(default=None, alias="nextPaymentDue")
-    payment_reference: Optional[str] = Field(default=None, alias="paymentReference")
-    is_auto_renew: bool = Field(default=True, alias="isAutoRenew")
+    status: SubscriptionStatus = SubscriptionStatus.ATIVA
+    auto_renew: Optional[bool] = Field(default=True, alias="autoRenew")
 
 
 class UserSubscriptionBase(UserSubscriptionCreate):

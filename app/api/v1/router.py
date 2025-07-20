@@ -23,6 +23,7 @@ from app.api.v1.endpoints.memberships import router as memberships_router
 from app.api.v1.endpoints.orders import router as orders_router
 from app.api.v1.endpoints.invoices import router as invoices_router
 from app.api.v1.endpoints.subscriptions import router as subscriptions_router
+from app.api.v1.endpoints.payments import router as payments_router
 from app.api.v1.endpoints.notifications import router as notifications_router
 from app.api.v1.endpoints.diagnostics import router as diagnostics_router
 from app.api.v1.endpoints.reports import router as reports_router
@@ -58,6 +59,7 @@ router.include_router(invoices_router, prefix="/invoices", tags=["Invoices"])
 router.include_router(
     subscriptions_router, prefix="/subscriptions", tags=["Subscriptions"]
 )
+router.include_router(payments_router, prefix="/payments", tags=["Payments"])
 router.include_router(reports_router, prefix="/reports", tags=["Reports"])
 router.include_router(
     notifications_router, prefix="/notifications", tags=["Notifications"]

@@ -1,14 +1,20 @@
 from typing import Optional, Dict, Any
 
 from fastapi import APIRouter, HTTPException, Depends, Query
+from pydantic import BaseModel, Field
 
 from app.services import subscription as subscription_service
 from app.schema import subscription_plan as plan_schema
 from app.schema import user_subscription as subscription_schema
 from app.services.subscription import subscription_model, plan_model
-from app.utils.auth import admin_required
+from app.utils.auth import admin_required, get_current_user
 
 router = APIRouter()
+
+
+class ChangePlanRequest(BaseModel):
+    plan_id: str = Field(..., alias="planId")
+    reason: Optional[str] = None
 
 
 # Subscription Plan CRUD
@@ -67,7 +73,7 @@ async def list_available_plans():
     return [p.to_response() for p in plans]
 
 
-@router.get('/plans/all', dependencies=[Depends(admin_required)])
+@router.get('/plans/all')
 async def list_all_plans():
     plans = await subscription_service.list_plans()
     return [p.to_response() for p in plans]
@@ -106,6 +112,20 @@ async def unsubscribe(subscription_id: str):
     return updated.to_response()
 
 
+@router.post('/change-plan')
+async def change_plan(
+    req: ChangePlanRequest,
+    uid: str = Depends(get_current_user),
+):
+    sub = await subscription_service.get_user_current_subscription(uid)
+    if not sub:
+        raise HTTPException(status_code=404, detail='Subscription not found')
+    updated = await subscription_service.change_plan(str(sub.id), req.plan_id, req.reason)
+    if not updated:
+        raise HTTPException(status_code=404, detail='Plan not found')
+    return updated.to_response()
+
+
 @router.get('/users/{user_id}/current')
 async def get_current_plan(user_id: str):
     sub = await subscription_service.get_user_current_subscription(user_id)
@@ -113,3 +133,22 @@ async def get_current_plan(user_id: str):
         return None
     plan = await subscription_service.get_plan(sub.plan_id)
     return plan.to_response() if plan else None
+
+
+@router.get('/current')
+async def get_my_subscription(uid: str = Depends(get_current_user)):
+    sub = await subscription_service.get_user_current_subscription(uid)
+    if not sub:
+        return None
+    plan = await subscription_service.get_plan(sub.plan_id) if sub.plan_id else None
+    return {
+        "plan": plan.to_response() if plan else None,
+        "billingCycle": plan.interval if plan else None,
+        "autoRenew": sub.auto_renew,
+        "features": plan.features if plan else [],
+    }
+
+
+@router.get('/usage')
+async def get_usage(uid: str = Depends(get_current_user)):
+    return await subscription_service.get_usage_metrics(uid)

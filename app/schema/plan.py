@@ -1,11 +1,19 @@
-from typing import List
+from typing import List, Optional
+
+from enum import Enum
 
 from beanie import Document
 from bson import ObjectId
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.schema.collection_id.document_id import DocumentId
 from app.utils.make_optional_model import make_optional_model
+from app.schema.subscription_plan import RecurringInterval
+
+
+class Currency(str, Enum):
+    AOA = "AOA"
+    USD = "USD"
 
 
 class PlanLimits(BaseModel):
@@ -19,8 +27,11 @@ class PlanLimits(BaseModel):
 class PlanCreate(BaseModel):
     name: str
     price: float
-    features: List[str]
-    popular: bool
+    currency: Optional["Currency"] = None
+    interval: Optional[RecurringInterval] = None
+    description: Optional[str] = None
+    popular: Optional[bool] = False
+    features: List[str] = Field(default_factory=list)
     limits: PlanLimits
 
 
