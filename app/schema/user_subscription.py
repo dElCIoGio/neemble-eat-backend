@@ -26,6 +26,7 @@ class UserSubscriptionCreate(BaseModel):
     end_date: Optional[datetime] = Field(default=None, alias="endDate")
     status: SubscriptionStatus = SubscriptionStatus.ATIVA
     auto_renew: Optional[bool] = Field(default=True, alias="autoRenew")
+    pause_reason: Optional[str] = Field(default=None, alias="pauseReason")
 
 
 class UserSubscriptionBase(UserSubscriptionCreate):

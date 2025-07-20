@@ -1,6 +1,7 @@
 from typing import Optional, Dict, Any
 
-from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi import APIRouter, HTTPException, Depends, Query, Body, Response
+import json
 from pydantic import BaseModel, Field
 
 from app.services import subscription as subscription_service
@@ -152,3 +153,37 @@ async def get_my_subscription(uid: str = Depends(get_current_user)):
 @router.get('/usage')
 async def get_usage(uid: str = Depends(get_current_user)):
     return await subscription_service.get_usage_metrics(uid)
+
+
+class PauseRequest(BaseModel):
+    reason: Optional[str] = None
+
+
+@router.post('/pause')
+async def pause_subscription(
+    req: PauseRequest = Body(default_factory=PauseRequest),
+    uid: str = Depends(get_current_user),
+):
+    updated = await subscription_service.pause_subscription(uid, req.reason)
+    if not updated:
+        raise HTTPException(status_code=404, detail='Subscription not found')
+    return updated.to_response()
+
+
+@router.post('/resume')
+async def resume_subscription(uid: str = Depends(get_current_user)):
+    updated = await subscription_service.resume_subscription(uid)
+    if not updated:
+        raise HTTPException(status_code=404, detail='Subscription not found')
+    return updated.to_response()
+
+
+@router.post('/backup')
+async def backup_account(uid: str = Depends(get_current_user)):
+    data = await subscription_service.generate_user_backup(uid)
+    json_data = json.dumps(data)
+    return Response(
+        content=json_data,
+        media_type='application/json',
+        headers={'Content-Disposition': f'attachment; filename="backup_{uid}.json"'}
+    )
