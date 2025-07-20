@@ -6,6 +6,7 @@ from app.models.user import UserModel
 from app.models.role import RoleModel
 from app.models.table import TableModel
 from app.models.booking import BookingModel
+from app.models.restaurant import RestaurantModel
 from app.schema import subscription_plan as plan_schema
 from app.schema import user_subscription as subscription_schema
 from app.schema import table as table_schema
@@ -19,6 +20,7 @@ user_model = UserModel()
 role_model = RoleModel()
 table_model = TableModel()
 booking_model = BookingModel()
+restaurant_model = RestaurantModel()
 
 
 # Subscription Plan CRUD
@@ -118,4 +120,48 @@ async def get_usage_metrics(user_id: str) -> dict:
         "tables": table_count,
         "reservations": reservation_count,
         "staff": staff_count,
+    }
+
+
+async def pause_subscription(user_id: str, reason: Optional[str] = None) -> Optional[subscription_schema.UserSubscriptionDocument]:
+    """Pause the user's active subscription."""
+    sub = await get_user_current_subscription(user_id)
+    if not sub:
+        return None
+    data = {
+        "status": subscription_schema.SubscriptionStatus.SUSPENSA,
+        "pauseReason": reason,
+    }
+    return await subscription_model.update(str(sub.id), data)
+
+
+async def resume_subscription(user_id: str) -> Optional[subscription_schema.UserSubscriptionDocument]:
+    """Resume a previously paused subscription."""
+    sub = await get_user_current_subscription(user_id)
+    if not sub:
+        return None
+    data = {
+        "status": subscription_schema.SubscriptionStatus.ATIVA,
+        "pauseReason": None,
+    }
+    return await subscription_model.update(str(sub.id), data)
+
+
+async def generate_user_backup(user_id: str) -> dict:
+    """Return a JSON-serialisable backup of the user's account data."""
+    user = await user_model.get(user_id)
+    subscription = await get_user_current_subscription(user_id)
+
+    restaurants = []
+    if user and user.memberships:
+        role_ids = [m.role_id for m in user.memberships if m.is_active]
+        roles = await role_model.get_many(role_ids) if role_ids else []
+        restaurant_ids = {r.restaurant_id for r in roles}
+        if restaurant_ids:
+            restaurants = await restaurant_model.get_many(list(restaurant_ids))
+
+    return {
+        "user": user.to_response() if user else None,
+        "subscription": subscription.to_response() if subscription else None,
+        "restaurants": [r.to_response() for r in restaurants],
     }
