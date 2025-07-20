@@ -5,8 +5,7 @@ from bson import ObjectId
 from typing import Any, Dict, List, Optional, Type, TypeVar, Generic, Union, Mapping
 
 from motor.motor_asyncio import AsyncIOMotorCollection
-from openai import BaseModel
-from pydantic import Field
+from pydantic import Field, BaseModel
 from pymongo import DESCENDING
 
 from app.schema.collection_id.object_id import PyObjectId
