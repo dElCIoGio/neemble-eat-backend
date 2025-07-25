@@ -47,3 +47,32 @@ async def save_payment_proof(
         await file.read(), filename=file.filename, folder=folder, public=True
     )
 
+
+async def get_payment(payment_id: str) -> Optional[payment_schema.PaymentHistoryDocument]:
+    """Retrieve a payment record by its id."""
+    return await payment_history_model.get(payment_id)
+
+
+async def get_latest_payment(subscription_id: str) -> Optional[payment_schema.PaymentHistoryDocument]:
+    """Return the most recent payment for a subscription."""
+    docs = (
+        await payment_schema.PaymentHistoryDocument.find(
+            payment_schema.PaymentHistoryDocument.subscription_id == subscription_id
+        )
+        .sort("-paymentDate")
+        .limit(1)
+        .to_list()
+    )
+    return docs[0] if docs else None
+
+
+def generate_invoice_blob(payment: payment_schema.PaymentHistoryDocument) -> bytes:
+    """Generate a simple invoice representation as bytes."""
+    content = (
+        f"Invoice for payment {payment.id}\n"
+        f"Period: {payment.period}\n"
+        f"Amount: {payment.amount}\n"
+        f"Status: {payment.status}"
+    )
+    return content.encode("utf-8")
+

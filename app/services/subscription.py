@@ -1,4 +1,7 @@
 from typing import List, Optional, Set
+import io
+import json
+import zipfile
 
 from app.models.subscription_plan import SubscriptionPlanModel
 from app.models.user_subscription import UserSubscriptionModel
@@ -119,3 +122,38 @@ async def get_usage_metrics(user_id: str) -> dict:
         "reservations": reservation_count,
         "staff": staff_count,
     }
+
+
+async def pause_subscription(subscription_id: str) -> Optional[subscription_schema.UserSubscriptionDocument]:
+    """Pause an active subscription."""
+    data = {
+        "status": subscription_schema.SubscriptionStatus.SUSPENSA,
+        "updatedAt": now_in_luanda(),
+    }
+    return await subscription_model.update(subscription_id, data)
+
+
+async def resume_subscription(subscription_id: str) -> Optional[subscription_schema.UserSubscriptionDocument]:
+    """Resume a paused subscription."""
+    data = {
+        "status": subscription_schema.SubscriptionStatus.ATIVA,
+        "updatedAt": now_in_luanda(),
+    }
+    return await subscription_model.update(subscription_id, data)
+
+
+async def backup_account_data(user_id: str) -> bytes:
+    """Create a simple JSON backup of the user's account and subscriptions."""
+    user = await user_model.get(user_id)
+    subs = await subscription_model.get_by_fields({"userId": user_id})
+
+    payload = {
+        "user": user.model_dump(by_alias=True) if user else {},
+        "subscriptions": [s.model_dump(by_alias=True) for s in subs] if subs else [],
+    }
+
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, mode="w") as zf:
+        zf.writestr("backup.json", json.dumps(payload))
+    buffer.seek(0)
+    return buffer.read()
