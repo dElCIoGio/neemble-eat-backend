@@ -31,8 +31,8 @@ async def create_sale(recipe_id: str, quantity: int) -> Optional[sale_schema.Sal
         await stock_service.remove_stock(
             ingredient.product_id,
             ingredient.quantity * quantity,
-            reason=f"Sale of {recipe.dish_name}",
-            user="system",
+            reason=f"Venda de {recipe.dish_name}",
+            user="Ajuste Automático",
         )
     return sale
 

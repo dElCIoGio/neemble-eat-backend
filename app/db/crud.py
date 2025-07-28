@@ -86,7 +86,8 @@ class MongoCrud(Generic[T]):
             document = self._validate(raw)
             return document
         except Exception as e:
-            print(f"❌ Failed to retrieve document by id {_id}: {e}")
+            collection = self._get_collection()
+            print(f"❌ Failed to retrieve document by id {_id}: {e} | Collection: {collection.name}")
             return None
 
     async def get_by_slug(self, slug: str, slug_field: str = "slug") -> Optional[T]:

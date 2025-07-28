@@ -1,6 +1,6 @@
 from typing import Optional, Dict, Any
 
-from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi import APIRouter, HTTPException, Depends, Query, Body
 
 from app.services import subscription as subscription_service
 from app.schema import subscription_plan as plan_schema
@@ -23,8 +23,8 @@ async def paginate_plans(
         print(error)
 
 
-@router.post("/", dependencies=[Depends(admin_required)])
-async def create_plan(data: plan_schema.SubscriptionPlanCreate):
+@router.post("/")
+async def create_plan(data: plan_schema.SubscriptionPlanCreate = Body(...)):
     try:
         plan = await subscription_service.create_plan(data)
         return plan.to_response()
@@ -33,15 +33,15 @@ async def create_plan(data: plan_schema.SubscriptionPlanCreate):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.put("/{plan_id}", dependencies=[Depends(admin_required)])
-async def update_plan(plan_id: str, data: plan_schema.SubscriptionPlanUpdate):
+@router.put("/plan/{plan_id}")
+async def update_plan(plan_id: str, data: plan_schema.SubscriptionPlanUpdate = Body(...)):
     updated = await subscription_service.update_plan(plan_id, data)
     if not updated:
         raise HTTPException(status_code=404, detail="Plan not found")
     return updated.to_response()
 
 
-@router.delete("/{plan_id}", dependencies=[Depends(admin_required)])
+@router.delete("/plan/{plan_id}", dependencies=[Depends(admin_required)])
 async def delete_plan(plan_id: str):
     deleted = await subscription_service.delete_plan(plan_id)
     if not deleted:
@@ -49,7 +49,7 @@ async def delete_plan(plan_id: str):
     return True
 
 
-@router.get("/{plan_id}")
+@router.get("/plan/{plan_id}")
 async def get_plan(plan_id: str):
     plan = await subscription_service.get_plan(plan_id)
     if not plan:

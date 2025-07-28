@@ -18,7 +18,7 @@ class ChangePlanRequest(BaseModel):
 
 # User Subscription Endpoints
 
-@router.get("/subscriptions/paginate")
+@router.get("/paginate")
 async def paginate_subscriptions(
     limit: int = Query(10, gt=0),
     cursor: Optional[str] = Query(None),

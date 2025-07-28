@@ -96,17 +96,22 @@ async def get_usage_metrics(user_id: str) -> dict:
     if not restaurant_ids:
         return {"restaurants": 0, "tables": 0, "reservations": 0, "staff": 0}
 
-    table_count = await table_schema.TableDocument.find(
-        In(table_schema.TableDocument.restaurant_id, list(restaurant_ids))
-    ).count()
+    tables = await table_model.get_by_fields({
+        "restaurantId": {"$in": list(restaurant_ids)}
+    })
 
-    reservation_count = await booking_schema.BookingDocument.find(
-        In(booking_schema.BookingDocument.restaurant_id, list(restaurant_ids))
-    ).count()
+    table_count = len(tables)
+
+    reservations = await booking_model.get_by_fields({
+        "restaurantId": {"$in": list(restaurant_ids)}
+    })
+
+    reservation_count = len(reservations)
 
     roles_in_restaurants = await role_model.get_by_fields({
         "restaurantId": {"$in": list(restaurant_ids)}
     })
+
     allowed_role_ids = {str(r.id) for r in roles_in_restaurants}
 
     users = await user_model.get_by_fields({"isActive": True})
