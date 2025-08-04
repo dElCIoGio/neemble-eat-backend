@@ -132,6 +132,30 @@ async def cancel_session_checkout_endpoint(session_id: str):
         raise HTTPException(status_code=500, detail=str(error))
 
 
+@router.post("/{session_id}/request-assistance")
+async def mark_session_needs_assistance_endpoint(session_id: str):
+    try:
+        session = await session_service.mark_session_needs_assistance(session_id)
+        if not session:
+            raise HTTPException(status_code=404, detail="Session not found")
+        return session.to_response()
+    except Exception as error:
+        print(str(error))
+        raise HTTPException(status_code=500, detail=str(error))
+
+
+@router.post("/{session_id}/cancel-assistance")
+async def cancel_session_assistance_endpoint(session_id: str):
+    try:
+        session = await session_service.cancel_session_assistance(session_id)
+        if not session:
+            raise HTTPException(status_code=404, detail="Session not found")
+        return session.to_response()
+    except Exception as error:
+        print(str(error))
+        raise HTTPException(status_code=500, detail=str(error))
+
+
 @router.delete(
     "/restaurant/{restaurant_id}/cleanup",
 )

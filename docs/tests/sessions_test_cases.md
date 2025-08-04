@@ -93,4 +93,12 @@ This document outlines the basic requirements and comprehensive test cases for t
 - **TC15.2** Stress test by rapidly opening and closing sessions to verify that invoices and new sessions are created correctly each time.
 - **TC15.3** Validate websocket broadcasts for order additions and session closures reach all connected clients.
 
+### 16. Request Assistance `/api/v1/sessions/{session_id}/request-assistance`
+- **TC16.1** Marks the session as needing assistance.
+- **TC16.2** Unknown session IDs return HTTP 404.
+
+### 17. Cancel Assistance `/api/v1/sessions/{session_id}/cancel-assistance`
+- **TC17.1** Clears the assistance flag for the session.
+- **TC17.2** Unknown session IDs return HTTP 404.
+
 These test cases cover typical and edge scenarios for the table session workflow and can be implemented using a testing framework such as `pytest` along with FastAPI's test client to simulate requests.
