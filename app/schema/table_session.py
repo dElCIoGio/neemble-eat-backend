@@ -34,7 +34,7 @@ class TableSessionBase(BaseModel):
     status: TableSessionStatus = Field(default=TableSessionStatus.ACTIVE)
     total: Optional[float] = None
     review: Optional[TableSessionReview] = None
-    needs_assistance: bool = Field(default=False, alias="needsAssistance")
+    needs_assistance: Optional[bool] = Field(default=False, alias="needsAssistance")
 
     @field_serializer('start_time')
     def serialize_start_time(self, value: datetime, _info):
