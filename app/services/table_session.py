@@ -236,6 +236,22 @@ async def cancel_session_checkout(session_id: str) -> TableSessionDocument | Non
     )
 
 
+async def mark_session_needs_assistance(session_id: str) -> TableSessionDocument | None:
+    """Mark that the session has requested assistance."""
+    session = await session_model.get(session_id)
+    if not session:
+        return None
+    return await session_model.update(session_id, {"needsAssistance": True})
+
+
+async def cancel_session_assistance(session_id: str) -> TableSessionDocument | None:
+    """Clear the assistance request for a session."""
+    session = await session_model.get(session_id)
+    if not session:
+        return None
+    return await session_model.update(session_id, {"needsAssistance": False})
+
+
 async def list_sessions_for_table(table_id: str):
     filters = {"tableId": table_id}
     return await session_model.get_by_fields(filters)
