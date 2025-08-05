@@ -9,7 +9,7 @@ from pymongo import IndexModel, ASCENDING
 
 from app.schema.collection_id.document_id import DocumentId
 from app.utils.make_optional_model import make_optional_model
-from app.utils.time import now_in_luanda
+from app.utils.time import now_in_luanda, to_luanda_timezone
 
 
 class MovementType(str, Enum):
@@ -32,7 +32,7 @@ class MovementCreate(BaseModel):
 
     @field_serializer('date')
     def serialize_start_time(self, value: datetime, _info):
-        return to_luanda_timezone(now_in_luanda())
+        return to_luanda_timezone(value)
 
 
 class MovementBase(MovementCreate):
