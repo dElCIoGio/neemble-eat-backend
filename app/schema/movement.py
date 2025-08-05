@@ -32,7 +32,7 @@ class MovementCreate(BaseModel):
 
     @field_serializer('date')
     def serialize_start_time(self, value: datetime, _info):
-        return now_in_luanda()
+        return to_luanda_timezone(now_in_luanda())
 
 
 class MovementBase(MovementCreate):

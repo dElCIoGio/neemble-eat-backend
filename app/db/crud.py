@@ -10,7 +10,7 @@ from pydantic import Field, BaseModel
 from pymongo import DESCENDING
 
 from app.schema.collection_id.object_id import PyObjectId
-from app.utils.time import now_in_luanda
+from app.utils.time import now_in_luanda, to_luanda_timezone
 
 T = TypeVar("T", bound=Document)
 
@@ -57,8 +57,8 @@ class MongoCrud(Generic[T]):
         return await self._get_collection().count_documents({})
 
     async def create(self, data: Dict[str, Any]) -> T:
-        data["created_at"] = now_in_luanda()
-        data["updated_at"] = now_in_luanda()
+        data["created_at"] = to_luanda_timezone(now_in_luanda())
+        data["updated_at"] = to_luanda_timezone(now_in_luanda())
 
         document = self.model(**data)
         return await document.insert()
@@ -112,7 +112,7 @@ class MongoCrud(Generic[T]):
 
         # Optional: ensure updated_at is applied
         if "updated_at" in self.model.model_fields:
-            data["updatedAt"] = now_in_luanda()
+            data["updatedAt"] = to_luanda_timezone(now_in_luanda())
 
         result = await collection.update_one(
             {"_id": ObjectId(_id)},

@@ -12,7 +12,7 @@ from app.services.analytics import (
     average_session_duration,
     active_sessions_count, last_seven_days_order_count
 )
-from app.utils.time import now_in_luanda
+from app.utils.time import now_in_luanda, to_luanda_timezone
 
 router = APIRouter()
 
@@ -24,7 +24,7 @@ async def sales_summary(
     to_date: Optional[datetime] = Query(None, alias="toDate"),
 ):
 
-    today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
+    today = to_luanda_timezone(now_in_luanda()).replace(hour=0, minute=0, second=0, microsecond=0)
 
     if not from_date:
         from_date = today
@@ -46,7 +46,7 @@ async def invoices_summary(
     status: str = Query("paid")
 ):
     try:
-        today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
+        today = to_luanda_timezone(now_in_luanda()).replace(hour=0, minute=0, second=0, microsecond=0)
 
         if not from_date:
             from_date = today
@@ -67,7 +67,7 @@ async def orders_summary(
     from_date: Optional[datetime] = Query(None, alias="fromDate"),
     to_date: Optional[datetime] = Query(None, alias="toDate"),
 ):
-    today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
+    today = to_luanda_timezone(now_in_luanda()).replace(hour=0, minute=0, second=0, microsecond=0)
 
     if not from_date:
         from_date = today
@@ -87,7 +87,7 @@ async def top_items_summary(
     top_n: int = Query(5, ge=1, le=20, alias="topN")
 ):
     try:
-        today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
+        today = to_luanda_timezone(now_in_luanda()).replace(hour=0, minute=0, second=0, microsecond=0)
 
         if not from_date:
             from_date = today
@@ -108,7 +108,7 @@ async def cancelled_orders_summary(
     from_date: Optional[datetime] = Query(None, alias="fromDate"),
     to_date: Optional[datetime] = Query(None, alias="toDate"),
 ):
-    today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
+    today = to_luanda_timezone(now_in_luanda()).replace(hour=0, minute=0, second=0, microsecond=0)
 
     if not from_date:
         from_date = today
@@ -129,7 +129,7 @@ async def cancelled_sessions_summary(
     from_date: Optional[datetime] = Query(None, alias="fromDate"),
     to_date: Optional[datetime] = Query(None, alias="toDate"),
 ):
-    today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
+    today = to_luanda_timezone(now_in_luanda()).replace(hour=0, minute=0, second=0, microsecond=0)
 
     if not from_date:
         from_date = today
@@ -147,7 +147,7 @@ async def session_duration_summary(
     restaurant_id: str = Query(..., alias="restaurantId"),
 ):
     try:
-        today = now_in_luanda().replace(hour=0, minute=0, second=0, microsecond=0)
+        today = to_luanda_timezone(now_in_luanda()).replace(hour=0, minute=0, second=0, microsecond=0)
         from_date = today
         to_date = today + timedelta(days=1)
 

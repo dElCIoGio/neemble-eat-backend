@@ -17,7 +17,7 @@ from app.models.user import UserModel
 from app.schema.user import User, UserCreate
 from firebase_admin import auth
 
-from app.utils.time import now_in_luanda
+from app.utils.time import now_in_luanda, to_luanda_timezone
 
 router = APIRouter()
 user_model = UserModel()
@@ -47,7 +47,7 @@ async def login(
         user = await user_model.get_user_by_firebase_uid(firebase_uid)
 
         await user_model.update(str(user.id), {
-            "lastLogged": now_in_luanda()
+            "lastLogged": to_luanda_timezone(now_in_luanda())
         })
 
         # if not user:
