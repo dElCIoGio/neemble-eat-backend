@@ -133,8 +133,6 @@ async def close_table_session(
     try:
         session = await session_model.get(session_id)
 
-        print("Session:", session)
-
         if not session:
             raise Exception("Session not found")
 

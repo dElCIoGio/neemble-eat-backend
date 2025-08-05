@@ -113,11 +113,9 @@ async def update_item_image(item_id: str, image_file: UploadFile = File(..., ali
         if not item:
             raise HTTPException(status_code=404, detail="Item not found")
 
-        print(item)
 
         upload = await save_item_image(image_file, item.restaurant_id, item_id)
 
-        print(upload)
         if not upload.success:
             raise HTTPException(status_code=500, detail="Failed to upload item image")
 

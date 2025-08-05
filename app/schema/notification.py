@@ -9,6 +9,7 @@ from pymongo import IndexModel, ASCENDING
 
 from app.schema.collection_id.document_id import DocumentId
 from app.utils.make_optional_model import make_optional_model
+from app.utils.time import to_luanda_timezone
 
 
 class NotificationType(str, Enum):
@@ -40,7 +41,7 @@ class NotificationBase(NotificationCreate):
     @field_serializer('read_on')
     def serialize_read_on(self, value: datetime, _info):
         if value is not None:
-            return value.isoformat()
+            return to_luanda_timezone(value).isoformat()
         return value
 
 

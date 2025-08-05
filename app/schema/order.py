@@ -9,7 +9,7 @@ from pymongo import IndexModel, ASCENDING
 
 from app.schema.collection_id.document_id import DocumentId
 from app.utils.make_optional_model import make_optional_model
-from app.utils.time import now_in_luanda
+from app.utils.time import now_in_luanda, to_luanda_timezone
 
 
 class OrderPrepStatus(str, Enum):
@@ -50,9 +50,7 @@ class OrderBase(OrderCreate):
 
     @field_serializer('order_time')
     def serialize_order_time(self, value: datetime, _info):
-        return value.isoformat()
-
-
+        return to_luanda_timezone(value).isoformat()
 
 
 OrderUpdate = make_optional_model(OrderBase)

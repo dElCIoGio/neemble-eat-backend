@@ -1,9 +1,10 @@
+import pytz
 from bson import ObjectId
 from pydantic import BaseModel, Field, ConfigDict, field_serializer
 from datetime import datetime
 
 from app.schema.collection_id.object_id import PyObjectId
-from app.utils.time import now_in_luanda
+from app.utils.time import now_in_luanda, to_luanda_timezone
 
 
 class DocumentId(BaseModel):
@@ -17,7 +18,8 @@ class DocumentId(BaseModel):
 
     @field_serializer('created_at', 'updated_at')
     def serialize_date(self, value: datetime, _info):
-        return value.isoformat()
+        date = to_luanda_timezone(value)
+        return date.isoformat()
 
 
     @field_serializer('id')

@@ -111,7 +111,6 @@ async def cleanup_unlinked_images() -> List[str]:
 
     # Iterate over all uploaded images
     for blob in manager.client.list_blobs(manager.bucket, prefix="uploads/"):
-        print(blob)
         blob.reload()
         metadata = blob.metadata or {}
 
@@ -149,14 +148,10 @@ async def cleanup_unlinked_images() -> List[str]:
 async def run_all() -> Dict[str, Any]:
 
     r1 = await duplicate_active_sessions()
-    print(r1)
-
 
     try:
         r2 = await mismatched_current_sessions()
-        print(r2)
         r3 = await orphan_sessions()
-        print(r3)
         return {
             "duplicateActiveSessions": r1,
             "currentSessionMismatches": r2,

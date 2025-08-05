@@ -65,7 +65,6 @@ async def delete_item_image(image_url: str) -> bool:
     """Delete an item image using its public URL."""
     blob_name = _blob_name_from_url(image_url)
 
-    print("image blob: ", blob_name)
     if not blob_name:
         return False
     manager = get_google_bucket_manager()

@@ -16,7 +16,6 @@ restaurant_model = RestaurantModel()
 async def organize_table_numbers(restaurant_id: str) -> List[table_schema.TableDocument]:
     """Ensure tables for a restaurant have sequential numbers starting at 1."""
     tables = await table_model.get_by_fields(filters={"restaurantId": restaurant_id}, limit=400)
-    print(tables)
     tables_sorted = sorted(tables, key=lambda t: t.number)
 
     expected = 1
@@ -87,11 +86,8 @@ async def update_table_status(table_id: str, is_active: bool) -> Optional[table_
 
 
 async def update_table_session(table_id: str, session_id: Optional[str]) -> Optional[table_schema.TableDocument]:
-    table = await table_model.get(table_id)
-    print("table: ", table)
-    print("SESSION ID:", session_id)
+
     session = await table_model.update(table_id, {"currentSessionId": session_id})
-    print("UPDATED SESSION:", session)
     return session
 
 
@@ -100,7 +96,6 @@ async def get_table_by_restaurant_and_number(restaurant_id: str, number: int) ->
     await organize_table_numbers(restaurant_id)
     filters = {"restaurantId": restaurant_id, "number": number}
     tables = await table_model.get_by_fields(filters, limit=1)
-    print(tables)
     if tables:
         return tables[0]
     return None

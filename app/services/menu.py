@@ -43,15 +43,12 @@ async def delete_menu(menu_id: str):
     try:
         menu = await menu_model.get(menu_id)
 
-        print("MENU:", menu)
         if not menu:
             return False
-        print("checkpoint 1")
         # Remove categories linked to this menu
         categories = await category_model.get_by_fields({"menuId": menu_id})
         for category in categories:
             await category_model.delete(str(category.id))
-        print("checkpoint 2")
         # Remove menu id from restaurant
         restaurant = await restaurant_model.get(menu.restaurant_id)
         if restaurant and menu_id in restaurant.menu_ids:
@@ -60,7 +57,6 @@ async def delete_menu(menu_id: str):
             if restaurant.current_menu_id == menu_id:
                 update_data["currentMenuId"] = None
             await restaurant_model.update(str(restaurant.id), update_data)
-        print("checkpoint 3")
         return await menu_model.delete(menu_id)
     except Exception as error:
         print(error)

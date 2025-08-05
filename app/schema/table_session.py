@@ -9,7 +9,7 @@ from pymongo import IndexModel, ASCENDING
 
 from app.schema.collection_id.document_id import DocumentId
 from app.utils.make_optional_model import make_optional_model
-from app.utils.time import now_in_luanda
+from app.utils.time import now_in_luanda, to_luanda_timezone
 
 
 class TableSessionStatus(str, Enum):
@@ -38,13 +38,13 @@ class TableSessionBase(BaseModel):
 
     @field_serializer('start_time')
     def serialize_start_time(self, value: datetime, _info):
-        return value.isoformat()
+        return to_luanda_timezone(value).isoformat()
 
 
     @field_serializer('end_time')
     def serialize_end_time(self, value: datetime, _info):
         if value is not None:
-            return value.isoformat()
+            return to_luanda_timezone(value).isoformat()
         return value
 
 

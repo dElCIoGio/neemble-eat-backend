@@ -27,7 +27,6 @@ async def change_membership_role(user_id: str, restaurant_id: str, role_id: str)
     """Change user's role within a restaurant."""
     try:
         user = await membership_service.update_membership_role(user_id, restaurant_id, role_id)
-        print(user)
         return user.to_response()
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

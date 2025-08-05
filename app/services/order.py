@@ -53,10 +53,10 @@ async def place_order(data: dict) -> order_schema.OrderDocument:
         await websocket_manager.broadcast(json_data, f"{str(restaurant_id)}/order")
     except Exception as error:
         print(str(error))
-        # raise HTTPException(
-        #     status_code=500,
-        #     detail=str(error)
-        # )
+        raise HTTPException(
+            status_code=500,
+            detail=str(error)
+        )
 
     # Adjust stock levels based on recipe if automatic adjustments are enabled
     if restaurant_id:
@@ -118,6 +118,7 @@ async def place_orders(data_list: list[dict], session_id: str | None = None) -> 
     orders: list[order_schema.OrderDocument] = []
     for data in data_list:
         payload = data.copy()
+        payload["orderTime"] = now_in_luanda()
         if session_id and "sessionId" not in payload:
             payload["sessionId"] = session_id
         order = await place_order(payload)
