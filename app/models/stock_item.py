@@ -5,7 +5,7 @@ from app.schema import stock_item as stock_item_schema
 from app.schema.stock_item import StockStatus
 from app.schema import movement as movement_schema
 from app.models.movement import MovementModel
-from app.utils.time import now_in_luanda, to_luanda_timezone
+from app.utils.time import now_in_luanda
 
 movement_model = MovementModel()
 
@@ -37,7 +37,7 @@ class StockItemModel(MongoCrud[stock_item_schema.StockItemDocument]):
                 "quantity": quantity,
                 "restaurantId": new_stock_item.restaurant_id,
                 "unit": new_stock_item.unit,
-                "date": to_luanda_timezone(now_in_luanda()),
+                "date": now_in_luanda(),
                 "reason": reason or "Item created",
                 "user": "Ajuste automático",
                 "cost": new_stock_item.cost,
@@ -63,7 +63,7 @@ class StockItemModel(MongoCrud[stock_item_schema.StockItemDocument]):
                 "quantity": abs(new_quantity - item.current_quantity),
                 "restaurantId": item.restaurant_id,
                 "unit": item.unit,
-                "date": to_luanda_timezone(now_in_luanda()),
+                "date": now_in_luanda(),
                 "reason": reason,
                 "user": "Ajuste automático",
                 "cost": item.cost,
@@ -86,7 +86,7 @@ class StockItemModel(MongoCrud[stock_item_schema.StockItemDocument]):
                 "quantity": item.current_quantity,
                 "restaurantId": item.restaurant_id,
                 "unit": item.unit,
-                "date": to_luanda_timezone(now_in_luanda()),
+                "date": now_in_luanda(),
                 "reason": reason or "Item deleted",
                 "user": "Ajuste automático",
                 "cost": item.cost,
