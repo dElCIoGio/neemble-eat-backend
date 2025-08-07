@@ -16,6 +16,7 @@ from app.schema.analytics import (
     TotalOrdersCount,
 )
 from app.schema.invoice import InvoiceDocument, InvoiceStatus
+from app.schema.order import OrderPrepStatus
 from app.utils.time import now_in_luanda
 
 
@@ -126,6 +127,7 @@ async def count_orders(
     try:
         filters = {
             "restaurantId": restaurant_id,
+            # "prepStatus": {"$in": [OrderPrepStatus.QUEUED, OrderPrepStatus.READY, OrderPrepStatus.IN_PROGRESS, OrderPrepStatus.Se]},
             "createdAt": {"$gte": from_date, "$lte": to_date},
         }
         documents = await order_model.get_by_fields(filters)
