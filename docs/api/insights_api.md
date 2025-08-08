@@ -3,7 +3,11 @@
 These endpoints generate analytical insights for a restaurant using data
 already stored in the system. Instead of submitting raw data, provide the
 restaurant's identifier and the service will gather orders, table sessions
-and reviews automatically.
+and reviews automatically. All monetary values are reported in **Kwanza (Kz)**.
+
+Each endpoint accepts an optional query parameter `days` to specify the
+timeframe for the analysis (e.g. `?days=7` for the last week). If omitted,
+the service analyses data from the previous day.
 
 ## Endpoints
 
@@ -27,7 +31,7 @@ schema used by the service.
 ## Example
 
 ```http
-GET /api/v1/insights/full/64b9...
+GET /api/v1/insights/full/64b9...?days=7
 ```
 
 The response includes a high level summary along with recommendations,
