@@ -47,6 +47,7 @@ async def _get_order_data(restaurant_id: str, days: int) -> List[OrderData]:
             timestamp=to_luanda_timezone(o.order_time),
             items=[o.ordered_item_name] if getattr(o, "ordered_item_name", None) else [o.item_id],
             table_number=o.table_number,
+            status=o.prep_status,
         ) for o in orders
     ]
 
@@ -133,6 +134,8 @@ async def performance_insights(restaurant_id: str, days: int = 1):
         f"Período analisado: {timeframe}\n"
         "Moeda: Kwanza (Kz)\n"
         f"Total Orders: {metrics.get('total_orders', 0)}\n"
+        f"Cancelled Orders: {metrics.get('cancelled_orders', 0)}\n"
+        f"Non-cancelled Orders: {metrics.get('non_cancelled_orders', 0)}\n"
         f"Total Revenue (Kz): {metrics.get('total_revenue', 0):.2f}\n"
         f"Peak Hours: {', '.join(map(str, metrics.get('peak_hours', []))) or 'none'}\n"
         f"Best Days: {', '.join(metrics.get('best_days', [])) or 'none'}\n"
