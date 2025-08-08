@@ -566,7 +566,7 @@ class OpenAIProvider(LLMProvider):
                 model=config.model,
                 messages=[
                     {"role": "system",
-                     "content": "You are an expert restaurant business consultant providing data-driven insights. Always respond with valid JSON containing summary, recommendations, risks, and opportunities keys."},
+                     "content": "You are an expert restaurant business consultant providing data-driven insights. Always respond with valid JSON containing summary, recommendations, risks, and opportunities keys. Provide your answers in Portuguese (from Portugal)"},
                     {"role": "user", "content": prompt}
                 ],
                 max_tokens=config.max_tokens,

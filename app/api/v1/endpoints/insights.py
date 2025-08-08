@@ -106,7 +106,7 @@ async def performance_insights(restaurant_id: str):
         "Forneça uma análise detalhada em português sobre o desempenho de vendas do restaurante, incluindo o máximo de informações possível."
     )
     llm_result = await analyzer.llm_provider.generate_insights(
-        prompt, analyzer.llm_config
+        prompt, analyzer.llm_cgonfig
     )
     opinion = llm_result.get("summary", "Nenhum insight disponível.")
     return {"insight": opinion, "metrics": metrics}
