@@ -16,7 +16,6 @@ from app.services.ai import (
     LLMConfig,
 )
 from app.models.order import OrderModel
-from app.services import order as order_service
 from app.services import table as table_service
 from app.services import restaurant as restaurant_service
 from app.services.table_session import session_model
@@ -43,7 +42,7 @@ async def _get_order_data(restaurant_id: str, days: int) -> List[OrderData]:
     data: List[OrderData] = [
         OrderData(
             order_id=str(o.id),
-            revenue=o.total or 0,
+            revenue=0 if o.prep_status == "cancelled" else o.total,
             timestamp=to_luanda_timezone(o.order_time),
             items=[o.ordered_item_name] if getattr(o, "ordered_item_name", None) else [o.item_id],
             table_number=o.table_number,
@@ -219,63 +218,65 @@ async def sentiment_insights(restaurant_id: str, days: int = 1):
 
 @router.get("/full/{restaurant_id}", response_model=InsightsOutput)
 async def generate_full_insights(restaurant_id: str, days: int = 1):
-    restaurant = await restaurant_service.get_restaurant(restaurant_id)
-    orders = await _get_order_data(restaurant_id, days)
-    occupancy = await _get_occupancy_data(restaurant_id, days)
-    reviews = await _get_review_data(restaurant_id, days)
+    try:
+        restaurant = await restaurant_service.get_restaurant(restaurant_id)
+        orders = await _get_order_data(restaurant_id, days)
+        occupancy = await _get_occupancy_data(restaurant_id, days)
+        reviews = await _get_review_data(restaurant_id, days)
 
-    cache_key = analyzer._generate_cache_key(restaurant, orders, occupancy, reviews)
-    cached = analyzer._check_cache(cache_key)
-    if cached:
-        return cached
+        cache_key = analyzer._generate_cache_key(restaurant, orders, occupancy, reviews)
+        cached = analyzer._check_cache(cache_key)
+        if cached:
+            return cached
 
-    trends, occ, sentiment = await analyzer._process_data_sources(orders, occupancy, reviews)
-    quality, confidence = analyzer._assess_data_quality(trends, occ, sentiment)
+        trends, occ, sentiment = await analyzer._process_data_sources(orders, occupancy, reviews)
+        quality, confidence = analyzer._assess_data_quality(trends, occ, sentiment)
 
-    timeframe = "último dia" if days == 1 else f"últimos {days} dias"
-    prompt = (
-        f"Restaurante: {restaurant.name}\n"
-        f"Período analisado: {timeframe}\n"
-        "Moeda: Kwanza (Kz)\n"
-        f"Orders: {trends}\n"
-        f"Occupancy: {occ}\n"
-        f"Reviews: {sentiment}\n"
-        "Escreva todas as conclusões em português de Portugal e forneça o máximo de detalhes possível sobre o desempenho do restaurante, incluindo recomendações, riscos e oportunidades."
-    )
-    llm_result = await analyzer.llm_provider.generate_insights(
-        prompt, analyzer.llm_config
-    )
+        timeframe = "último dia" if days == 1 else f"últimos {days} dias"
+        prompt = (
+            f"Restaurante: {restaurant.name}\n"
+            f"Período analisado: {timeframe}\n"
+            "Moeda: Kwanza (Kz)\n"
+            f"Orders: {trends}\n"
+            f"Occupancy: {occ}\n"
+            f"Reviews: {sentiment}\n"
+            "Escreva todas as conclusões em português de Portugal e forneça o máximo de detalhes possível sobre o desempenho do restaurante, incluindo recomendações, riscos e oportunidades."
+        )
+        llm_result = await analyzer.llm_provider.generate_insights(
+            prompt, analyzer.llm_config
+        )
 
-    def to_items(items: List[str], category: str) -> List[InsightItem]:
-        return [
-            InsightItem(
-                content=i,
-                priority=InsightPriority.MEDIUM,
-                category=category,
-                confidence=confidence,
-            )
-            for i in items
-        ]
+        def to_items(items: List[str], category: str) -> List[InsightItem]:
+            return [
+                InsightItem(
+                    content=i,
+                    priority=InsightPriority.MEDIUM,
+                    category=category,
+                    confidence=confidence,
+                )
+                for i in items
+            ]
 
-    output = InsightsOutput(
-        summary=llm_result.get("summary", "Nenhum insight disponível."),
-        top_recommendations=to_items(
-            llm_result.get("recommendations", []), "recommendation"
-        ),
-        risk_areas=to_items(llm_result.get("risks", []), "risk"),
-        growth_opportunities=to_items(
-            llm_result.get("opportunities", []), "opportunity"
-        ),
-        data_quality=quality,
-        confidence_score=confidence,
-        analysis_metadata={
-            "orders": trends,
-            "occupancy": occ,
-            "reviews": sentiment,
-            "restaurant": restaurant.name,
-            "timeframe_days": days,
-        },
-    )
-    analyzer._store_cache(cache_key, output)
-    return output
-
+        output = InsightsOutput(
+            summary=llm_result.get("summary", "Nenhum insight disponível."),
+            top_recommendations=to_items(
+                llm_result.get("recommendations", []), "recommendation"
+            ),
+            risk_areas=to_items(llm_result.get("risks", []), "risk"),
+            growth_opportunities=to_items(
+                llm_result.get("opportunities", []), "opportunity"
+            ),
+            data_quality=quality,
+            confidence_score=confidence,
+            analysis_metadata={
+                "orders": trends,
+                "occupancy": occ,
+                "reviews": sentiment,
+                "restaurant": restaurant.name,
+                "timeframe_days": days,
+            },
+        )
+        analyzer._store_cache(cache_key, output)
+        return output
+    except Exception as e:
+        print(e)

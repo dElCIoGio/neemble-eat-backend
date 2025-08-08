@@ -118,7 +118,7 @@ class RestaurantDocument(Document):
 class OrderData(BaseModel):
     """Historical order data structure"""
     order_id: str
-    revenue: float = Field(gt=0)
+    revenue: float
     timestamp: datetime
     items: List[str]
     table_number: Optional[int] = None
