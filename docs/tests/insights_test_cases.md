@@ -18,17 +18,17 @@ This document outlines the basic requirements and an extensive list of test case
 ## Test Cases
 
 ### 1. Performance Insights Endpoint `/api/v1/insights/performance`
-- **TC1.1** Valid list of `OrderData` objects returns detailed trend metrics.
+- **TC1.1** Valid list of `OrderData` objects returns a helpful narrative summarising performance.
 - **TC1.2** Fewer than three orders returns `{ "error": "Insufficient order data for analysis" }`.
 - **TC1.3** Invalid order fields (e.g. negative revenue) return HTTP 422.
 
 ### 2. Occupancy Insights Endpoint `/api/v1/insights/occupancy`
-- **TC2.1** Valid list of `TableOccupancy` objects returns utilization statistics.
+- **TC2.1** Valid list of `TableOccupancy` objects returns utilization opinions.
 - **TC2.2** Fewer than five occupancy records returns `{ "error": "Insufficient occupancy data" }`.
 - **TC2.3** Invalid occupancy fields (e.g. hour out of range) return HTTP 422.
 
 ### 3. Sentiment Insights Endpoint `/api/v1/insights/sentiment`
-- **TC3.1** Valid list of `CustomerReview` objects returns sentiment breakdown and theme analysis.
+- **TC3.1** Valid list of `CustomerReview` objects returns overall sentiment analysis with narrative.
 - **TC3.2** Fewer than three reviews returns `{ "error": "Insufficient review data" }`.
 - **TC3.3** Invalid review fields (e.g. rating > 5) return HTTP 422.
 
