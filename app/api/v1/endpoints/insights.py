@@ -98,13 +98,23 @@ async def performance_insights(restaurant_id: str):
     metrics = await analyzer.processors[AnalysisType.PERFORMANCE].process(data)
     if "error" in metrics:
         return metrics
-    insight = (
-        f"Total orders {metrics.get('total_orders', 0)} generated revenue of "
-        f"${metrics.get('total_revenue', 0):.2f}. "
-        f"Peak hours: {', '.join(map(str, metrics.get('peak_hours', [])))}. "
-        f"Best days: {', '.join(metrics.get('best_days', []))}."
-    )
-    return {"insight": insight}
+    total_orders = metrics.get("total_orders", 0)
+    revenue = metrics.get("total_revenue", 0)
+    peak_hours = ", ".join(map(str, metrics.get("peak_hours", []))) or "none identified"
+    best_days = ", ".join(metrics.get("best_days", [])) or "no standout days"
+
+    if total_orders == 0:
+        opinion = "No orders were found for this restaurant, so performance cannot be assessed."
+    else:
+        performance = (
+            "strong" if revenue > 10000 else "steady" if revenue > 5000 else "developing"
+        )
+        opinion = (
+            f"The restaurant handled {total_orders} orders generating ${revenue:.2f}, "
+            f"showing {performance} sales performance. Peak activity occurs around {peak_hours}, "
+            f"with best results on {best_days}. Consider reinforcing popular periods and exploring promotions during quieter times."
+        )
+    return {"insight": opinion}
 
 
 @router.get("/occupancy/{restaurant_id}")
@@ -113,12 +123,22 @@ async def occupancy_insights(restaurant_id: str):
     metrics = await analyzer.processors[AnalysisType.OCCUPANCY].process(data)
     if "error" in metrics:
         return metrics
-    insight = (
-        f"Average occupancy rate {metrics.get('avg_occupancy_rate', 0):.0%}. "
-        f"Peak hours: {', '.join(map(str, metrics.get('peak_hours', [])))}. "
-        f"Underutilized hours: {', '.join(map(str, metrics.get('underutilized_hours', [])))}."
-    )
-    return {"insight": insight}
+    avg_rate = metrics.get("avg_occupancy_rate", 0)
+    peak_hours = ", ".join(map(str, metrics.get("peak_hours", []))) or "none identified"
+    low_hours = ", ".join(map(str, metrics.get("underutilized_hours", []))) or "none"
+
+    if avg_rate == 0:
+        opinion = "No table occupancy data available to evaluate utilization."
+    else:
+        utilization = (
+            "excellent" if avg_rate >= 0.8 else "good" if avg_rate >= 0.6 else "needs improvement"
+        )
+        opinion = (
+            f"Average occupancy sits at {avg_rate:.0%}, indicating {utilization} space usage. "
+            f"Tables are busiest around {peak_hours}, while {low_hours} remain underused. "
+            f"Balancing these periods could improve overall efficiency."
+        )
+    return {"insight": opinion}
 
 
 @router.get("/sentiment/{restaurant_id}")
@@ -128,13 +148,18 @@ async def sentiment_insights(restaurant_id: str):
     if "error" in metrics:
         return metrics
     dist = metrics.get("sentiment_distribution", {})
-    insight = (
-        f"Overall sentiment {metrics.get('overall_sentiment', 'neutral')} with "
-        f"{dist.get('positive', 0)} positive, {dist.get('negative', 0)} negative, "
-        f"{dist.get('neutral', 0)} neutral reviews. "
-        f"Average rating: {metrics.get('avg_rating')}"
-    )
-    return {"insight": insight}
+    total = sum(dist.values())
+    if total == 0:
+        opinion = "No customer reviews were found to assess sentiment."
+    else:
+        overall = metrics.get("overall_sentiment", "neutral")
+        avg_rating = metrics.get("avg_rating")
+        opinion = (
+            f"Customer sentiment is predominantly {overall} with {dist.get('positive', 0)} positive and "
+            f"{dist.get('negative', 0)} negative mentions out of {total} reviews. "
+            f"The average rating is {avg_rating}. Addressing recurring issues in negative feedback could enhance guest satisfaction."
+        )
+    return {"insight": opinion}
 
 
 @router.get("/full/{restaurant_id}", response_model=InsightsOutput)
