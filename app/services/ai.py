@@ -124,6 +124,7 @@ class OrderData(BaseModel):
     table_number: Optional[int] = None
     customer_count: Optional[int] = Field(ge=1, default=1)
     order_type: Optional[str] = "dine_in"  # dine_in, takeout, delivery
+    status: Optional[str] = None
 
 
 class TableOccupancy(BaseModel):
@@ -225,7 +226,8 @@ class TimeSeriesProcessor(DataProcessor):
                     'date': order.timestamp.date(),
                     'items_count': len(order.items),
                     'customer_count': order.customer_count or 1,
-                    'order_type': order.order_type
+                    'order_type': order.order_type,
+                    'status': order.status,
                 }
                 for order in data
             ])
@@ -249,6 +251,9 @@ class TimeSeriesProcessor(DataProcessor):
             # Order type analysis
             order_type_analysis = df.groupby('order_type')['revenue'].agg(['sum', 'count', 'mean']).round(2)
 
+            cancelled_orders = int((df['status'] == 'cancelled').sum()) if 'status' in df else 0
+            non_cancelled_orders = int(len(df) - cancelled_orders)
+
             return {
                 'total_orders': len(df),
                 'total_revenue': round(df['revenue'].sum(), 2),
@@ -263,7 +268,9 @@ class TimeSeriesProcessor(DataProcessor):
                 'order_type_breakdown': order_type_analysis.to_dict() if not order_type_analysis.empty else {},
                 'data_span_days': (df['timestamp'].max() - df['timestamp'].min()).days,
                 'consistency_score': round(1 - (df['revenue'].std() / df['revenue'].mean()), 2) if df[
-                                                                                                       'revenue'].mean() > 0 else 0
+                                                                                                       'revenue'].mean() > 0 else 0,
+                'cancelled_orders': cancelled_orders,
+                'non_cancelled_orders': non_cancelled_orders,
             }
 
         except Exception as e:
