@@ -975,3 +975,52 @@
 2025-08-08 23:08:25,980 - main - INFO - App started in development mode
 2025-08-08 23:08:26,033 - main - INFO - Initializing Firebase
 2025-08-08 23:08:26,035 - main - INFO - Initializing Mongo DB client
+2025-08-08 23:12:12,313 - main - INFO - App started in development mode
+2025-08-08 23:12:12,363 - main - INFO - Initializing Firebase
+2025-08-08 23:12:12,363 - main - INFO - Initializing Mongo DB client
+2025-08-08 23:19:56,975 - main - INFO - App started in development mode
+2025-08-08 23:19:57,017 - main - INFO - Initializing Firebase
+2025-08-08 23:19:57,018 - main - INFO - Initializing Mongo DB client
+2025-08-08 23:22:35,792 - main - INFO - App started in development mode
+2025-08-08 23:22:35,838 - main - INFO - Initializing Firebase
+2025-08-08 23:22:35,838 - main - INFO - Initializing Mongo DB client
+2025-08-08 23:23:15,776 - main - INFO - App started in development mode
+2025-08-08 23:23:15,828 - main - INFO - Initializing Firebase
+2025-08-08 23:23:15,828 - main - INFO - Initializing Mongo DB client
+2025-08-08 23:31:48,661 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-08-08 23:31:48,662 - main - INFO - Reason:  (1005)
+2025-08-08 23:31:48,684 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-08-08 23:31:48,685 - main - INFO - Reason:  (1001)
+2025-08-08 23:53:39,510 - main - INFO - App started in development mode
+2025-08-08 23:53:39,562 - main - INFO - Initializing Firebase
+2025-08-08 23:53:39,563 - main - INFO - Initializing Mongo DB client
+2025-08-08 23:55:58,254 - main - INFO - App started in development mode
+2025-08-08 23:55:58,295 - main - INFO - Initializing Firebase
+2025-08-08 23:55:58,296 - main - INFO - Initializing Mongo DB client
+2025-08-08 23:56:50,019 - main - INFO - App started in development mode
+2025-08-08 23:56:50,057 - main - INFO - Initializing Firebase
+2025-08-08 23:56:50,059 - main - INFO - Initializing Mongo DB client
+2025-08-08 23:57:33,750 - main - INFO - App started in development mode
+2025-08-08 23:57:33,809 - main - INFO - Initializing Firebase
+2025-08-08 23:57:33,810 - main - INFO - Initializing Mongo DB client
+2025-08-08 23:58:49,405 - main - INFO - App started in development mode
+2025-08-08 23:58:49,466 - main - INFO - Initializing Firebase
+2025-08-08 23:58:49,466 - main - INFO - Initializing Mongo DB client
+2025-08-08 23:59:33,036 - main - INFO - App started in development mode
+2025-08-08 23:59:33,096 - main - INFO - Initializing Firebase
+2025-08-08 23:59:33,098 - main - INFO - Initializing Mongo DB client
+2025-08-09 00:00:46,449 - main - INFO - App started in development mode
+2025-08-09 00:00:46,489 - main - INFO - Initializing Firebase
+2025-08-09 00:00:46,489 - main - INFO - Initializing Mongo DB client
+2025-08-09 00:02:37,565 - main - INFO - App started in development mode
+2025-08-09 00:02:37,629 - main - INFO - Initializing Firebase
+2025-08-09 00:02:37,629 - main - INFO - Initializing Mongo DB client
+2025-08-09 00:07:20,861 - main - INFO - App started in development mode
+2025-08-09 00:07:20,917 - main - INFO - Initializing Firebase
+2025-08-09 00:07:20,917 - main - INFO - Initializing Mongo DB client
+2025-08-09 00:07:33,896 - main - INFO - App started in development mode
+2025-08-09 00:07:33,939 - main - INFO - Initializing Firebase
+2025-08-09 00:07:33,940 - main - INFO - Initializing Mongo DB client
+2025-08-09 00:09:26,270 - main - INFO - App started in development mode
+2025-08-09 00:09:26,330 - main - INFO - Initializing Firebase
+2025-08-09 00:09:26,331 - main - INFO - Initializing Mongo DB client

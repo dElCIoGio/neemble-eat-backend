@@ -15,6 +15,7 @@ from app.services.ai import (
     AnalysisType,
     LLMConfig,
 )
+from app.models.order import OrderModel
 from app.services import order as order_service
 from app.services import table as table_service
 from app.services import restaurant as restaurant_service
@@ -28,25 +29,27 @@ settings = get_settings()
 analyzer = RestaurantInsightsAnalyzer(
     llm_config=LLMConfig(api_key=settings.OPENAI_API_KEY)
 )
+order_model = OrderModel()
 
 
 async def _get_order_data(restaurant_id: str, days: int) -> List[OrderData]:
-    cutoff = now_in_luanda() - timedelta(days=days)
-    orders = await order_service.list_orders_for_restaurant(restaurant_id)
-    data: List[OrderData] = []
-    for o in orders:
-        if o.order_time < cutoff:
-            continue
-        items = [o.ordered_item_name] if getattr(o, "ordered_item_name", None) else [o.item_id]
-        data.append(
-            OrderData(
-                order_id=str(o.id),
-                revenue=o.total or 0,
-                timestamp=to_luanda_timezone(o.order_time),
-                items=items,
-                table_number=o.table_number,
-            )
-        )
+    cutoff = to_luanda_timezone(now_in_luanda()) - timedelta(days=days)
+    orders = await order_model.get_by_fields({
+        "restaurantId": restaurant_id,
+        "createdAt": {
+            "$gte": cutoff,
+        },
+    })
+    data: List[OrderData] = [
+        OrderData(
+            order_id=str(o.id),
+            revenue=o.total or 0,
+            timestamp=to_luanda_timezone(o.order_time),
+            items=[o.ordered_item_name] if getattr(o, "ordered_item_name", None) else [o.item_id],
+            table_number=o.table_number,
+        ) for o in orders
+    ]
+
     return data
 
 
@@ -120,6 +123,7 @@ async def _get_review_data(restaurant_id: str, days: int) -> List[CustomerReview
 async def performance_insights(restaurant_id: str, days: int = 1):
     restaurant = await restaurant_service.get_restaurant(restaurant_id)
     data = await _get_order_data(restaurant_id, days)
+    print(data)
     metrics = await analyzer.processors[AnalysisType.PERFORMANCE].process(data)
     if "error" in metrics:
         return metrics
