@@ -708,23 +708,34 @@ class RestaurantInsightsAnalyzer:
 
         tasks = []
 
+        async def _error_result(message: str) -> Dict[str, Any]:
+            """Return an async error result.
+
+            Python 3.11+ removed ``asyncio.coroutine`` which was previously used
+            to fabricate asynchronous results for missing data.  Using an
+            ``async`` helper keeps the interface consistent without relying on
+            deprecated APIs.
+            """
+
+            return {"error": message}
+
         # Process time series data
         if order_data:
             tasks.append(self.processors[AnalysisType.PERFORMANCE].process(order_data))
         else:
-            tasks.append(asyncio.create_task(asyncio.coroutine(lambda: {"error": "No order data"})()))
+            tasks.append(_error_result("No order data"))
 
         # Process occupancy data
         if table_occupancy:
             tasks.append(self.processors[AnalysisType.OCCUPANCY].process(table_occupancy))
         else:
-            tasks.append(asyncio.create_task(asyncio.coroutine(lambda: {"error": "No occupancy data"})()))
+            tasks.append(_error_result("No occupancy data"))
 
         # Process sentiment data
         if customer_reviews:
             tasks.append(self.processors[AnalysisType.SENTIMENT].process(customer_reviews))
         else:
-            tasks.append(asyncio.create_task(asyncio.coroutine(lambda: {"error": "No review data"})()))
+            tasks.append(_error_result("No review data"))
 
         return await asyncio.gather(*tasks)
 
