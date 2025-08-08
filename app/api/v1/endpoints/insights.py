@@ -30,10 +30,13 @@ analyzer = RestaurantInsightsAnalyzer(
 )
 
 
-async def _get_order_data(restaurant_id: str) -> List[OrderData]:
+async def _get_order_data(restaurant_id: str, days: int) -> List[OrderData]:
+    cutoff = now_in_luanda() - timedelta(days=days)
     orders = await order_service.list_orders_for_restaurant(restaurant_id)
     data: List[OrderData] = []
     for o in orders:
+        if o.order_time < cutoff:
+            continue
         items = [o.ordered_item_name] if getattr(o, "ordered_item_name", None) else [o.item_id]
         data.append(
             OrderData(
@@ -47,13 +50,17 @@ async def _get_order_data(restaurant_id: str) -> List[OrderData]:
     return data
 
 
-async def _get_occupancy_data(restaurant_id: str) -> List[TableOccupancy]:
+async def _get_occupancy_data(restaurant_id: str, days: int) -> List[TableOccupancy]:
     tables = await table_service.list_tables_for_restaurant(restaurant_id)
     total_tables = len(tables)
     if total_tables == 0:
         return []
 
-    sessions = await session_model.get_by_fields({"restaurantId": restaurant_id})
+    cutoff = now_in_luanda() - timedelta(days=days)
+    sessions = await session_model.get_by_fields({
+        "restaurantId": restaurant_id,
+        "startTime": {"$gte": cutoff},
+    })
     now = to_luanda_timezone(now_in_luanda())
     occ_map: dict[datetime.date, dict[int, int]] = defaultdict(lambda: defaultdict(int))
 
@@ -84,8 +91,15 @@ async def _get_occupancy_data(restaurant_id: str) -> List[TableOccupancy]:
     return data
 
 
-async def _get_review_data(restaurant_id: str) -> List[CustomerReview]:
-    sessions = await session_model.get_by_fields({"restaurantId": restaurant_id, "review": {"$ne": None}})
+async def _get_review_data(restaurant_id: str, days: int) -> List[CustomerReview]:
+    cutoff = now_in_luanda() - timedelta(days=days)
+    sessions = await session_model.get_by_fields(
+        {
+            "restaurantId": restaurant_id,
+            "review": {"$ne": None},
+            "startTime": {"$gte": cutoff},
+        }
+    )
     reviews: List[CustomerReview] = []
     for s in sessions:
         if s.review:
@@ -103,14 +117,19 @@ async def _get_review_data(restaurant_id: str) -> List[CustomerReview]:
 
 
 @router.get("/performance/{restaurant_id}")
-async def performance_insights(restaurant_id: str):
-    data = await _get_order_data(restaurant_id)
+async def performance_insights(restaurant_id: str, days: int = 1):
+    restaurant = await restaurant_service.get_restaurant(restaurant_id)
+    data = await _get_order_data(restaurant_id, days)
     metrics = await analyzer.processors[AnalysisType.PERFORMANCE].process(data)
     if "error" in metrics:
         return metrics
+    timeframe = "último dia" if days == 1 else f"últimos {days} dias"
     prompt = (
+        f"Restaurante: {restaurant.name}\n"
+        f"Período analisado: {timeframe}\n"
+        "Moeda: Kwanza (Kz)\n"
         f"Total Orders: {metrics.get('total_orders', 0)}\n"
-        f"Total Revenue: ${metrics.get('total_revenue', 0):.2f}\n"
+        f"Total Revenue (Kz): {metrics.get('total_revenue', 0):.2f}\n"
         f"Peak Hours: {', '.join(map(str, metrics.get('peak_hours', []))) or 'none'}\n"
         f"Best Days: {', '.join(metrics.get('best_days', [])) or 'none'}\n"
         "Forneça uma análise detalhada em português de Portugal sobre o desempenho de vendas do restaurante, incluindo o máximo de informações possível."
@@ -119,17 +138,27 @@ async def performance_insights(restaurant_id: str):
         prompt, analyzer.llm_config
     )
     opinion = llm_result.get("summary", "Nenhum insight disponível.")
-    return {"insight": opinion, "metrics": metrics}
+    return {
+        "insight": opinion,
+        "metrics": metrics,
+        "restaurant": restaurant.name,
+        "timeframe_days": days,
+    }
 
 
 @router.get("/occupancy/{restaurant_id}")
-async def occupancy_insights(restaurant_id: str):
+async def occupancy_insights(restaurant_id: str, days: int = 1):
     try:
-        data = await _get_occupancy_data(restaurant_id)
+        restaurant = await restaurant_service.get_restaurant(restaurant_id)
+        data = await _get_occupancy_data(restaurant_id, days)
         metrics = await analyzer.processors[AnalysisType.OCCUPANCY].process(data)
         if "error" in metrics:
             return metrics
+        timeframe = "último dia" if days == 1 else f"últimos {days} dias"
         prompt = (
+            f"Restaurante: {restaurant.name}\n"
+            f"Período analisado: {timeframe}\n"
+            "Moeda: Kwanza (Kz)\n"
             f"Average Occupancy Rate: {metrics.get('avg_occupancy_rate', 0):.2f}\n"
             f"Peak Hours: {', '.join(map(str, metrics.get('peak_hours', []))) or 'none'}\n"
             f"Underutilized Hours: {', '.join(map(str, metrics.get('underutilized_hours', []))) or 'none'}\n"
@@ -139,19 +168,29 @@ async def occupancy_insights(restaurant_id: str):
             prompt, analyzer.llm_config
         )
         opinion = llm_result.get("summary", "Nenhum insight disponível.")
-        return {"insight": opinion, "metrics": metrics}
+        return {
+            "insight": opinion,
+            "metrics": metrics,
+            "restaurant": restaurant.name,
+            "timeframe_days": days,
+        }
     except Exception as e:
         print(e)
 
 
 @router.get("/sentiment/{restaurant_id}")
-async def sentiment_insights(restaurant_id: str):
-    data = await _get_review_data(restaurant_id)
+async def sentiment_insights(restaurant_id: str, days: int = 1):
+    restaurant = await restaurant_service.get_restaurant(restaurant_id)
+    data = await _get_review_data(restaurant_id, days)
     metrics = await analyzer.processors[AnalysisType.SENTIMENT].process(data)
     if "error" in metrics:
         return metrics
     dist = metrics.get("sentiment_distribution", {})
+    timeframe = "último dia" if days == 1 else f"últimos {days} dias"
     prompt = (
+        f"Restaurante: {restaurant.name}\n"
+        f"Período analisado: {timeframe}\n"
+        "Moeda: Kwanza (Kz)\n"
         f"Overall Sentiment: {metrics.get('overall_sentiment', 'neutral')}\n"
         f"Positive Reviews: {dist.get('positive', 0)}\n"
         f"Negative Reviews: {dist.get('negative', 0)}\n"
@@ -163,15 +202,20 @@ async def sentiment_insights(restaurant_id: str):
         prompt, analyzer.llm_config
     )
     opinion = llm_result.get("summary", "Nenhum insight disponível.")
-    return {"insight": opinion, "metrics": metrics}
+    return {
+        "insight": opinion,
+        "metrics": metrics,
+        "restaurant": restaurant.name,
+        "timeframe_days": days,
+    }
 
 
 @router.get("/full/{restaurant_id}", response_model=InsightsOutput)
-async def generate_full_insights(restaurant_id: str):
+async def generate_full_insights(restaurant_id: str, days: int = 1):
     restaurant = await restaurant_service.get_restaurant(restaurant_id)
-    orders = await _get_order_data(restaurant_id)
-    occupancy = await _get_occupancy_data(restaurant_id)
-    reviews = await _get_review_data(restaurant_id)
+    orders = await _get_order_data(restaurant_id, days)
+    occupancy = await _get_occupancy_data(restaurant_id, days)
+    reviews = await _get_review_data(restaurant_id, days)
 
     cache_key = analyzer._generate_cache_key(restaurant, orders, occupancy, reviews)
     cached = analyzer._check_cache(cache_key)
@@ -181,7 +225,11 @@ async def generate_full_insights(restaurant_id: str):
     trends, occ, sentiment = await analyzer._process_data_sources(orders, occupancy, reviews)
     quality, confidence = analyzer._assess_data_quality(trends, occ, sentiment)
 
+    timeframe = "último dia" if days == 1 else f"últimos {days} dias"
     prompt = (
+        f"Restaurante: {restaurant.name}\n"
+        f"Período analisado: {timeframe}\n"
+        "Moeda: Kwanza (Kz)\n"
         f"Orders: {trends}\n"
         f"Occupancy: {occ}\n"
         f"Reviews: {sentiment}\n"
@@ -217,6 +265,8 @@ async def generate_full_insights(restaurant_id: str):
             "orders": trends,
             "occupancy": occ,
             "reviews": sentiment,
+            "restaurant": restaurant.name,
+            "timeframe_days": days,
         },
     )
     analyzer._store_cache(cache_key, output)
