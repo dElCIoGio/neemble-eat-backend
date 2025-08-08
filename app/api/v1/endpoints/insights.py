@@ -13,16 +13,21 @@ from app.services.ai import (
     InsightItem,
     InsightPriority,
     AnalysisType,
+    LLMConfig,
 )
 from app.services import order as order_service
 from app.services import table as table_service
 from app.services import restaurant as restaurant_service
 from app.services.table_session import session_model
 from app.utils.time import now_in_luanda, to_luanda_timezone
+from app.core.dependencies import get_settings
 
 router = APIRouter()
 
-analyzer = RestaurantInsightsAnalyzer()
+settings = get_settings()
+analyzer = RestaurantInsightsAnalyzer(
+    llm_config=LLMConfig(api_key=settings.OPENAI_API_KEY)
+)
 
 
 async def _get_order_data(restaurant_id: str) -> List[OrderData]:

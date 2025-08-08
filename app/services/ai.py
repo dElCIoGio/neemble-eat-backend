@@ -20,6 +20,7 @@ from pydantic import BaseModel, Field, validator
 from beanie import Document
 import openai
 
+from app.core.config import Settings
 from app.utils.time import now_in_luanda
 
 # Configure logging
@@ -560,6 +561,9 @@ class OpenAIProvider(LLMProvider):
     async def generate_insights(self, prompt: str, config: LLMConfig) -> Dict[str, Any]:
         """Generate insights using OpenAI API"""
         try:
+            if not config.api_key:
+                settings = Settings()
+                config.api_key = settings.OPENAI_API_KEY
 
             openai.api_key = config.api_key
 
