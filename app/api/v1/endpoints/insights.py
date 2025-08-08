@@ -98,22 +98,17 @@ async def performance_insights(restaurant_id: str):
     metrics = await analyzer.processors[AnalysisType.PERFORMANCE].process(data)
     if "error" in metrics:
         return metrics
-    total_orders = metrics.get("total_orders", 0)
-    revenue = metrics.get("total_revenue", 0)
-    peak_hours = ", ".join(map(str, metrics.get("peak_hours", []))) or "none identified"
-    best_days = ", ".join(metrics.get("best_days", [])) or "no standout days"
-
-    if total_orders == 0:
-        opinion = "No orders were found for this restaurant, so performance cannot be assessed."
-    else:
-        performance = (
-            "strong" if revenue > 10000 else "steady" if revenue > 5000 else "developing"
-        )
-        opinion = (
-            f"The restaurant handled {total_orders} orders generating ${revenue:.2f}, "
-            f"showing {performance} sales performance. Peak activity occurs around {peak_hours}, "
-            f"with best results on {best_days}. Consider reinforcing popular periods and exploring promotions during quieter times."
-        )
+    prompt = (
+        f"Total Orders: {metrics.get('total_orders', 0)}\n"
+        f"Total Revenue: ${metrics.get('total_revenue', 0):.2f}\n"
+        f"Peak Hours: {', '.join(map(str, metrics.get('peak_hours', []))) or 'none'}\n"
+        f"Best Days: {', '.join(metrics.get('best_days', [])) or 'none'}\n"
+        "Provide a concise and helpful analysis of the restaurant's sales performance."
+    )
+    llm_result = await analyzer.llm_provider.generate_insights(
+        prompt, analyzer.llm_config
+    )
+    opinion = llm_result.get("summary", "No insights available.")
     return {"insight": opinion}
 
 
@@ -123,21 +118,16 @@ async def occupancy_insights(restaurant_id: str):
     metrics = await analyzer.processors[AnalysisType.OCCUPANCY].process(data)
     if "error" in metrics:
         return metrics
-    avg_rate = metrics.get("avg_occupancy_rate", 0)
-    peak_hours = ", ".join(map(str, metrics.get("peak_hours", []))) or "none identified"
-    low_hours = ", ".join(map(str, metrics.get("underutilized_hours", []))) or "none"
-
-    if avg_rate == 0:
-        opinion = "No table occupancy data available to evaluate utilization."
-    else:
-        utilization = (
-            "excellent" if avg_rate >= 0.8 else "good" if avg_rate >= 0.6 else "needs improvement"
-        )
-        opinion = (
-            f"Average occupancy sits at {avg_rate:.0%}, indicating {utilization} space usage. "
-            f"Tables are busiest around {peak_hours}, while {low_hours} remain underused. "
-            f"Balancing these periods could improve overall efficiency."
-        )
+    prompt = (
+        f"Average Occupancy Rate: {metrics.get('avg_occupancy_rate', 0):.2f}\n"
+        f"Peak Hours: {', '.join(map(str, metrics.get('peak_hours', []))) or 'none'}\n"
+        f"Underutilized Hours: {', '.join(map(str, metrics.get('underutilized_hours', []))) or 'none'}\n"
+        "Provide a concise and helpful analysis on table usage and suggestions to improve it."
+    )
+    llm_result = await analyzer.llm_provider.generate_insights(
+        prompt, analyzer.llm_config
+    )
+    opinion = llm_result.get("summary", "No insights available.")
     return {"insight": opinion}
 
 
@@ -148,17 +138,18 @@ async def sentiment_insights(restaurant_id: str):
     if "error" in metrics:
         return metrics
     dist = metrics.get("sentiment_distribution", {})
-    total = sum(dist.values())
-    if total == 0:
-        opinion = "No customer reviews were found to assess sentiment."
-    else:
-        overall = metrics.get("overall_sentiment", "neutral")
-        avg_rating = metrics.get("avg_rating")
-        opinion = (
-            f"Customer sentiment is predominantly {overall} with {dist.get('positive', 0)} positive and "
-            f"{dist.get('negative', 0)} negative mentions out of {total} reviews. "
-            f"The average rating is {avg_rating}. Addressing recurring issues in negative feedback could enhance guest satisfaction."
-        )
+    prompt = (
+        f"Overall Sentiment: {metrics.get('overall_sentiment', 'neutral')}\n"
+        f"Positive Reviews: {dist.get('positive', 0)}\n"
+        f"Negative Reviews: {dist.get('negative', 0)}\n"
+        f"Neutral Reviews: {dist.get('neutral', 0)}\n"
+        f"Average Rating: {metrics.get('avg_rating')}\n"
+        "Provide a concise and helpful analysis of customer sentiment with suggestions for improvement."
+    )
+    llm_result = await analyzer.llm_provider.generate_insights(
+        prompt, analyzer.llm_config
+    )
+    opinion = llm_result.get("summary", "No insights available.")
     return {"insight": opinion}
 
 
