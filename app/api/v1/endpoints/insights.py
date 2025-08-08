@@ -69,8 +69,16 @@ async def _get_occupancy_data(restaurant_id: str, days: int) -> List[TableOccupa
 
     try:
         for s in sessions:
-            start = to_luanda_timezone(s.start_time).replace(minute=0, second=0, microsecond=0)
-            end = (to_luanda_timezone(s.end_time) or now).replace(minute=0, second=0, microsecond=0)
+            if not s.start_time:
+                continue
+
+            start_dt = to_luanda_timezone(s.start_time)
+            if start_dt is None:
+                continue
+
+            start = start_dt.replace(minute=0, second=0, microsecond=0)
+            end_dt = to_luanda_timezone(s.end_time) or now
+            end = end_dt.replace(minute=0, second=0, microsecond=0)
             current = start
             while current <= end:
                 occ_map[current.date()][current.hour] += 1
