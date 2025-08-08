@@ -103,7 +103,7 @@ async def performance_insights(restaurant_id: str):
         f"Total Revenue: ${metrics.get('total_revenue', 0):.2f}\n"
         f"Peak Hours: {', '.join(map(str, metrics.get('peak_hours', []))) or 'none'}\n"
         f"Best Days: {', '.join(metrics.get('best_days', [])) or 'none'}\n"
-        "Forneça uma análise detalhada em português sobre o desempenho de vendas do restaurante, incluindo o máximo de informações possível."
+        "Forneça uma análise detalhada em português de Portugal sobre o desempenho de vendas do restaurante, incluindo o máximo de informações possível."
     )
     llm_result = await analyzer.llm_provider.generate_insights(
         prompt, analyzer.llm_cgonfig
@@ -122,7 +122,7 @@ async def occupancy_insights(restaurant_id: str):
         f"Average Occupancy Rate: {metrics.get('avg_occupancy_rate', 0):.2f}\n"
         f"Peak Hours: {', '.join(map(str, metrics.get('peak_hours', []))) or 'none'}\n"
         f"Underutilized Hours: {', '.join(map(str, metrics.get('underutilized_hours', []))) or 'none'}\n"
-        "Forneça uma análise detalhada em português sobre a ocupação das mesas e sugestões para melhorá-la, incluindo o máximo de informações possível."
+        "Forneça uma análise detalhada em português de Portugal sobre a ocupação das mesas e sugestões para melhorá-la, incluindo o máximo de informações possível."
     )
     llm_result = await analyzer.llm_provider.generate_insights(
         prompt, analyzer.llm_config
@@ -144,7 +144,7 @@ async def sentiment_insights(restaurant_id: str):
         f"Negative Reviews: {dist.get('negative', 0)}\n"
         f"Neutral Reviews: {dist.get('neutral', 0)}\n"
         f"Average Rating: {metrics.get('avg_rating')}\n"
-        "Forneça uma análise detalhada em português sobre o sentimento dos clientes com sugestões para melhoria, incluindo o máximo de informações possível."
+        "Forneça uma análise detalhada em português de Portugal sobre o sentimento dos clientes com sugestões para melhoria, incluindo o máximo de informações possível."
     )
     llm_result = await analyzer.llm_provider.generate_insights(
         prompt, analyzer.llm_config
@@ -172,7 +172,7 @@ async def generate_full_insights(restaurant_id: str):
         f"Orders: {trends}\n"
         f"Occupancy: {occ}\n"
         f"Reviews: {sentiment}\n"
-        "Escreva todas as conclusões em português e forneça o máximo de detalhes possível sobre o desempenho do restaurante, incluindo recomendações, riscos e oportunidades."
+        "Escreva todas as conclusões em português de Portugal e forneça o máximo de detalhes possível sobre o desempenho do restaurante, incluindo recomendações, riscos e oportunidades."
     )
     llm_result = await analyzer.llm_provider.generate_insights(
         prompt, analyzer.llm_config
