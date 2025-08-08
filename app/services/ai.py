@@ -560,9 +560,12 @@ class OpenAIProvider(LLMProvider):
     async def generate_insights(self, prompt: str, config: LLMConfig) -> Dict[str, Any]:
         """Generate insights using OpenAI API"""
         try:
+
             openai.api_key = config.api_key
 
-            response = await openai.ChatCompletion.acreate(
+            client = openai.AsyncOpenAI(api_key=config.api_key)
+
+            response = client.chat.completions.create(
                 model=config.model,
                 messages=[
                     {"role": "system",

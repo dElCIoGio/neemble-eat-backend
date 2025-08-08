@@ -13,7 +13,6 @@ class Settings(BaseSettings):
     PROJECT_VERSION: str = "2.0.0"
     API_BASE_ROUTE: str = "/api"
 
-
     # Environment
     ENVIRONMENT: str = Field(default="development")
 
@@ -48,5 +47,8 @@ class Settings(BaseSettings):
     # Notion
     NOTION_INTERNAL_INTEGRATION_SECRET: str
     NOTION_BLOG_DATABASE: str
+
+    # OpenAI
+    OPENAI_API_KEY: str
 
     model_config = SettingsConfigDict(case_sensitive=True, env_file_encoding='utf-8')

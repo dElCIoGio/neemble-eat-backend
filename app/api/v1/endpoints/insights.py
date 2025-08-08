@@ -49,16 +49,20 @@ async def _get_occupancy_data(restaurant_id: str) -> List[TableOccupancy]:
         return []
 
     sessions = await session_model.get_by_fields({"restaurantId": restaurant_id})
-    now = now_in_luanda()
+    now = to_luanda_timezone(now_in_luanda())
     occ_map: dict[datetime.date, dict[int, int]] = defaultdict(lambda: defaultdict(int))
 
-    for s in sessions:
-        start = s.start_time.replace(minute=0, second=0, microsecond=0)
-        end = (s.end_time or now).replace(minute=0, second=0, microsecond=0)
-        current = start
-        while current <= end:
-            occ_map[current.date()][current.hour] += 1
-            current += timedelta(hours=1)
+    try:
+        for s in sessions:
+            start = to_luanda_timezone(s.start_time).replace(minute=0, second=0, microsecond=0)
+            end = (to_luanda_timezone(s.end_time) or now).replace(minute=0, second=0, microsecond=0)
+            current = start
+            while current <= end:
+                occ_map[current.date()][current.hour] += 1
+                current += timedelta(hours=1)
+    except Exception as e:
+        print(e)
+
 
     data: List[TableOccupancy] = []
     for date, hours in occ_map.items():
@@ -69,6 +73,7 @@ async def _get_occupancy_data(restaurant_id: str) -> List[TableOccupancy]:
                     hour=hour,
                     occupied_tables=occupied,
                     total_tables=total_tables,
+                    occupancy_rate=1
                 )
             )
     return data
@@ -106,7 +111,7 @@ async def performance_insights(restaurant_id: str):
         "Forneça uma análise detalhada em português de Portugal sobre o desempenho de vendas do restaurante, incluindo o máximo de informações possível."
     )
     llm_result = await analyzer.llm_provider.generate_insights(
-        prompt, analyzer.llm_cgonfig
+        prompt, analyzer.llm_config
     )
     opinion = llm_result.get("summary", "Nenhum insight disponível.")
     return {"insight": opinion, "metrics": metrics}
@@ -114,21 +119,24 @@ async def performance_insights(restaurant_id: str):
 
 @router.get("/occupancy/{restaurant_id}")
 async def occupancy_insights(restaurant_id: str):
-    data = await _get_occupancy_data(restaurant_id)
-    metrics = await analyzer.processors[AnalysisType.OCCUPANCY].process(data)
-    if "error" in metrics:
-        return metrics
-    prompt = (
-        f"Average Occupancy Rate: {metrics.get('avg_occupancy_rate', 0):.2f}\n"
-        f"Peak Hours: {', '.join(map(str, metrics.get('peak_hours', []))) or 'none'}\n"
-        f"Underutilized Hours: {', '.join(map(str, metrics.get('underutilized_hours', []))) or 'none'}\n"
-        "Forneça uma análise detalhada em português de Portugal sobre a ocupação das mesas e sugestões para melhorá-la, incluindo o máximo de informações possível."
-    )
-    llm_result = await analyzer.llm_provider.generate_insights(
-        prompt, analyzer.llm_config
-    )
-    opinion = llm_result.get("summary", "Nenhum insight disponível.")
-    return {"insight": opinion, "metrics": metrics}
+    try:
+        data = await _get_occupancy_data(restaurant_id)
+        metrics = await analyzer.processors[AnalysisType.OCCUPANCY].process(data)
+        if "error" in metrics:
+            return metrics
+        prompt = (
+            f"Average Occupancy Rate: {metrics.get('avg_occupancy_rate', 0):.2f}\n"
+            f"Peak Hours: {', '.join(map(str, metrics.get('peak_hours', []))) or 'none'}\n"
+            f"Underutilized Hours: {', '.join(map(str, metrics.get('underutilized_hours', []))) or 'none'}\n"
+            "Forneça uma análise detalhada em português de Portugal sobre a ocupação das mesas e sugestões para melhorá-la, incluindo o máximo de informações possível."
+        )
+        llm_result = await analyzer.llm_provider.generate_insights(
+            prompt, analyzer.llm_config
+        )
+        opinion = llm_result.get("summary", "Nenhum insight disponível.")
+        return {"insight": opinion, "metrics": metrics}
+    except Exception as e:
+        print(e)
 
 
 @router.get("/sentiment/{restaurant_id}")
