@@ -1,17 +1,18 @@
 from app.models.invoice import InvoiceModel
 from app.models.table_session import TableSessionModel
 from app.schema.invoice import InvoiceStatus
+from app.models.order import OrderModel
 from app.schema.order import OrderDocument
-from datetime import datetime
 
 from app.utils.time import now_in_luanda
 from app.schema.invoice_data import InvoiceData, InvoiceItem
 from app.services import restaurant as restaurant_service
 from app.services import table as table_service
-from app.services.order import order_model
+
 
 session_model = TableSessionModel()
 invoice_model = InvoiceModel()
+order_model = OrderModel()
 
 async def generate_invoice_for_session(session_id: str):
     session = await session_model.get(session_id)

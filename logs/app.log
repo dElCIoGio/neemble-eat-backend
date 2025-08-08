@@ -865,3 +865,26 @@
 2025-08-08 20:07:19,949 - main - INFO - App started in development mode
 2025-08-08 20:07:20,009 - main - INFO - Initializing Firebase
 2025-08-08 20:07:20,009 - main - INFO - Initializing Mongo DB client
+2025-08-08 20:39:54,727 - main - INFO - Closing Mongo DB client connection
+2025-08-08 20:39:54,816 - main - INFO - Shutting down
+2025-08-08 20:50:43,184 - main - INFO - App started in development mode
+2025-08-08 20:50:43,252 - main - INFO - Initializing Firebase
+2025-08-08 20:50:43,252 - main - INFO - Initializing Mongo DB client
+2025-08-08 20:51:36,206 - main - INFO - App started in development mode
+2025-08-08 20:51:36,239 - main - INFO - Initializing Firebase
+2025-08-08 20:51:36,239 - main - INFO - Initializing Mongo DB client
+2025-08-08 20:53:02,992 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-08-08 20:53:02,992 - main - INFO - Reason:  (1005)
+2025-08-08 20:53:02,994 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-08-08 20:53:02,995 - main - INFO - Reason:  (1005)
+2025-08-08 20:53:07,380 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-08-08 20:53:07,381 - main - INFO - Reason:  (1005)
+2025-08-08 20:53:07,381 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-08-08 20:53:07,382 - main - INFO - Reason:  (1005)
+2025-08-08 20:53:11,577 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket order
+2025-08-08 20:53:11,578 - main - INFO - Reason:  (1005)
+2025-08-08 20:53:11,580 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
+2025-08-08 20:53:11,581 - main - INFO - Reason:  (1005)
+2025-08-08 20:59:54,593 - main - INFO - App started in development mode
+2025-08-08 20:59:54,637 - main - INFO - Initializing Firebase
+2025-08-08 20:59:54,638 - main - INFO - Initializing Mongo DB client

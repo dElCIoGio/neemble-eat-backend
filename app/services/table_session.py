@@ -1,21 +1,21 @@
 import json
-from datetime import datetime
 from typing import List, Any
 
-from beanie.odm.operators.find.comparison import In, Eq, GTE, LTE, NE
-from beanie.odm.operators.find.logical import Or, And
+from beanie.odm.operators.find.comparison import Eq, GTE, LTE, NE
+from beanie.odm.operators.find.logical import  And
 
 from app.models.table import TableModel
 from app.models.table_session import TableSessionModel
 from app.schema.table_session import TableSessionStatus, TableSessionDocument
 from app.schema.order import OrderDocument
 from app.services import invoice as invoice_service
-from app.services.order import order_model
+from app.models import order as order_model
 from app.services.websocket_manager import get_websocket_manger
 from app.utils.time import now_in_luanda
 
 session_model = TableSessionModel()
 table_model = TableModel()
+order_model = order_model.OrderModel()
 
 
 async def start_session(data: dict) -> TableSessionDocument:

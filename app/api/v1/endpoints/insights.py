@@ -18,8 +18,7 @@ from app.services import order as order_service
 from app.services import table as table_service
 from app.services import restaurant as restaurant_service
 from app.services.table_session import session_model
-from app.utils.time import now_in_luanda
-
+from app.utils.time import now_in_luanda, to_luanda_timezone
 
 router = APIRouter()
 
@@ -35,7 +34,7 @@ async def _get_order_data(restaurant_id: str) -> List[OrderData]:
             OrderData(
                 order_id=str(o.id),
                 revenue=o.total or 0,
-                timestamp=o.order_time,
+                timestamp=to_luanda_timezone(o.order_time),
                 items=items,
                 table_number=o.table_number,
             )
