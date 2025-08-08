@@ -103,13 +103,13 @@ async def performance_insights(restaurant_id: str):
         f"Total Revenue: ${metrics.get('total_revenue', 0):.2f}\n"
         f"Peak Hours: {', '.join(map(str, metrics.get('peak_hours', []))) or 'none'}\n"
         f"Best Days: {', '.join(metrics.get('best_days', [])) or 'none'}\n"
-        "Provide a concise and helpful analysis of the restaurant's sales performance."
+        "Forneça uma análise detalhada em português sobre o desempenho de vendas do restaurante, incluindo o máximo de informações possível."
     )
     llm_result = await analyzer.llm_provider.generate_insights(
         prompt, analyzer.llm_config
     )
-    opinion = llm_result.get("summary", "No insights available.")
-    return {"insight": opinion}
+    opinion = llm_result.get("summary", "Nenhum insight disponível.")
+    return {"insight": opinion, "metrics": metrics}
 
 
 @router.get("/occupancy/{restaurant_id}")
@@ -122,13 +122,13 @@ async def occupancy_insights(restaurant_id: str):
         f"Average Occupancy Rate: {metrics.get('avg_occupancy_rate', 0):.2f}\n"
         f"Peak Hours: {', '.join(map(str, metrics.get('peak_hours', []))) or 'none'}\n"
         f"Underutilized Hours: {', '.join(map(str, metrics.get('underutilized_hours', []))) or 'none'}\n"
-        "Provide a concise and helpful analysis on table usage and suggestions to improve it."
+        "Forneça uma análise detalhada em português sobre a ocupação das mesas e sugestões para melhorá-la, incluindo o máximo de informações possível."
     )
     llm_result = await analyzer.llm_provider.generate_insights(
         prompt, analyzer.llm_config
     )
-    opinion = llm_result.get("summary", "No insights available.")
-    return {"insight": opinion}
+    opinion = llm_result.get("summary", "Nenhum insight disponível.")
+    return {"insight": opinion, "metrics": metrics}
 
 
 @router.get("/sentiment/{restaurant_id}")
@@ -144,13 +144,13 @@ async def sentiment_insights(restaurant_id: str):
         f"Negative Reviews: {dist.get('negative', 0)}\n"
         f"Neutral Reviews: {dist.get('neutral', 0)}\n"
         f"Average Rating: {metrics.get('avg_rating')}\n"
-        "Provide a concise and helpful analysis of customer sentiment with suggestions for improvement."
+        "Forneça uma análise detalhada em português sobre o sentimento dos clientes com sugestões para melhoria, incluindo o máximo de informações possível."
     )
     llm_result = await analyzer.llm_provider.generate_insights(
         prompt, analyzer.llm_config
     )
-    opinion = llm_result.get("summary", "No insights available.")
-    return {"insight": opinion}
+    opinion = llm_result.get("summary", "Nenhum insight disponível.")
+    return {"insight": opinion, "metrics": metrics}
 
 
 @router.get("/full/{restaurant_id}", response_model=InsightsOutput)
@@ -171,7 +171,8 @@ async def generate_full_insights(restaurant_id: str):
     prompt = (
         f"Orders: {trends}\n"
         f"Occupancy: {occ}\n"
-        f"Reviews: {sentiment}"
+        f"Reviews: {sentiment}\n"
+        "Escreva todas as conclusões em português e forneça o máximo de detalhes possível sobre o desempenho do restaurante, incluindo recomendações, riscos e oportunidades."
     )
     llm_result = await analyzer.llm_provider.generate_insights(
         prompt, analyzer.llm_config
@@ -189,7 +190,7 @@ async def generate_full_insights(restaurant_id: str):
         ]
 
     output = InsightsOutput(
-        summary=llm_result.get("summary", ""),
+        summary=llm_result.get("summary", "Nenhum insight disponível."),
         top_recommendations=to_items(
             llm_result.get("recommendations", []), "recommendation"
         ),
@@ -199,6 +200,11 @@ async def generate_full_insights(restaurant_id: str):
         ),
         data_quality=quality,
         confidence_score=confidence,
+        analysis_metadata={
+            "orders": trends,
+            "occupancy": occ,
+            "reviews": sentiment,
+        },
     )
     analyzer._store_cache(cache_key, output)
     return output
