@@ -8,15 +8,16 @@ and reviews automatically.
 ## Endpoints
 
 ### `GET /api/v1/insights/performance/{restaurant_id}`
-Returns performance trends derived from historical orders of the specified
-restaurant.
+Returns a text summary of performance trends derived from historical orders
+of the specified restaurant.
 
 ### `GET /api/v1/insights/occupancy/{restaurant_id}`
-Analyses table sessions to compute occupancy rates and utilization metrics.
+Analyzes table sessions to compute occupancy rates and returns a text
+summary of utilization metrics.
 
 ### `GET /api/v1/insights/sentiment/{restaurant_id}`
-Evaluates customer feedback left in table session reviews and returns
-sentiment insights.
+Evaluates customer feedback left in table session reviews and returns a
+textual sentiment insight.
 
 ### `GET /api/v1/insights/full/{restaurant_id}`
 Combines order trends, occupancy statistics and review sentiment into a
