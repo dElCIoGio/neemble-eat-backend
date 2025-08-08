@@ -39,7 +39,7 @@ class StockItemModel(MongoCrud[stock_item_schema.StockItemDocument]):
                 "unit": new_stock_item.unit,
                 "date": now_in_luanda(),
                 "reason": reason or "Item created",
-                "user": "Ajuste automático",
+                "user": user,
                 "cost": new_stock_item.cost,
             })
 
@@ -65,7 +65,7 @@ class StockItemModel(MongoCrud[stock_item_schema.StockItemDocument]):
                 "unit": item.unit,
                 "date": now_in_luanda(),
                 "reason": reason,
-                "user": "Ajuste automático",
+                "user": user,
                 "cost": item.cost,
             })
 
@@ -88,7 +88,7 @@ class StockItemModel(MongoCrud[stock_item_schema.StockItemDocument]):
                 "unit": item.unit,
                 "date": now_in_luanda(),
                 "reason": reason or "Item deleted",
-                "user": "Ajuste automático",
+                "user": user,
                 "cost": item.cost,
             })
 

@@ -1,5 +1,7 @@
 from typing import List
 
+from watchfiles import awatch
+
 from app.models.user import UserModel
 from app.models.role import RoleModel
 from app.schema import user as user_schema
@@ -36,31 +38,37 @@ async def add_membership(user_id: str, role_id: str) -> user_schema.UserDocument
     return await user_model.get(user_id)
 
 async def update_membership_role(user_id: str, restaurant_id: str, new_role_id: str) -> user_schema.UserDocument:
-    user = await user_model.get(user_id)
-    if not user:
-        raise Exception("User not found")
+    try:
+        user = await user_model.get(user_id)
+        if not user:
+            raise Exception("User not found")
 
-    new_role = await role_model.get(new_role_id)
-    if not new_role or new_role.restaurant_id != restaurant_id:
-        raise Exception("Role not found for restaurant")
+        new_role = await role_model.get(new_role_id)
+        if not new_role or new_role.restaurant_id != restaurant_id:
+            raise Exception("Role not found for restaurant")
 
-    existing_role_ids = [m.role_id for m in user.memberships]
-    roles = await role_model.get_many(existing_role_ids) if existing_role_ids else []
-    role_map = {str(r.id): r for r in roles}
+        existing_role_ids = [m.role_id for m in user.memberships]
+        roles = await role_model.get_many(existing_role_ids) if existing_role_ids else []
+        role_map = {str(r.id): r for r in roles}
 
-    updated = False
-    for membership in user.memberships:
-        m_role = role_map.get(membership.role_id)
-        if m_role and m_role.restaurant_id == restaurant_id:
-            membership.role_id = new_role_id
-            membership.is_active = True
-            updated = True
-            break
-    if not updated:
-        user.memberships.append(user_schema.UserRestaurantMembership(roleId=new_role_id, isActive=True))
+        updated = False
+        memberships = user.memberships
+        for idx, membership in enumerate(memberships):
+            m_role = role_map.get(membership.role_id)
+            if m_role and m_role.restaurant_id == restaurant_id:
+                membership.role_id = new_role_id
+                membership.is_active = True
+                memberships[idx] = membership
+                updated = True
+                break
+        if not updated:
+            memberships.append(user_schema.UserRestaurantMembership(roleId=new_role_id, isActive=True))
 
-    await user_model.update(str(user.id), {"memberships": [m.model_dump(by_alias=True) for m in user.memberships]})
-    return await user_model.get(user_id)
+        updated_user = await user_model.update(str(user.id), {"memberships": [m.model_dump(by_alias=True) for m in memberships]})
+        # await user_model.update(str(user.id), {"memberships": [m.model_dump(by_alias=True) for m in user.memberships]})
+        return await user_model.get(user_id)
+    except Exception as error:
+        print(error)
 
 async def deactivate_membership(user_id: str, restaurant_id: str) -> user_schema.UserDocument:
     user = await user_model.get(user_id)

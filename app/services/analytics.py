@@ -132,7 +132,9 @@ async def count_orders(
         }
         documents = await order_model.get_by_fields(filters)
 
-        count = len(documents)
+        orders_count = [order.quantity for order in documents]
+
+        count = sum(orders_count)
         return OrderCount(order_count=count)
 
     except Exception as e:
