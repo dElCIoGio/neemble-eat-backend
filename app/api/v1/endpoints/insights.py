@@ -96,19 +96,46 @@ async def _get_review_data(restaurant_id: str) -> List[CustomerReview]:
 @router.get("/performance/{restaurant_id}")
 async def performance_insights(restaurant_id: str):
     data = await _get_order_data(restaurant_id)
-    return await analyzer.processors[AnalysisType.PERFORMANCE].process(data)
+    metrics = await analyzer.processors[AnalysisType.PERFORMANCE].process(data)
+    if "error" in metrics:
+        return metrics
+    insight = (
+        f"Total orders {metrics.get('total_orders', 0)} generated revenue of "
+        f"${metrics.get('total_revenue', 0):.2f}. "
+        f"Peak hours: {', '.join(map(str, metrics.get('peak_hours', [])))}. "
+        f"Best days: {', '.join(metrics.get('best_days', []))}."
+    )
+    return {"insight": insight}
 
 
 @router.get("/occupancy/{restaurant_id}")
 async def occupancy_insights(restaurant_id: str):
     data = await _get_occupancy_data(restaurant_id)
-    return await analyzer.processors[AnalysisType.OCCUPANCY].process(data)
+    metrics = await analyzer.processors[AnalysisType.OCCUPANCY].process(data)
+    if "error" in metrics:
+        return metrics
+    insight = (
+        f"Average occupancy rate {metrics.get('avg_occupancy_rate', 0):.0%}. "
+        f"Peak hours: {', '.join(map(str, metrics.get('peak_hours', [])))}. "
+        f"Underutilized hours: {', '.join(map(str, metrics.get('underutilized_hours', [])))}."
+    )
+    return {"insight": insight}
 
 
 @router.get("/sentiment/{restaurant_id}")
 async def sentiment_insights(restaurant_id: str):
     data = await _get_review_data(restaurant_id)
-    return await analyzer.processors[AnalysisType.SENTIMENT].process(data)
+    metrics = await analyzer.processors[AnalysisType.SENTIMENT].process(data)
+    if "error" in metrics:
+        return metrics
+    dist = metrics.get("sentiment_distribution", {})
+    insight = (
+        f"Overall sentiment {metrics.get('overall_sentiment', 'neutral')} with "
+        f"{dist.get('positive', 0)} positive, {dist.get('negative', 0)} negative, "
+        f"{dist.get('neutral', 0)} neutral reviews. "
+        f"Average rating: {metrics.get('avg_rating')}"
+    )
+    return {"insight": insight}
 
 
 @router.get("/full/{restaurant_id}", response_model=InsightsOutput)
