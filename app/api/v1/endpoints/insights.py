@@ -265,8 +265,10 @@ async def generate_full_insights(restaurant_id: str, days: int = 1):
                 for i in items
             ]
 
+        summary = llm_result.get("summary", "Nenhum insight disponível.")
+
         output = InsightsOutput(
-            summary=llm_result.get("summary", "Nenhum insight disponível."),
+            summary=summary,
             top_recommendations=to_items(
                 llm_result.get("recommendations", []), "recommendation"
             ),

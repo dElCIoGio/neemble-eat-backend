@@ -572,8 +572,6 @@ class OpenAIProvider(LLMProvider):
                 settings = Settings()
                 config.api_key = settings.OPENAI_API_KEY
 
-            print(f"API Key: {config.api_key!r}")
-
             openai.api_key = config.api_key
 
             client = openai.AsyncOpenAI(api_key=config.api_key)
