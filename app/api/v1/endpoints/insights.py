@@ -35,6 +35,7 @@ from app.services import table as table_service
 from app.services import restaurant as restaurant_service
 from app.services.table_session import session_model
 from app.utils.time import now_in_luanda, to_luanda_timezone
+from app.utils.format import format_number
 from app.core.dependencies import get_settings
 
 router = APIRouter()
@@ -158,7 +159,7 @@ async def performance_insights(restaurant_id: str, days: int = 1):
         f"Total Orders: {metrics.total_orders}\n"
         f"Cancelled Orders: {metrics.cancelled_orders}\n"
         f"Non-cancelled Orders: {metrics.non_cancelled_orders}\n"
-        f"Total Revenue (Kz): {metrics.total_revenue:.2f}\n"
+        f"Total Revenue (Kz): {format_number(metrics.total_revenue)}\n"
         f"Peak Hours: {', '.join(map(str, metrics.peak_hours)) or 'none'}\n"
         f"Best Days: {', '.join(metrics.best_days) or 'none'}\n"
         "Forneça uma análise detalhada em português de Portugal sobre o desempenho de vendas do restaurante, incluindo o máximo de informações possível."
@@ -293,18 +294,18 @@ async def items_insights(restaurant_id: str, days: int = 1):
     if metrics.most_ordered:
         top = metrics.most_ordered[0]
         summary_parts.append(
-            f"O item mais pedido foi {top.item} com {top.orders} pedidos gerando {top.revenue:.2f} Kz."
+            f"O item mais pedido foi {top.item} com {top.orders} pedidos gerando {format_number(top.revenue)} Kz."
         )
     if metrics.top_revenue:
         top_rev = metrics.top_revenue[0]
         if not (metrics.most_ordered and top_rev.item == metrics.most_ordered[0].item):
             summary_parts.append(
-                f"O item com maior receita foi {top_rev.item} com {top_rev.revenue:.2f} Kz a partir de {top_rev.orders} pedidos."
+                f"O item com maior receita foi {top_rev.item} com {format_number(top_rev.revenue)} Kz a partir de {top_rev.orders} pedidos."
             )
     if metrics.least_ordered:
         low = metrics.least_ordered[0]
         summary_parts.append(
-            f"O item menos pedido foi {low.item} com {low.orders} pedidos gerando {low.revenue:.2f} Kz."
+            f"O item menos pedido foi {low.item} com {low.orders} pedidos gerando {format_number(low.revenue)} Kz."
         )
 
     insight = " ".join(summary_parts) if summary_parts else "Nenhum dado disponível."
