@@ -6,6 +6,7 @@ from typing import List, Union
 
 from fastapi import APIRouter
 
+from app.schema.order import OrderPrepStatus
 from app.services.ai import (
     OrderData,
     TableOccupancy,
@@ -133,7 +134,6 @@ async def _get_review_data(restaurant_id: str, days: int) -> List[CustomerReview
 async def performance_insights(restaurant_id: str, days: int = 1):
     restaurant = await restaurant_service.get_restaurant(restaurant_id)
     data = await _get_order_data(restaurant_id, days)
-    print(data)
     metrics = await analyzer.processors[AnalysisType.PERFORMANCE].process(data)
     if "error" in metrics:
         return metrics
@@ -235,6 +235,7 @@ async def items_insights(restaurant_id: str, days: int = 1):
         {
             "restaurantId": restaurant_id,
             "createdAt": {"$gte": cutoff},
+            "prepStatus": {"$ne": OrderPrepStatus.CANCELLED.value},
         }
     )
 
