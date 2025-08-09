@@ -204,6 +204,8 @@ async def occupancy_insights(restaurant_id: str, days: int = 1):
         )
     except Exception as e:
         print(e)
+
+
 @router.get("/sentiment/{restaurant_id}", response_model=SentimentInsightsResponse)
 async def sentiment_insights(restaurant_id: str, days: int = 1):
     restaurant = await restaurant_service.get_restaurant(restaurant_id)

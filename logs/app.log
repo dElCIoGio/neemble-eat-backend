@@ -1448,3 +1448,6 @@
 2025-08-09 02:27:51,424 - main - INFO - Reason:  (1005)
 2025-08-09 02:27:51,426 - main - INFO - WebSocket disconnected: 683d5bdc225dc0edaf0fd51f to the websocket billed
 2025-08-09 02:27:51,427 - main - INFO - Reason:  (1005)
+2025-08-09 02:29:36,390 - main - INFO - App started in development mode
+2025-08-09 02:29:36,436 - main - INFO - Initializing Firebase
+2025-08-09 02:29:36,438 - main - INFO - Initializing Mongo DB client
