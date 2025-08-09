@@ -154,24 +154,26 @@ class CustomerReview(BaseModel):
 
 class InsightItem(BaseModel):
     """Individual insight item with metadata"""
-    content: str
-    priority: InsightPriority
-    category: str
-    confidence: float = Field(ge=0, le=1)
-    supporting_data: Dict[str, Any] = Field(default_factory=dict)
-
+    content: str = Field(alias="content")
+    priority: InsightPriority = Field(alias="priority")
+    category: str = Field(alias="category")
+    confidence: float = Field(ge=0, le=1, alias="confidence")
+    supporting_data: Dict[str, Any] = Field(default_factory=dict, alias="supportingData")
+    model_config = {"populate_by_name": True}
 
 class InsightsOutput(BaseModel):
     """AI-generated restaurant insights output"""
-    summary: str
-    top_recommendations: List[InsightItem]
-    risk_areas: List[InsightItem]
-    growth_opportunities: List[InsightItem]
-    data_quality: DataQuality
-    confidence_score: float = Field(ge=0, le=1, default=0.8)
-    analysis_metadata: Dict[str, Any] = Field(default_factory=dict)
-    generated_at: datetime = Field(default_factory=datetime.utcnow)
-    cache_key: Optional[str] = None
+    summary: str = Field(alias="summary")
+    top_recommendations: List[InsightItem] = Field(alias="topRecommendations")
+    risk_areas: List[InsightItem] = Field(alias="riskAreas")
+    growth_opportunities: List[InsightItem] = Field(alias="growthOpportunities")
+    data_quality: DataQuality = Field(alias="dataQuality")
+    confidence_score: float = Field(ge=0, le=1, default=0.8, alias="confidenceScore")
+    analysis_metadata: Dict[str, Any] = Field(default_factory=dict, alias="analysisMetadata")
+    generated_at: datetime = Field(default_factory=datetime.utcnow, alias="generatedAt")
+    cache_key: Optional[str] = Field(default=None, alias="cacheKey")
+    model_config = {"populate_by_name": True}
+
 
 
 # ============================================================================

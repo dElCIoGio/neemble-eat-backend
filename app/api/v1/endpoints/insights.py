@@ -18,6 +18,18 @@ from app.services.ai import (
     AnalysisType,
     LLMConfig,
 )
+from app.schema.insights import (
+    PerformanceMetrics,
+    PerformanceInsightsResponse,
+    OccupancyMetrics,
+    OccupancyInsightsResponse,
+    SentimentDistribution,
+    SentimentMetrics,
+    SentimentInsightsResponse,
+    ItemStat,
+    ItemMetrics,
+    ItemInsightsResponse,
+)
 from app.models.order import OrderModel
 from app.services import table as table_service
 from app.services import restaurant as restaurant_service
@@ -130,103 +142,104 @@ async def _get_review_data(restaurant_id: str, days: int) -> List[CustomerReview
     return reviews
 
 
-@router.get("/performance/{restaurant_id}")
+@router.get("/performance/{restaurant_id}", response_model=PerformanceInsightsResponse)
 async def performance_insights(restaurant_id: str, days: int = 1):
     restaurant = await restaurant_service.get_restaurant(restaurant_id)
     data = await _get_order_data(restaurant_id, days)
-    metrics = await analyzer.processors[AnalysisType.PERFORMANCE].process(data)
-    if "error" in metrics:
-        return metrics
+    metrics_data = await analyzer.processors[AnalysisType.PERFORMANCE].process(data)
+    if "error" in metrics_data:
+        return metrics_data
+    metrics = PerformanceMetrics(**metrics_data)
     timeframe = "último dia" if days == 1 else f"últimos {days} dias"
     prompt = (
         f"Restaurante: {restaurant.name}\n"
         f"Período analisado: {timeframe}\n"
         "Moeda: Kwanza (Kz)\n"
-        f"Total Orders: {metrics.get('total_orders', 0)}\n"
-        f"Cancelled Orders: {metrics.get('cancelled_orders', 0)}\n"
-        f"Non-cancelled Orders: {metrics.get('non_cancelled_orders', 0)}\n"
-        f"Total Revenue (Kz): {metrics.get('total_revenue', 0):.2f}\n"
-        f"Peak Hours: {', '.join(map(str, metrics.get('peak_hours', []))) or 'none'}\n"
-        f"Best Days: {', '.join(metrics.get('best_days', [])) or 'none'}\n"
+        f"Total Orders: {metrics.total_orders}\n"
+        f"Cancelled Orders: {metrics.cancelled_orders}\n"
+        f"Non-cancelled Orders: {metrics.non_cancelled_orders}\n"
+        f"Total Revenue (Kz): {metrics.total_revenue:.2f}\n"
+        f"Peak Hours: {', '.join(map(str, metrics.peak_hours)) or 'none'}\n"
+        f"Best Days: {', '.join(metrics.best_days) or 'none'}\n"
         "Forneça uma análise detalhada em português de Portugal sobre o desempenho de vendas do restaurante, incluindo o máximo de informações possível."
     )
     llm_result = await analyzer.llm_provider.generate_insights(
         prompt, analyzer.llm_config
     )
     opinion = llm_result.get("summary", "Nenhum insight disponível.")
-    return {
-        "insight": opinion,
-        "metrics": metrics,
-        "restaurant": restaurant.name,
-        "timeframe_days": days,
-    }
-
-
-@router.get("/occupancy/{restaurant_id}")
+    return PerformanceInsightsResponse(
+        insight=opinion,
+        metrics=metrics,
+        restaurant=restaurant.name,
+        timeframe_days=days,
+    )
+@router.get("/occupancy/{restaurant_id}", response_model=OccupancyInsightsResponse)
 async def occupancy_insights(restaurant_id: str, days: int = 1):
     try:
         restaurant = await restaurant_service.get_restaurant(restaurant_id)
         data = await _get_occupancy_data(restaurant_id, days)
-        metrics = await analyzer.processors[AnalysisType.OCCUPANCY].process(data)
-        if "error" in metrics:
-            return metrics
+        metrics_data = await analyzer.processors[AnalysisType.OCCUPANCY].process(data)
+        if "error" in metrics_data:
+            return metrics_data
+        metrics = OccupancyMetrics(**metrics_data)
         timeframe = "último dia" if days == 1 else f"últimos {days} dias"
         prompt = (
             f"Restaurante: {restaurant.name}\n"
             f"Período analisado: {timeframe}\n"
             "Moeda: Kwanza (Kz)\n"
-            f"Average Occupancy Rate: {metrics.get('avg_occupancy_rate', 0):.2f}\n"
-            f"Peak Hours: {', '.join(map(str, metrics.get('peak_hours', []))) or 'none'}\n"
-            f"Underutilized Hours: {', '.join(map(str, metrics.get('underutilized_hours', []))) or 'none'}\n"
+            f"Average Occupancy Rate: {metrics.avg_occupancy_rate:.2f}\n"
+            f"Peak Hours: {', '.join(map(str, metrics.peak_hours)) or 'none'}\n"
+            f"Underutilized Hours: {', '.join(map(str, metrics.underutilized_hours)) or 'none'}\n"
             "Forneça uma análise detalhada em português de Portugal sobre a ocupação das mesas e sugestões para melhorá-la, incluindo o máximo de informações possível."
         )
         llm_result = await analyzer.llm_provider.generate_insights(
             prompt, analyzer.llm_config
         )
         opinion = llm_result.get("summary", "Nenhum insight disponível.")
-        return {
-            "insight": opinion,
-            "metrics": metrics,
-            "restaurant": restaurant.name,
-            "timeframe_days": days,
-        }
+        return OccupancyInsightsResponse(
+            insight=opinion,
+            metrics=metrics,
+            restaurant=restaurant.name,
+            timeframe_days=days,
+        )
     except Exception as e:
         print(e)
-
-
-@router.get("/sentiment/{restaurant_id}")
+@router.get("/sentiment/{restaurant_id}", response_model=SentimentInsightsResponse)
 async def sentiment_insights(restaurant_id: str, days: int = 1):
     restaurant = await restaurant_service.get_restaurant(restaurant_id)
     data = await _get_review_data(restaurant_id, days)
-    metrics = await analyzer.processors[AnalysisType.SENTIMENT].process(data)
-    if "error" in metrics:
-        return metrics
-    dist = metrics.get("sentiment_distribution", {})
+    metrics_data = await analyzer.processors[AnalysisType.SENTIMENT].process(data)
+    if "error" in metrics_data:
+        return metrics_data
+    dist = SentimentDistribution(**metrics_data.get("sentiment_distribution", {}))
+    metrics = SentimentMetrics(
+        overall_sentiment=metrics_data.get("overall_sentiment", "neutral"),
+        sentiment_distribution=dist,
+        avg_rating=metrics_data.get("avg_rating"),
+    )
     timeframe = "último dia" if days == 1 else f"últimos {days} dias"
     prompt = (
         f"Restaurante: {restaurant.name}\n"
         f"Período analisado: {timeframe}\n"
         "Moeda: Kwanza (Kz)\n"
-        f"Overall Sentiment: {metrics.get('overall_sentiment', 'neutral')}\n"
-        f"Positive Reviews: {dist.get('positive', 0)}\n"
-        f"Negative Reviews: {dist.get('negative', 0)}\n"
-        f"Neutral Reviews: {dist.get('neutral', 0)}\n"
-        f"Average Rating: {metrics.get('avg_rating')}\n"
+        f"Overall Sentiment: {metrics.overall_sentiment}\n"
+        f"Positive Reviews: {dist.positive}\n"
+        f"Negative Reviews: {dist.negative}\n"
+        f"Neutral Reviews: {dist.neutral}\n"
+        f"Average Rating: {metrics.avg_rating}\n"
         "Forneça uma análise detalhada em português de Portugal sobre o sentimento dos clientes com sugestões para melhoria, incluindo o máximo de informações possível."
     )
     llm_result = await analyzer.llm_provider.generate_insights(
         prompt, analyzer.llm_config
     )
     opinion = llm_result.get("summary", "Nenhum insight disponível.")
-    return {
-        "insight": opinion,
-        "metrics": metrics,
-        "restaurant": restaurant.name,
-        "timeframe_days": days,
-    }
-
-
-@router.get("/items/{restaurant_id}")
+    return SentimentInsightsResponse(
+        insight=opinion,
+        metrics=metrics,
+        restaurant=restaurant.name,
+        timeframe_days=days,
+    )
+@router.get("/items/{restaurant_id}", response_model=ItemInsightsResponse)
 async def items_insights(restaurant_id: str, days: int = 1):
     """Return insight on most/least ordered items and revenue generated."""
     restaurant = await restaurant_service.get_restaurant(restaurant_id)
@@ -248,60 +261,58 @@ async def items_insights(restaurant_id: str, days: int = 1):
         stats[name]["revenue"] += revenue
 
     if not stats:
-        return {
-            "insight": "Nenhum dado disponível.",
-            "metrics": {},
-            "restaurant": restaurant.name,
-            "timeframe_days": days,
-        }
+        return ItemInsightsResponse(
+            insight="Nenhum dado disponível.",
+            metrics=ItemMetrics(),
+            restaurant=restaurant.name,
+            timeframe_days=days,
+        )
 
     most_ordered = sorted(stats.items(), key=lambda x: x[1]["count"], reverse=True)
     least_ordered = sorted(stats.items(), key=lambda x: x[1]["count"])
     top_revenue = sorted(stats.items(), key=lambda x: x[1]["revenue"], reverse=True)
 
-    metrics = {
-        "most_ordered": [
-            {"item": name, "orders": data["count"], "revenue": data["revenue"]}
+    metrics = ItemMetrics(
+        most_ordered=[
+            ItemStat(item=name, orders=data["count"], revenue=data["revenue"])
             for name, data in most_ordered[:5]
         ],
-        "least_ordered": [
-            {"item": name, "orders": data["count"], "revenue": data["revenue"]}
+        least_ordered=[
+            ItemStat(item=name, orders=data["count"], revenue=data["revenue"])
             for name, data in least_ordered[:5]
         ],
-        "top_revenue": [
-            {"item": name, "orders": data["count"], "revenue": data["revenue"]}
+        top_revenue=[
+            ItemStat(item=name, orders=data["count"], revenue=data["revenue"])
             for name, data in top_revenue[:5]
         ],
-    }
+    )
 
     summary_parts = []
-    if metrics["most_ordered"]:
-        top = metrics["most_ordered"][0]
+    if metrics.most_ordered:
+        top = metrics.most_ordered[0]
         summary_parts.append(
-            f"O item mais pedido foi {top['item']} com {top['orders']} pedidos gerando {top['revenue']:.2f} Kz."
+            f"O item mais pedido foi {top.item} com {top.orders} pedidos gerando {top.revenue:.2f} Kz."
         )
-    if metrics["top_revenue"]:
-        top_rev = metrics["top_revenue"][0]
-        if not (metrics["most_ordered"] and top_rev["item"] == metrics["most_ordered"][0]["item"]):
+    if metrics.top_revenue:
+        top_rev = metrics.top_revenue[0]
+        if not (metrics.most_ordered and top_rev.item == metrics.most_ordered[0].item):
             summary_parts.append(
-                f"O item com maior receita foi {top_rev['item']} com {top_rev['revenue']:.2f} Kz a partir de {top_rev['orders']} pedidos."
+                f"O item com maior receita foi {top_rev.item} com {top_rev.revenue:.2f} Kz a partir de {top_rev.orders} pedidos."
             )
-    if metrics["least_ordered"]:
-        low = metrics["least_ordered"][0]
+    if metrics.least_ordered:
+        low = metrics.least_ordered[0]
         summary_parts.append(
-            f"O item menos pedido foi {low['item']} com {low['orders']} pedidos gerando {low['revenue']:.2f} Kz."
+            f"O item menos pedido foi {low.item} com {low.orders} pedidos gerando {low.revenue:.2f} Kz."
         )
 
     insight = " ".join(summary_parts) if summary_parts else "Nenhum dado disponível."
 
-    return {
-        "insight": insight,
-        "metrics": metrics,
-        "restaurant": restaurant.name,
-        "timeframe_days": days,
-    }
-
-
+    return ItemInsightsResponse(
+        insight=insight,
+        metrics=metrics,
+        restaurant=restaurant.name,
+        timeframe_days=days,
+    )
 @router.get("/full/{restaurant_id}", response_model=InsightsOutput)
 async def generate_full_insights(restaurant_id: str, days: int = 1):
     try:
@@ -375,7 +386,7 @@ async def generate_full_insights(restaurant_id: str, days: int = 1):
                 "occupancy": occ,
                 "reviews": sentiment,
                 "restaurant": restaurant.name,
-                "timeframe_days": days,
+                "timeframeDays": days,
             },
         )
         analyzer._store_cache(cache_key, output)
