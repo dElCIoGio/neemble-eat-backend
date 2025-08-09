@@ -1,6 +1,8 @@
 from collections import defaultdict
 from datetime import datetime, timedelta
-from typing import List
+import json
+import re
+from typing import List, Union
 
 from fastapi import APIRouter
 
@@ -254,7 +256,21 @@ async def generate_full_insights(restaurant_id: str, days: int = 1):
             prompt, analyzer.llm_config
         )
 
-        def to_items(items: List[str], category: str) -> List[InsightItem]:
+        def to_items(items: Union[str, List[str]], category: str) -> List[InsightItem]:
+            if isinstance(items, str):
+                try:
+                    parsed_items = json.loads(items)
+                    if isinstance(parsed_items, str):
+                        parsed_items = [parsed_items]
+                except json.JSONDecodeError:
+                    parsed_items = [
+                        i.strip(" -•")
+                        for i in re.split(r"[\n\r]+", items)
+                        if i.strip()
+                    ]
+            else:
+                parsed_items = items
+
             return [
                 InsightItem(
                     content=i,
@@ -262,7 +278,7 @@ async def generate_full_insights(restaurant_id: str, days: int = 1):
                     category=category,
                     confidence=confidence,
                 )
-                for i in items
+                for i in parsed_items
             ]
 
         summary = llm_result.get("summary", "Nenhum insight disponível.")
