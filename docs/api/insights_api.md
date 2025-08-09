@@ -37,3 +37,94 @@ GET /api/v1/insights/full/64b9...?days=7
 The response includes a high level summary along with recommendations,
 risks, opportunities, a data quality grade and confidence score.
 
+## Response Formats
+
+### Performance
+```json
+{
+  "insight": "string",
+  "metrics": {
+    "totalOrders": 0,
+    "cancelledOrders": 0,
+    "nonCancelledOrders": 0,
+    "totalRevenue": 0.0,
+    "peakHours": [0],
+    "bestDays": ["string"]
+  },
+  "restaurant": "string",
+  "timeframeDays": 1
+}
+```
+
+### Occupancy
+```json
+{
+  "insight": "string",
+  "metrics": {
+    "avgOccupancyRate": 0.0,
+    "peakHours": [0],
+    "underutilizedHours": [0]
+  },
+  "restaurant": "string",
+  "timeframeDays": 1
+}
+```
+
+### Sentiment
+```json
+{
+  "insight": "string",
+  "metrics": {
+    "overallSentiment": "neutral",
+    "sentimentDistribution": {
+      "positive": 0,
+      "negative": 0,
+      "neutral": 0
+    },
+    "avgRating": 0.0
+  },
+  "restaurant": "string",
+  "timeframeDays": 1
+}
+```
+
+### Items
+```json
+{
+  "insight": "string",
+  "metrics": {
+    "mostOrdered": [{"item": "string", "orders": 0, "revenue": 0.0}],
+    "leastOrdered": [{"item": "string", "orders": 0, "revenue": 0.0}],
+    "topRevenue": [{"item": "string", "orders": 0, "revenue": 0.0}]
+  },
+  "restaurant": "string",
+  "timeframeDays": 1
+}
+```
+
+### Full
+```json
+{
+  "summary": "string",
+  "topRecommendations": [{
+    "content": "string",
+    "priority": "medium",
+    "category": "string",
+    "confidence": 0.0,
+    "supportingData": {}
+  }],
+  "riskAreas": [],
+  "growthOpportunities": [],
+  "dataQuality": "good",
+  "confidenceScore": 0.0,
+  "analysisMetadata": {
+    "orders": {},
+    "occupancy": {},
+    "reviews": {},
+    "restaurant": "string",
+    "timeframeDays": 1
+  },
+  "generatedAt": "2024-01-01T00:00:00",
+  "cacheKey": "string"
+}
+```
