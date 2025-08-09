@@ -226,6 +226,81 @@ async def sentiment_insights(restaurant_id: str, days: int = 1):
     }
 
 
+@router.get("/items/{restaurant_id}")
+async def items_insights(restaurant_id: str, days: int = 1):
+    """Return insight on most/least ordered items and revenue generated."""
+    restaurant = await restaurant_service.get_restaurant(restaurant_id)
+    cutoff = to_luanda_timezone(now_in_luanda()) - timedelta(days=days)
+    orders = await order_model.get_by_fields(
+        {
+            "restaurantId": restaurant_id,
+            "createdAt": {"$gte": cutoff},
+        }
+    )
+
+    stats: dict[str, dict[str, float]] = defaultdict(lambda: {"count": 0, "revenue": 0.0})
+    for o in orders:
+        name = getattr(o, "ordered_item_name", None) or getattr(o, "item_id", "unknown")
+        revenue = 0 if o.prep_status == "cancelled" else o.total
+        qty = getattr(o, "quantity", 1)
+        stats[name]["count"] += qty
+        stats[name]["revenue"] += revenue
+
+    if not stats:
+        return {
+            "insight": "Nenhum dado disponível.",
+            "metrics": {},
+            "restaurant": restaurant.name,
+            "timeframe_days": days,
+        }
+
+    most_ordered = sorted(stats.items(), key=lambda x: x[1]["count"], reverse=True)
+    least_ordered = sorted(stats.items(), key=lambda x: x[1]["count"])
+    top_revenue = sorted(stats.items(), key=lambda x: x[1]["revenue"], reverse=True)
+
+    metrics = {
+        "most_ordered": [
+            {"item": name, "orders": data["count"], "revenue": data["revenue"]}
+            for name, data in most_ordered[:5]
+        ],
+        "least_ordered": [
+            {"item": name, "orders": data["count"], "revenue": data["revenue"]}
+            for name, data in least_ordered[:5]
+        ],
+        "top_revenue": [
+            {"item": name, "orders": data["count"], "revenue": data["revenue"]}
+            for name, data in top_revenue[:5]
+        ],
+    }
+
+    summary_parts = []
+    if metrics["most_ordered"]:
+        top = metrics["most_ordered"][0]
+        summary_parts.append(
+            f"O item mais pedido foi {top['item']} com {top['orders']} pedidos gerando {top['revenue']:.2f} Kz."
+        )
+    if metrics["top_revenue"]:
+        top_rev = metrics["top_revenue"][0]
+        if not (metrics["most_ordered"] and top_rev["item"] == metrics["most_ordered"][0]["item"]):
+            summary_parts.append(
+                f"O item com maior receita foi {top_rev['item']} com {top_rev['revenue']:.2f} Kz a partir de {top_rev['orders']} pedidos."
+            )
+    if metrics["least_ordered"]:
+        low = metrics["least_ordered"][0]
+        summary_parts.append(
+            f"O item menos pedido foi {low['item']} com {low['orders']} pedidos gerando {low['revenue']:.2f} Kz."
+        )
+
+    insight = " ".join(summary_parts) if summary_parts else "Nenhum dado disponível."
+
+    return {
+        "insight": insight,
+        "metrics": metrics,
+        "restaurant": restaurant.name,
+        "timeframe_days": days,
+    }
+
+
 @router.get("/full/{restaurant_id}", response_model=InsightsOutput)
 async def generate_full_insights(restaurant_id: str, days: int = 1):
     try:
