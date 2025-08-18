@@ -2,7 +2,7 @@ from app.models.invoice import InvoiceModel
 from app.models.table_session import TableSessionModel
 from app.schema.invoice import InvoiceStatus
 from app.models.order import OrderModel
-from app.schema.order import OrderDocument
+from app.schema.order import OrderDocument, OrderPrepStatus
 
 from app.utils.time import now_in_luanda
 from app.schema.invoice_data import InvoiceData, InvoiceItem
@@ -27,7 +27,12 @@ async def generate_invoice_for_session(session_id: str):
     if orders is None:
         raise Exception("No orders found for this session")
 
-    total = sum(order.total for order in orders if order)
+    total = sum(order.total for order in orders if order and order.prep_status in [
+        OrderPrepStatus.READY,
+        OrderPrepStatus.QUEUED,
+        OrderPrepStatus.IN_PROGRESS,
+        OrderPrepStatus.SERVED
+    ])
 
     invoice_data = {
         "restaurantId": session.restaurant_id,

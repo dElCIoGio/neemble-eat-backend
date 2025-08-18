@@ -20,6 +20,13 @@ from app.schema.order import OrderPrepStatus
 from app.utils.time import now_in_luanda
 
 
+valid_orders = [
+        OrderPrepStatus.READY,
+        OrderPrepStatus.QUEUED,
+        OrderPrepStatus.IN_PROGRESS,
+        OrderPrepStatus.SERVED
+    ]
+
 order_model = OrderModel()
 invoice_model = InvoiceModel()
 session_model = TableSessionModel()
@@ -300,6 +307,7 @@ async def last_seven_days_order_count(
             documents = await order_model.get_by_fields(
                 {
                     "restaurantId": restaurant_id,
+                    "prepStatus": {"$in": valid_orders},
                     "createdAt": {"$gte": day_start, "$lte": day_end},
                 },
                 limit=0,

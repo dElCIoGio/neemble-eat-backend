@@ -20,6 +20,11 @@ class TableSessionStatus(str, Enum):
     CLOSED = "closed"
 
 
+class TableSessionPaymentMethod(str, Enum):
+    CASH="cash"
+    CARD="card"
+
+
 class TableSessionReview(BaseModel):
     stars: conint(ge=1, le=5) = Field(..., description="Rating from 1 to 5 stars")
     comment: Optional[str] = Field(default=None, description="Optional written feedback from the customer")
@@ -35,6 +40,7 @@ class TableSessionBase(BaseModel):
     total: Optional[float] = None
     review: Optional[TableSessionReview] = None
     needs_assistance: Optional[bool] = Field(default=False, alias="needsAssistance")
+    payment_method: Optional[TableSessionPaymentMethod] = Field(default=None, alias="paymentMethod")
 
     @field_serializer('start_time')
     def serialize_start_time(self, value: datetime, _info):
